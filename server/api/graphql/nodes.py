@@ -2,7 +2,7 @@
 import graphene
 from graphene import relay
 
-from api.models import RankModel, RankModeModel
+from server.api.graphql.models import RankModel, RankModeModel
 
 # Custom Node
 class RankModeNode(relay.Node):

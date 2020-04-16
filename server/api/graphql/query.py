@@ -3,8 +3,8 @@ import graphene
 
 from graphene_mongo import MongoengineConnectionField
 
-from api.models import RankModel, RankModeModel
-from api.types import RankType, RankModeType
+from server.api.graphql.models import RankModel, RankModeModel
+from server.api.graphql.types import RankType, RankModeType
 
 class InputSearchRank(graphene.InputObjectType):
   mode = graphene.String()
@@ -20,7 +20,7 @@ class Query(graphene.ObjectType):
   modes_edges = MongoengineConnectionField(RankModeType)
   modes = graphene.List(
     RankModeType,
-    mode=graphene.String(default_value="4x4")
+    mode=graphene.String()
   )
   
   # 전체 랭킹 목록
@@ -39,8 +39,8 @@ class Query(graphene.ObjectType):
   
   ### Resolvers
   # 모드별 랭킹 목록
-  def resolve_modes(parent, info, mode, **input):
-    return RankModeModel.objects(mode=mode).all()
+  def resolve_modes(parent, info, **input):
+    return RankModeModel.objects(**input).all()
 
   # 전체 랭킹 목록
   def resolve_ranks(parent, info, page, count_for_rows, **kwargs):

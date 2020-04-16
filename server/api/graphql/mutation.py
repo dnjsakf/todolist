@@ -1,12 +1,14 @@
 # api/mutation.py
 import datetime
 import graphene
-from api.models import RankModel, RankType
+
+from server.api.graphql.models import RankModel
+from server.api.graphql.types import RankType
 
 # Create Mutation 정의
-class CreateRank(graphene.ClientIDMutation):  
+class CreateRank(graphene.Mutation):  
   # 입력받을 파라미터 Field 정의
-  class Input:
+  class Arguments:
     mode = graphene.String(required=True)
     name = graphene.String(required=True)
     score = graphene.Int(required=True)
@@ -17,8 +19,7 @@ class CreateRank(graphene.ClientIDMutation):
   success = graphene.Boolean()
   
   # 실행할 Mutation 정의
-  @classmethod
-  def mutate_and_get_payload(cls, root, info, **input):
+  def mutate(root, info, **input):
     # MongoDB Model 생성
     model = RankModel(
       mode=input.get("mode"),
@@ -42,9 +43,9 @@ class InuptUpdateRankData(graphene.InputObjectType):
   is_mobile = graphene.Boolean()
     
 # Update Mutation 정의
-class UpdateRank(graphene.ClientIDMutation):  
+class UpdateRank(graphene.Mutation):  
   # 입력받을 파라미터 Field 정의
-  class Input:
+  class Arguments:
     mode = graphene.String(required=True)
     name = graphene.String(required=True)
     data = InuptUpdateRankData(required=True)
@@ -54,8 +55,7 @@ class UpdateRank(graphene.ClientIDMutation):
   success = graphene.Boolean()
 
   # 실행할 Mutation 정의
-  @classmethod
-  def mutate_and_get_payload(cls, root, info, mode, name, data):
+  def mutate(root, info, mode, name, data):
     # 수정할 MongoDB Model 조회
     model = RankModel.objects(
       mode=mode, 
@@ -82,17 +82,16 @@ class UpdateRank(graphene.ClientIDMutation):
 
     
 # Delete Mutation 정의
-class DeleteRank(graphene.ClientIDMutation):
+class DeleteRank(graphene.Mutation):
   # 입력받을 파라미터 Field 정의
-  class Input:
+  class Arguments:
     mode = graphene.String(required=True)
     name = graphene.String(required=True)
     
   # 반환 Field 정의
   success = graphene.Boolean()
 
-  @classmethod
-  def mutate_and_get_payload(cls, root, info, mode, name):
+  def mutate(root, info, mode, name):
     # MongoDB에서 삭제
     RankModel.objects(
       mode=mode, 
@@ -112,62 +111,23 @@ class DeleteRank(graphene.ClientIDMutation):
 
 
 # Using Relay
-class UploadFile(graphene.ClientIDMutation):
-  class Input:
+class UploadFile(graphene.Mutation):
+  class Arguments:
     pass
 
   success = graphene.Boolean()
 
-  @classmethod
-  def mutate_and_get_payload(cls, root, info, **input):
+  def mutate(root, info, **input):
     request = info.context
 
     # files = request.FILES
 
     return UploadFile(success=True)
+    
 
 # Mutation Field 정의
-class MutationUsingRelay(graphene.ObjectType):
+class Mutation(graphene.ObjectType):
   create_rank = CreateRank.Field()
   update_rank = UpdateRank.Field()
   delete_rank = DeleteRank.Field()
-
-
-'''
-mutation {
-	create_rank(
-    input: {
-      mode: "3x3"
-      name: "dochi"
-      score: 100
-    }
-  ){
-    rank {
-      id
-      name
-    }
-  } 
-	update_rank(
-    input: {
-      mode: "3x3"
-      name: "dochi"
-      data: {
-        score: 1000
-        is_mobile: false
-      }
-    }
-  ){
-    rank {
-      id
-      name
-    }
-  }
-  delete_rank(
-    input: {
-      mode: "3x3"
-      name: "dochi"
-    }){
-    success
-  }
-}
-'''
+  upload_file = UploadFile.Field()

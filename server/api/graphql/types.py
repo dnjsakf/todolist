@@ -6,9 +6,9 @@ from graphql_relay.utils import base64
 from graphene import relay, Int, String, List
 from graphene_mongo import MongoengineObjectType
 
-from api.connections import CountableConnection
-from api.models import RankModel, RankModeModel
-from api.nodes import RankNode, RankModeNode
+from server.api.graphql.connections import CountableConnection
+from server.api.graphql.models import RankModel, RankModeModel
+from server.api.graphql.nodes import RankNode, RankModeNode
     
 
 # Ranking Object

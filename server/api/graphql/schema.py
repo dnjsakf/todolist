@@ -1,9 +1,9 @@
 # api/schema.py
 import graphene
 
-from api.query import Query
-from api.mutation import Mutation
-from api.types import RankType, RankModeType
+from server.api.graphql.query import Query
+from server.api.graphql.mutation import Mutation
+from server.api.graphql.types import RankType, RankModeType
 
 # Schema 생성
 schema = graphene.Schema(

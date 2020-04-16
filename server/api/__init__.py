@@ -1,11 +1,12 @@
 # api/__init__.py
-from flask import Flask
 from flask_graphql import GraphQLView
-from api.schema import schema
+from server.api.graphql.schema import schema
+from server.api.graphql.database import init_db
 
-def create_app():
-  # Flask Application 생성
-  app = Flask(__name__)
+# Add GraphQL plugin
+def set_api_graphql(app):
+  # MongoDB 접속 및 기초 데이터 입력
+  init_db()
   
   # /graphql EndPoint 설정
   app.add_url_rule(
@@ -16,6 +17,4 @@ def create_app():
       graphiql=True   # GraphQL UI 제공
     )
   )
-  
-  return app
   
