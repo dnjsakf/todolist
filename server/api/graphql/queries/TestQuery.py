@@ -3,8 +3,16 @@ import graphene
 
 from graphene_mongo import MongoengineConnectionField
 
-from server.api.graphql.models import RankModel, RankModeModel, CommonCodeModel
-from server.api.graphql.types import RankType, RankModeType, CommonCodeType
+from ..models import (
+  CommonCodeModel, HierarchyCodeModel, TodoItemModel,
+  RankModel, RankModeModel
+)
+
+from ..types import (
+  CommonCodeType,
+  RankType, RankModeType
+)
+
 
 class InputSearchRank(graphene.InputObjectType):
   mode = graphene.String()
@@ -14,7 +22,10 @@ class InputSearchRank(graphene.InputObjectType):
 
 
 # Query Field 정의
-class Query(graphene.ObjectType):
+class ModeQuery(graphene.ObjectType):
+  class Meta:
+    abstract = True
+
   ### Fields
   # 모드별 랭킹 목록
   modes_edges = MongoengineConnectionField(RankModeType)
@@ -22,6 +33,16 @@ class Query(graphene.ObjectType):
     RankModeType,
     mode=graphene.String()
   )
+
+  ### Resolvers
+  # 모드별 랭킹 목록
+  def resolve_modes(parent, info, **input):
+    return RankModeModel.objects(**input).all()
+
+# Query Field 정의
+class RankQuery(graphene.ObjectType):
+  class Meta:
+    abstract = True
   
   # 전체 랭킹 목록
   ranks_edges = MongoengineConnectionField(RankType)
@@ -42,12 +63,6 @@ class Query(graphene.ObjectType):
     code_grp=graphene.String(required=True), 
     code_value=graphene.String()
   )
-  
-  
-  ### Resolvers
-  # 모드별 랭킹 목록
-  def resolve_modes(parent, info, **input):
-    return RankModeModel.objects(**input).all()
 
   # 전체 랭킹 목록
   def resolve_ranks(parent, info, page, count_for_rows, **kwargs):
@@ -69,3 +84,7 @@ class Query(graphene.ObjectType):
   # 공통 코드 목록 조회
   def resolve_common_codes(parent, info, **input):
     return CommonCodeModel.objects(**input).all()
+
+
+class Query(RankQuery, ModeQuery):
+  pass

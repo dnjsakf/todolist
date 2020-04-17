@@ -6,10 +6,10 @@ from graphql_relay.utils import base64
 from graphene import relay, Int, String, List
 from graphene_mongo import MongoengineObjectType
 
-from server.api.graphql.connections import CountableConnection
-from server.api.graphql.models import RankModel, RankModeModel, CommonCodeModel
-from server.api.graphql.nodes import RankNode, RankModeNode
-    
+from ..connections import CountableConnection
+from ..models import RankModel, RankModeModel
+from ..nodes import RankNode, RankModeNode
+
 
 # Ranking Object
 class RankType(MongoengineObjectType):
@@ -79,20 +79,3 @@ class RankModeType(MongoengineObjectType):
       total_count=len(datas)
     )
     
-    
-    
-# CommonCode Object
-class CommonCodeType(MongoengineObjectType):
-  class Meta:
-    model = CommonCodeModel
-  
-  # reg_dttm을 출력할 때, 처리하는 로직
-  def resolve_reg_dttm(parent, info, **input):
-    return datetime.datetime.strptime(parent.reg_dttm, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
-
-  # upd_dttm을 출력할 때, 처리하는 로직
-  def resolve_upd_dttm(parent, info, **input):
-    if parent.upd_dttm is not None:
-      return datetime.datetime.strptime(parent.upd_dttm, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
-    else:
-      return parent.upd_dttm

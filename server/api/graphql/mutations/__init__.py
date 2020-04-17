@@ -2,8 +2,8 @@
 import datetime
 import graphene
 
-from server.api.graphql.models import RankModel
-from server.api.graphql.types import RankType
+from ..models import RankModel
+from ..types import RankType
 
 # Create Mutation 정의
 class CreateRank(graphene.Mutation):  

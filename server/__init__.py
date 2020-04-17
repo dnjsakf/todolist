@@ -18,6 +18,8 @@ def create_app():
     r"/*": { "origin": "*" }
   })
   
+  app.config.from_pyfile('config/flask.config.py')
+  
   # /graphql EndPoint 설정
   set_api_graphql(app)
 
