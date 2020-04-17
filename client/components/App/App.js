@@ -1,21 +1,23 @@
-import React from 'react';
+/* React */
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import { ApolloProvider } from 'react-apollo';
-import client from './../../graphql/client';
+/* CSS */
+import './App.css';
 
-import TodoList from './../List/TodoList';
+/* Components */
+const TodoApp = lazy(()=>import('./TodoApp'));
+
 
 const App = () => {
   return (
-    <ApolloProvider client={client}>
-      <div>
-        <h3>React Hot Loader</h3>
-      </div>
-      <TodoList variables={{
-        order: ["-score"],
-        count_for_rows: 3
-      }}/>
-    </ApolloProvider>
+    <Router>
+      <Suspense fallback={<div>App Loading...</div>}>
+        <Switch>
+          <Route exact path="/" component={ TodoApp }/>
+        </Switch>
+      </Suspense>
+    </Router>
   )
 }
 

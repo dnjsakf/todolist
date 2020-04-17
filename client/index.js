@@ -1,11 +1,27 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { hot } from 'react-hot-loader/root'
-import App from './components/App/App'
+/* React */
+import React from 'react';
+import { render as RouterDomRender } from 'react-dom';
+import { hot } from 'react-hot-loader/root';
 
-function render( Component, flag=false ){
-	Component = flag ? hot( Component ) : Component;
-	ReactDOM.render(<Component/>, document.getElementById('root'));
+/* GraphQL */
+import { ApolloProvider } from 'react-apollo';
+import client from './graphql/client';
+
+/* Components */
+import App from './components/App/App';
+
+
+function render( Component, isHot=false ){
+  const root = document.getElementById('root');
+  
+	Component = isHot ? hot( Component ) : Component;
+  
+	RouterDomRender(
+    <ApolloProvider client={client}>
+      <Component/>
+    </ApolloProvider>
+    , root
+  );
 }
 
 render(App, true);

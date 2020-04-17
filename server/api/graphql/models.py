@@ -25,3 +25,15 @@ class RankModel(Document):
   reg_dttm = StringField()
   upd_dttm = StringField()
 
+class CommonCodeModel(Document):
+  meta = {
+    'collection': 'common_code_mst'
+  }
+  code_grp = StringField(required=True)
+  code_value = StringField(required=True)
+  code_name = StringField(required=True)
+  desc = StringField()
+  reg_dttm = StringField()
+  upd_dttm = StringField()
+
+  

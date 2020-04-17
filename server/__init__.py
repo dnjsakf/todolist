@@ -9,8 +9,8 @@ def create_app():
   # Flask Application 생성
   app = Flask(
     __name__,
-    static_url_path="/public",
-    static_folder="../client/public",
+    static_url_path="/public/",
+    static_folder="../client/dist",
     template_folder="app/templates"
   )
 
