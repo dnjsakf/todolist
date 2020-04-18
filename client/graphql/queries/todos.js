@@ -2,14 +2,37 @@ import gql from 'graphql-tag';
 
 
 export const COMMON_CODE_QUERY = gql(`
-query commonCodeQuery($code_grp: String!) {
-  common_codes(code_grp: $code_grp){
+query commonCodeQuery($p_code: String!, $order: [String]) {
+  common_code(
+    p_code: $p_code
+    order: $order
+  ) {
     id
-    code_grp
-    code_value
+    code
     code_name
   }
-} 
+}
+`);
+
+export const COMMON_CODE_WITH_SUB_QUERY = gql(`
+query commonCodeWithSubQuery(
+  $p_code: String!,
+  $p_order: [String]
+) {
+  common_code(
+    p_code: $p_code
+    order: $p_order
+  ) {
+    id
+    code
+    code_name
+    sub_codes {
+      id
+      code
+      code_name
+    }
+  }
+}
 `);
 
 export const TODO_LIST_QUERY = gql(`

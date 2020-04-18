@@ -20,7 +20,7 @@ def create_app():
   
   app.config.from_pyfile('config/flask.config.py')
   
-  # /graphql EndPoint 설정
+  # /graphql EndPoint 설
   set_api_graphql(app)
 
   # /* set routes

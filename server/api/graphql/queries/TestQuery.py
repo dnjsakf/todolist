@@ -3,15 +3,8 @@ import graphene
 
 from graphene_mongo import MongoengineConnectionField
 
-from ..models import (
-  CommonCodeModel, HierarchyCodeModel, TodoItemModel,
-  RankModel, RankModeModel
-)
-
-from ..types import (
-  CommonCodeType,
-  RankType, RankModeType
-)
+from ..models import RankModel, RankModeModel
+from ..types import RankType, RankModeType
 
 
 class InputSearchRank(graphene.InputObjectType):
@@ -56,13 +49,6 @@ class RankQuery(graphene.ObjectType):
   
   # 특정 랭킹에 대한 정보
   rank = graphene.Field(RankType, id=graphene.String(required=True))
-  
-  # 공통 코드 목록 조회
-  common_codes = graphene.List(
-    CommonCodeType, 
-    code_grp=graphene.String(required=True), 
-    code_value=graphene.String()
-  )
 
   # 전체 랭킹 목록
   def resolve_ranks(parent, info, page, count_for_rows, **kwargs):
@@ -80,11 +66,3 @@ class RankQuery(graphene.ObjectType):
   # 특정 랭킹에 대한 정보
   def resolve_rank(parent, info, id):
     return RankModel.objects.get(id=id)
-
-  # 공통 코드 목록 조회
-  def resolve_common_codes(parent, info, **input):
-    return CommonCodeModel.objects(**input).all()
-
-
-class Query(RankQuery, ModeQuery):
-  pass

@@ -1,6 +1,13 @@
-# api/query.py
+# api/query.pyf
+from .CommonQuery import CommonCodeQuery
 from .TestQuery import RankQuery, ModeQuery
-from .TodoQuery import *
+from .TodoQuery import TodoItemInfoQuery
 
-class Query(RankQuery, ModeQuery):
+Inherits = [
+  CommonCodeQuery,
+  RankQuery,
+  ModeQuery
+]
+
+class Query(*Inherits):
   pass

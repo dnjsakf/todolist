@@ -1,7 +1,8 @@
 # api/models.py
 import datetime
+import graphene
 
-from graphene import relay, Int, String, List
+from graphene import relay
 from graphene_mongo import MongoengineObjectType
 
 from ..connections import CountableConnection
@@ -26,12 +27,23 @@ class BaseType(MongoengineObjectType):
     
 
 # CommonCode Object
+class CommonCodeSubType(BaseType):
+  class Meta:
+    model = CommonCodeModel
+
+# CommonCode Object
 class CommonCodeType(BaseType):
   class Meta:
     model = CommonCodeModel
+
+  sub_codes = graphene.List(CommonCodeSubType)
+
+  # 공통 코드 목록 조회
+  def resolve_sub_codes(parent, info, **input):
+    return CommonCodeModel.objects(p_code=parent).all()
+
   
 # HierarchyCode Object
 class HierarchyCodeType(BaseType):
   class Meta:
     model = HierarchyCodeModel
-  

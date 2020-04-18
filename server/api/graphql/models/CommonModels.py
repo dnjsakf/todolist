@@ -1,7 +1,8 @@
 # api/models.py
 from mongoengine import Document
 from mongoengine.fields import (
-  StringField, IntField, BooleanField, EmailField
+  StringField, IntField, BooleanField, EmailField, 
+  ListField, ReferenceField
 )
 
 class BaseDocument(Document):
@@ -9,6 +10,8 @@ class BaseDocument(Document):
     'allow_inheritance': True,
     'abstract': True
   }
+
+  sort_order = IntField()
 
   reg_user = StringField(required=True)
   reg_dttm = StringField(required=True)
@@ -20,11 +23,13 @@ class CommonCodeModel(BaseDocument):
   meta = {
     "collection": "common_code_mst"
   }
-  code_grp = StringField(required=True, unique=True, unique_with='code')
-  code = StringField(required=True)
+  p_code = ReferenceField('self')
+
+  code = StringField(required=True, unique=True)
   code_name = StringField(required=True)
+
   desc = StringField()
-  
+
   
 class HierarchyCodeModel(BaseDocument):
   meta = {

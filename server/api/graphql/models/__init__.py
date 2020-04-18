@@ -6,7 +6,8 @@ from .CommonModels import (
   , UserModel
 )
 from .TodoModels import (
-  TodoItemModel
+  TodoItemInfoModel,
+  TodoItemComments
 )
 from .TestModels import (
   RankModeModel

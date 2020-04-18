@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import { COMMON_CODE_QUERY, TODO_LIST_QUERY, TODO_ITEM_QUERY } from './../../graphql/queries/todos';
+import { TODO_LIST_QUERY, TODO_ITEM_QUERY } from './../../../graphql/queries/todos';
 
-import StatusSelect from './../Input/StatusSelect';
+import { StatusSelect, CategorySelect } from './../Input';
+
 import TodoItem from './../Item/TodoItem';
 
 import './TodoItemList.css';
 
 
-const TodoItemList = ({ variables })=>{
+const TodoItemList = ({ query, variables })=>{
   const { loading, error, data } = useQuery(TODO_LIST_QUERY, { variables });
 
   if( loading ) return <span>Data loading..</span>;
@@ -17,7 +18,24 @@ const TodoItemList = ({ variables })=>{
   return (
     <>
     <div>
-      <StatusSelect query={ COMMON_CODE_QUERY } variables={{ code_grp: "TODO_STATUS" }}/>
+      <StatusSelect 
+        variables={{ 
+          p_code: "TODO_STATUS",
+          order: [
+            "sort_order"
+          ]
+        }}
+      />
+    </div>
+    <div>
+      <CategorySelect
+        variables={{ 
+          p_code: "TODO_CATE",
+          order: [
+            "sort_order"
+          ]
+        }}
+      />
     </div>
     {
       data.modes.map(({ id, ranking, mode })=>{

@@ -3,6 +3,11 @@ import React from 'react';
 import { render as RouterDomRender } from 'react-dom';
 import { hot } from 'react-hot-loader/root';
 
+/* Redux */
+import { createStore, applyMiddleware } from 'redux'
+import { Provider } from 'react-redux'
+import rootReducer from './reducers'
+
 /* GraphQL */
 import { ApolloProvider } from 'react-apollo';
 import client from './graphql/client';
@@ -10,18 +15,22 @@ import client from './graphql/client';
 /* Components */
 import App from './components/App/App';
 
+/* Set Middleware */
+const store = createStore( rootReducer );
 
-function render( Component, isHot=false ){
+function render(Component){
   const root = document.getElementById('root');
-  
-	Component = isHot ? hot( Component ) : Component;
+
+	Component = module.hot ? hot( Component ) : Component;
   
 	RouterDomRender(
     <ApolloProvider client={client}>
-      <Component/>
+      <Provider store={ store }>
+        <Component/>
+      </Provider>
     </ApolloProvider>
     , root
   );
 }
 
-render(App, true);
+render(App);

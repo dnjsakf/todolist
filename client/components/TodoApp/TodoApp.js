@@ -2,7 +2,8 @@
 import React, { Suspense, lazy } from 'react';
 
 /* Components */
-const TodoItemList = lazy(()=>import('./../List/TodoItemList'));
+const TodoItemList = lazy(()=>import('./List/TodoItemList'));
+
 
 
 const TodoList = () => {
@@ -12,10 +13,12 @@ const TodoList = () => {
         <h3>TodoList</h3>
       </div>
       <Suspense fallback={<div>Todo List Loading...</div>}>
-        <TodoItemList variables={{
-          order: ["-score"],
-          count_for_rows: 3
-        }}/>
+        <TodoItemList
+          variables={{
+            order: ["-score"],
+            count_for_rows: 3
+          }}
+        />
       </Suspense>
     </>
   )

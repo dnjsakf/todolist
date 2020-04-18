@@ -5,7 +5,7 @@ from .CommonTypes import (
   , HierarchyCodeType
 )
 from .TodoTypes import (
-  TodoItemType
+  TodoItemInfoType
 )
 from .TestTypes import (
   RankType

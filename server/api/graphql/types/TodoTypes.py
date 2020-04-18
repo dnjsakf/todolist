@@ -4,8 +4,8 @@ import datetime
 from graphene_mongo import MongoengineObjectType
 
 from .CommonTypes import BaseType
-from ..models import TodoItemModel
+from ..models import TodoItemInfoModel
 
-class TodoItemType(BaseType):
+class TodoItemInfoType(BaseType):
   class Meta:
-    model = TodoItemModel
+    model = TodoItemInfoModel
