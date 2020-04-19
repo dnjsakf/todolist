@@ -4,7 +4,7 @@ import { render as RouterDomRender } from 'react-dom';
 import { hot } from 'react-hot-loader/root';
 
 /* Redux */
-import { createStore, applyMiddleware } from 'redux'
+import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import rootReducer from './reducers'
 

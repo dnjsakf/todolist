@@ -10,13 +10,11 @@ class TodoItemInfoQuery(graphene.ObjectType):
   class Meta:
     abstract = True
 
-  todo_list = graphene.List(
+  todo_item_info_list = graphene.List(
     TodoItemInfoType,
     user=graphene.String()
   )
 
   @classmethod
-  def resolve_todo_list(cls, root, info, **input):
+  def resolve_todo_item_info_list(cls, root, info, **input):
     return TodoItemInfoModel.objects(**input).all()
-
-  

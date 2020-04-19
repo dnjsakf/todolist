@@ -40,12 +40,19 @@ def init_db():
   todo_cate_develop = CommonCodeModel(p_code=todo_cate, code="DEVELOPMENT", code_name="개발", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
 
   CommonCodeModel(p_code=todo_cate_develop, code="JAVA", code_name="Java", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  CommonCodeModel(p_code=todo_cate_develop, code="PYTHON", code_name="Python", sort_order=2, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  todo_cate_develop_python = CommonCodeModel(p_code=todo_cate_develop, code="PYTHON", code_name="Python", sort_order=2, reg_user=reg_user, reg_dttm=reg_dttm).save()
   todo_cate_develop_javascript = CommonCodeModel(p_code=todo_cate_develop, code="JAVASCRIPT", code_name="Javascript", sort_order=3, reg_user=reg_user, reg_dttm=reg_dttm).save()
 
   ### 3 Depth 데이터
-  CommonCodeModel(p_code=todo_cate_develop_javascript, code="ES6", code_name="ES6", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  
+  todo_cate_develop_javascript_es6 = CommonCodeModel(p_code=todo_cate_develop_javascript, code="ES6", code_name="ES6", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  CommonCodeModel(p_code=todo_cate_develop_python, code="PYTHON2", code_name="Python2", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  CommonCodeModel(p_code=todo_cate_develop_python, code="PYTHON3", code_name="Python3", sort_order=2, reg_user=reg_user, reg_dttm=reg_dttm).save()
+
+  ### 4 Depth 데이터
+  CommonCodeModel(p_code=todo_cate_develop_javascript_es6, code="TEST", code_name="TEST", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
+
+
+
 
   ### Todo 샘플 데이터
   TodoItemInfoModel(

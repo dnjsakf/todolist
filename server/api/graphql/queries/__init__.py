@@ -4,6 +4,7 @@ from .TestQuery import RankQuery, ModeQuery
 from .TodoQuery import TodoItemInfoQuery
 
 Inherits = [
+  TodoItemInfoQuery,
   CommonCodeQuery,
   RankQuery,
   ModeQuery

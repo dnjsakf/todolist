@@ -9,3 +9,4 @@ from ..models import TodoItemInfoModel
 class TodoItemInfoType(BaseType):
   class Meta:
     model = TodoItemInfoModel
+  
