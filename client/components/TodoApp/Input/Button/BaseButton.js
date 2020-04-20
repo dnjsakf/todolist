@@ -1,7 +1,7 @@
 /* React */
 import React, { useRef, useEffect } from 'react';
 
-const BaseButton = ({ id, name, className, label, onClick })=>{
+const BaseButton = ( props )=>{
   const elRef = useRef();
 
   // Initial Callback
@@ -12,14 +12,14 @@ const BaseButton = ({ id, name, className, label, onClick })=>{
   },[ elRef ]);
 
   return (
-    <button 
+    <button
       ref={ elRef }
-      id={ id }
-      name={ name }
-      className={ className }
-      onClick={ onClick ? onClick : null }
+      id={ props.id }
+      name={ props.name }
+      className={ props.className }
+      onClick={ props.onClick }
       >
-      { label }
+      { props.label }
     </button>
   )
 }

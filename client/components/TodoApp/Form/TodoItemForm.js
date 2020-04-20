@@ -10,12 +10,13 @@ import { COMMON_CODE_QUERY } from './../../../graphql/queries/todos';
 /* Components */
 import { QueryBaseSelect } from './../Input/Select';
 import { SaveButton } from './../Input/Button';
+import { BaseTextarea } from './../Input/Textarea';
 
 
-const TodoItemForm = ({ id, name, mode, query, variables }) => {
+const TodoItemForm = ( props ) => {
   /* State */
   const formRef = useRef();
-  const formData = useSelector(( reducer )=>( reducer.input.select[id] ), [ ]);
+  const formData = useSelector(( reducer )=>( reducer.input.select[props.id] ), [ ]);
 
   /* Handlers */
   const handleCancel = useCallback((event)=>{
@@ -38,9 +39,9 @@ const TodoItemForm = ({ id, name, mode, query, variables }) => {
   }, [ formData ]);
   
   /* Request Data */
-  if( mode !== 'save' && query && variables ){
+  if( props.mode !== 'save' && props.query && props.variables ){
     /* React Hooks Methods 보다 밑에 있어야됨 */
-    const { loading, error, data } = useQuery(query, { variables });
+    const { loading, error, data } = useQuery(props.query, { variables: props.variables });
 
     if( loading ) return null;
     if( error ) {
@@ -52,13 +53,24 @@ const TodoItemForm = ({ id, name, mode, query, variables }) => {
   return (
     <form 
       ref={ formRef }
-      id={ id }
-      name={ name }
+      id={ props.id }
+      name={ props.name }
       className="todo-form"
       >
       <div className="input-row">
+        <div className="input-col c5 text-center">
+          <a>2020-01-01</a>
+        </div>
+        <div className="input-col c2 text-center">
+          <a>~</a>
+        </div>
+        <div className="input-col c5 text-center">
+          <a>2020-12-31</a>
+        </div>
+      </div>
+      <div className="input-row">
         <QueryBaseSelect
-          parent={ id }
+          parent={ props.id }
           name={ 'status' }
           query={ COMMON_CODE_QUERY }
           variables={{ 
@@ -72,7 +84,7 @@ const TodoItemForm = ({ id, name, mode, query, variables }) => {
       </div>
       <div className="input-row">
         <QueryBaseSelect
-          parent={ id }
+          parent={ props.id }
           name={ 'category' }
           query={ COMMON_CODE_QUERY }
           variables={{ 
@@ -84,6 +96,18 @@ const TodoItemForm = ({ id, name, mode, query, variables }) => {
           }}
           isLabel={ true }
         />
+      </div>
+      <div className="input-row">
+        <div className="input-col c12">
+          <BaseTextarea
+            parent={ props.id }
+            name={ 'description' }
+            rows={ 5 }
+            defaultValue={ 'Todo List' }
+            placeholder={ 'Description' }
+            onChange={ (ref, event)=>{ console.log( ref, event ) }}
+          />
+        </div>
       </div>
       <div className="input-row">
         <SaveButton

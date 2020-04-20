@@ -17,13 +17,13 @@ const SaveCancelButton = ({ cancel, save })=>{
 
   return (
     <>
-      <div className="input-col _blank c3"></div>
-      <div className="input-col _blank c6">
+      <div className="input-col c3 _blank"></div>
+      <div className="input-col c6 _blank">
         <div className="input-row">
           {
             cancel
             ? (
-              <div className="input-col input-button c6">
+              <div className="input-col c6 input-button">
                 <BaseButton 
                   className={ cancel.className }
                   label={ cancel.label }
@@ -33,7 +33,7 @@ const SaveCancelButton = ({ cancel, save })=>{
               )
             : null
           }
-          <div className="input-col input-button c6">
+          <div className="input-col c6 input-button">
             <BaseButton 
               className={ save.className }
               label={ save.label }
@@ -42,7 +42,7 @@ const SaveCancelButton = ({ cancel, save })=>{
           </div>
         </div>
       </div>
-      <div className="input-col _blank c3"></div>
+      <div className="input-col c3 _blank"></div>
     </>
   )
 }

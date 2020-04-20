@@ -1,25 +1,25 @@
 /* React */
 import React, { useRef, useEffect } from 'react';
 
-const BaseSelect = ({ id, name, options, onChange })=>{
+const BaseSelect = ( props )=>{
   const elRef = useRef();
 
   // Initial Callback
   useEffect(()=>{
-    if( onChange ){
-      onChange( elRef );
+    if( props.onChange ){
+      props.onChange( elRef );
     }
   },[ elRef ]);
 
   return (
     <select 
       ref={ elRef }
-      id={ id }
-      name={ name }
-      onChange={ onChange ? ()=>onChange(elRef) : null }
+      id={ props.id }
+      name={ props.name }
+      onChange={ props.onChange ? ()=> props.onChange(elRef) : null }
       >
       {
-        options.map(({id, value, label})=>(
+        props.options.map(({ id, value, label })=>(
           <option key={ id } value={ value }>{ label }</option>
         ))
       }

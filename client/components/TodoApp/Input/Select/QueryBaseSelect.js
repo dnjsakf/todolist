@@ -41,7 +41,7 @@ const QueryBaseSelect = ({ parent, name, query, variables, isLabel })=>{
 
   return (
     <>
-      <div className="input-col input-label c4">
+      <div className="input-col c4 input-label">
         { /* Label 설정 */
           isLabel
           ? (
@@ -52,7 +52,7 @@ const QueryBaseSelect = ({ parent, name, query, variables, isLabel })=>{
           : null
         }
       </div>
-      <div className="input-col input-select c8">
+      <div className="input-col c8 input-select">
       { /* 상위 카테고리 */
         Array.isArray(data.common_code.sub_codes) && data.common_code.sub_codes.length > 0
         ? (

@@ -6,50 +6,42 @@ import { useSelector } from 'react-redux';
 
 /* GraphQL */
 import { useQuery } from '@apollo/react-hooks';
-import { TODO_ITEM_QUERY } from './../../../graphql/queries/todos';
 
 /* Components */
 import { TodoItemForm } from './../Form';
 
-
-const TodoItem = ({ title, mode, size })=>{
-
+const TodoItem = ({ className, title, mode, size })=>{
   return (
     <>
-      <div className="input-item input-row" style={{
-        width: size.width ? size.width : null,
-        height: size.height ? size.height : null
-      }}>
-        {
-          title
-          ? (
-            <div className="input-row">
-              <div className="input-col c12">
-                <p>{ title }</p>
-              </div>
-            </div>
-            )
-          : null
-        }
+      <div 
+        className={ `input-item ${className}` }
+        style={{
+          width: size.width ? size.width : null,
+          height: size.height ? size.height : null
+        }}
+      >
         <div className="input-row">
           <div className="input-col c12">
-            <TodoItemForm 
-              id={ 'todo_item_form' }
-              mode={ mode ? mode : 'insert' }
-              query={ null } 
-              variables={ null }
-            />
+            {
+              title 
+              ? ( <h3 className="m5">{ title }</h3> )
+              : null
+            }
           </div>
         </div>
-        {
-          false
-          ? (
-            <div>
-              { 'comments' }
-            </div>
-            )
-          : null
-        }
+        <div className="input-row">
+          <TodoItemForm 
+            id={ 'todo_item_form' }
+            mode={ mode ? mode : 'insert' }
+            query={ null } 
+            variables={ null }
+          />
+        </div>
+        <div className="input-row">
+          <div className="input-col c12">
+            <label>{ 'Comments' } </label>
+          </div>
+        </div>
       </div>
     </>
   )

@@ -12,26 +12,15 @@ import './TodoApp.css';
 const TodoList = () => {
   return (
     <Suspense fallback={<div>Todo List Loading...</div>}>
-      <div className="input-row">
-        <div className="input-col _blank c4"></div>
-        <div className="input-col c4">
-          <TodoItem
-            mode={ 'insert' }
-            title={ 'ToDo Insert' }
-            size={{
-            }}
-          />
-        </div>
-        <div className="input-col _blank c4"></div>
-      </div>
-      {/* 
-        <TodoItemList
-          variables={{
-            order: ["-score"],
-            count_for_rows: 3
+      <div className="p5">
+        <TodoItem
+          mode={ 'insert' }
+          className={ "w300 center" }
+          title={ 'ToDo Insert' }
+          size={{
           }}
         />
-      */}
+      </div>
     </Suspense>
   )
 }
