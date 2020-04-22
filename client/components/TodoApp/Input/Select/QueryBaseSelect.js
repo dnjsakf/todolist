@@ -10,6 +10,9 @@ import { onChangeValue } from './../../../../reducers/input/SelectReducer';
 /* GraphQL */
 import { useQuery } from '@apollo/react-hooks';
 
+/* Material */
+import Grid from '@material-ui/core/Grid';
+
 /* Components */
 import { BaseSelect } from '.';
 
@@ -17,13 +20,12 @@ import { BaseSelect } from '.';
 const QueryBaseSelect = ({ parent, name, query, variables, isLabel })=>{
   const dispatch = useDispatch();
 
-  const handleOnChange = useCallback(( ref )=>{
+  const handleOnChange = useCallback(( value )=>{
     dispatch(
       onChangeValue({
         parent: parent,
-        // name: ref.current.name,
         name: name,
-        value: ref.current.value
+        value: value
       })
     );
   }, []);
@@ -40,8 +42,14 @@ const QueryBaseSelect = ({ parent, name, query, variables, isLabel })=>{
   const child_id = `${ name }_${ data.common_code.code.toLowerCase() }`;
 
   return (
-    <>
-      <div className="input-col c4 input-label">
+    <Grid 
+      container 
+      direction="row"
+      justify="center"
+      alignItems="center"
+      style={{ height: 50 }}
+    >
+      <Grid item xs={3}>
         { /* Label 설정 */
           isLabel
           ? (
@@ -51,8 +59,8 @@ const QueryBaseSelect = ({ parent, name, query, variables, isLabel })=>{
             )
           : null
         }
-      </div>
-      <div className="input-col c8 input-select">
+      </Grid>
+      <Grid item xs={8}>
       { /* 상위 카테고리 */
         Array.isArray(data.common_code.sub_codes) && data.common_code.sub_codes.length > 0
         ? (
@@ -72,8 +80,8 @@ const QueryBaseSelect = ({ parent, name, query, variables, isLabel })=>{
           )
         : null
       }
-      </div>
-    </>
+      </Grid>
+    </Grid>
   )
 }
 

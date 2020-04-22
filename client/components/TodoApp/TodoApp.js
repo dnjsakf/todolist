@@ -15,7 +15,7 @@ const TodoList = () => {
       <div className="p5">
         <TodoItem
           mode={ 'insert' }
-          className={ "w300 center" }
+          className={ "w350 center" }
           title={ 'ToDo Insert' }
           size={{
           }}

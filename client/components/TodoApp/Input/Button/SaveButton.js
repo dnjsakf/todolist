@@ -1,11 +1,23 @@
 /* React */
 import React, { useRef, useEffect } from 'react';
 
+/* Material */
+import Grid from '@material-ui/core/Grid';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+
 /* Components */
+import { makeStyles } from '@material-ui/core/styles';
 import { BaseButton } from '.';
 
 
+const useStyles = makeStyles((theme) => ({
+  saveButton: {
+    padding: 10
+  }
+}));
+
 const SaveCancelButton = ({ cancel, save })=>{
+  const classes = useStyles();
   const elRef = useRef();
 
   // Initial Callback
@@ -16,34 +28,32 @@ const SaveCancelButton = ({ cancel, save })=>{
   },[ elRef ]);
 
   return (
-    <>
-      <div className="input-col c3 _blank"></div>
-      <div className="input-col c6 _blank">
-        <div className="input-row">
-          {
-            cancel
-            ? (
-              <div className="input-col c6 input-button">
-                <BaseButton 
-                  className={ cancel.className }
-                  label={ cancel.label }
-                  onClick={ cancel.onClick }
-                />
-              </div>
-              )
-            : null
-          }
-          <div className="input-col c6 input-button">
-            <BaseButton 
-              className={ save.className }
-              label={ save.label }
-              onClick={ save.onClick }
-            />
-          </div>
-        </div>
-      </div>
-      <div className="input-col c3 _blank"></div>
-    </>
+    <Grid 
+      container
+      direction="row"
+      justify="center"
+      alignItems="center"
+      className={ classes.saveButton }
+    >
+      <ButtonGroup >
+        {
+          cancel
+          ? (
+              <BaseButton 
+                className={ cancel.className }
+                label={ cancel.label }
+                onClick={ cancel.onClick }
+              />
+            )
+          : null
+        }
+        <BaseButton 
+            className={ save.className }
+            label={ save.label }
+            onClick={ save.onClick }
+          />
+      </ButtonGroup>
+    </Grid>
   )
 }
 
