@@ -1,7 +1,13 @@
 /* React */
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 
-/* Material */
+/* Redux */
+import { useDispatch } from 'react-redux';
+
+/* Reducers */
+import { onChangeValue } from './../../../../reducers/form/SelectReducer';
+
+/* Materialize */
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -10,7 +16,6 @@ import Select from '@material-ui/core/Select';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
-    margin: theme.spacing(1),
     minWidth: 120,
   },
   selectEmpty: {
@@ -19,23 +24,26 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const BaseSelect = ( props )=>{
+  /* State */
   const classes = useStyles();
   const elRef = useRef();
-  const [ value, setValue ] = useState("");
+  const dispatch = useDispatch();
+  const [ value, setValue ] = useState( props.defaultValue ? props.defaultValue : "" );
 
-  const handleChange = (event)=>{
-    if( props.onChange ){
-      props.onChange( event.target.value );
-    }
-    setValue(event.target.value);
-  };
+  /* Handlers */
+  const handleOnChange = useCallback((event)=>{
+    setValue( event.target.value );
+  }, [ value ]);
 
-  // Initial Callback
   useEffect(()=>{
-    if( props.onChange ){
-      props.onChange( value );
-    }
-  },[ elRef ]);
+    dispatch(
+      onChangeValue({
+        parent: props.parent,
+        name: props.name,
+        value: value
+      })
+    )
+  }, [ value ]);
 
   return (
     <FormControl 
@@ -44,15 +52,15 @@ const BaseSelect = ( props )=>{
       fullWidth 
       size="small"
     >
-      <InputLabel id={ `${props.id}-label` }>{ props.name }</InputLabel>
+      <InputLabel id={ `${props.id}-label` }>{ props.label }</InputLabel>
       <Select
         ref={ elRef }
         labelId={ `${props.id}-label` }
         id={ props.id }
         name={ props.name }
         value={ value }
-        onChange={ handleChange }
-        label={ props.name }
+        onChange={ (event)=>handleOnChange(event) }
+        label={ props.label }
         className={ classes.selectBox }
       >
         <MenuItem value="">

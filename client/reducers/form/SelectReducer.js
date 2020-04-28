@@ -1,11 +1,10 @@
-export const CHANGE_VALUE = 'input/select/CHANGE_VALUE';
+export const CHANGE_VALUE = 'form/select/CHANGE_VALUE';
 
 export const onChangeValue = ( payload )=>({ type: CHANGE_VALUE, payload: payload });
 
-const initState = {
+const initState = {}
 
-}
-const SelectReducer = ( state=initState, action )=>{
+export default function( state=initState, action ){
   switch( action.type ){
     case CHANGE_VALUE:
       return {
@@ -19,5 +18,3 @@ const SelectReducer = ( state=initState, action )=>{
       return state;
   }
 }
-
-export default SelectReducer;

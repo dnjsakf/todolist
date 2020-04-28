@@ -1,7 +1,7 @@
 /* React */
 import React, { useRef, useEffect } from 'react';
 
-/* Material */
+/* Materialize */
 import Grid from '@material-ui/core/Grid';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 

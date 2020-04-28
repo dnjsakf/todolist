@@ -1,13 +1,13 @@
 import { combineReducers } from 'redux';
 
-import { SelectReducer } from './input';
+import { SelectReducer } from './form';
 
-const inputReducer = combineReducers({
+const formReducer = combineReducers({
   select: SelectReducer,
 });
 
 const rootReducer = combineReducers({
-  input: inputReducer,
+  form: formReducer,
 });
 
 export default rootReducer;

@@ -1,10 +1,19 @@
 /* React */
 import React, { useRef, useEffect } from 'react';
 
-/* Material */
+/* Materialize */
+import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
+
+const useStyles = makeStyles((theme) => ({
+  button: {
+    minWidth: 80,
+  },
+}));
+
 const BaseButton = ( props )=>{
+  const classes = useStyles();
   const elRef = useRef();
 
   // Initial Callback
@@ -19,7 +28,7 @@ const BaseButton = ( props )=>{
       ref={ elRef }
       id={ props.id }
       name={ props.name }
-      className={ props.className }
+      className={ classes.button }
       onClick={ props.onClick }
       variant="contained"
       color="primary"

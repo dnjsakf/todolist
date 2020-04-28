@@ -1,22 +1,54 @@
-import 'date-fns';
-import React, { useState } from 'react';
+/* React */
+import React, { useEffect, useState, useCallback } from 'react';
+
+/* Redux */
+import { useDispatch } from 'react-redux';
+
+/* Reducers */
+import { onChangeValue } from './../../../../reducers/form/SelectReducer';
+
+/* Materialize */
+import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 
-const DatePicker = ()=>{
-  // The first commit of Material-UI
-  const [ selectedDate, setSelectedDate ] = useState(new Date());
+/* Other Modules */
+import moment from 'moment';;
+import MomentUtils from '@date-io/moment';
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
+
+const useStyles = makeStyles((theme) => ({
+
+}));
+
+const DatePicker = ( props )=>{
+  /* State */
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const [ value, setValue ] = useState(()=>{
+    return props.defaultValue ? moment(props.defaultValue, "YYYYMMDD") : moment()
+  });
+
+  /* Handlers */
+  const handleDateChange = useCallback(( date )=>{
+    setValue( date );
+  }, [ value ]);
+
+  useEffect(()=>{
+    dispatch(
+      onChangeValue({
+        parent: props.parent,
+        name: props.name,
+        value: value.format( props.valueFormat || "YYYYMMDD" )
+      })
+    );
+  }, [ value ]);
 
   return (
-    <MuiPickersUtilsProvider utils={ DateFnsUtils }>
+    <MuiPickersUtilsProvider utils={ MomentUtils }>
       <Grid container justify="space-around">
         {/* <KeyboardDatePicker
           disableToolbar
@@ -25,7 +57,7 @@ const DatePicker = ()=>{
           margin="normal"
           id="MM/dd/yyyy"
           label="Date picker inline"
-          value={ selectedDate }
+          value={ value }
           onChange={handleDateChange}
           KeyboardButtonProps={{
             'aria-label': 'change date',
@@ -33,11 +65,11 @@ const DatePicker = ()=>{
         /> */}
         <KeyboardDatePicker
           margin="normal"
-          id="date-picker-dialog"
-          label="Due Date."
-          format="yyyy-MM-dd"
-          value={ selectedDate }
-          minDate={ new Date() }
+          id={ props.id }
+          label={ props.label }
+          format={ props.format || "YYYY-MM-DD" }
+          value={ value }
+          minDate={ moment() }
           onChange={ handleDateChange }
           KeyboardButtonProps={{
             'aria-label': 'change date',

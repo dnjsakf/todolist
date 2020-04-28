@@ -1,10 +1,17 @@
 /* React */
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 
-/* Material */
+/* Redux */
+import { useDispatch } from 'react-redux';
+
+/* Reducers */
+import { onChangeValue } from './../../../../reducers/form/SelectReducer';
+
+/* Materialize */
 import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+
 
 const useStyles = makeStyles((theme) => ({
   textarea: {
@@ -13,21 +20,26 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const BaseTextarea = ( props )=>{
+  /* State */
   const classes = useStyles();
+  const dispatch = useDispatch();
   const elRef = useRef();
+  const [ value, setValue ] = useState( props.defaultValue || "" );
 
-  const handleChange = useCallback((event)=>{
-    if( props.onChange ){
-      props.onChange(elRef, event);
-    }
-  }, [ ]);
+  /* Handlers */
+  const handleBlur = useCallback((event)=>{
+    setValue( event.target.value );
+  }, [ value ]);
 
-  // Initial Callback
   useEffect(()=>{
-    if( props.onChange ){
-      props.onChange( elRef, null );
-    }
-  },[ elRef ]);
+    dispatch(
+      onChangeValue({
+        parent: props.parent,
+        name: props.name,
+        value: value
+      })
+    )
+  },[ value ]);
 
   return (
     <FormControl 
@@ -45,8 +57,8 @@ const BaseTextarea = ( props )=>{
         defaultValue={ props.defaultValue }
         rows={ 5 }
         rowsMax={ 5 }
-        onChange= { handleChange }
         maxLength={ 500 }
+        onBlur= { handleBlur }
       />
     </FormControl>
   )
