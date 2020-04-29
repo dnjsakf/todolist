@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(( theme ) => ({
   button: {
     minWidth: 80,
   },
@@ -15,13 +15,6 @@ const useStyles = makeStyles((theme) => ({
 const BaseButton = ( props )=>{
   const classes = useStyles();
   const elRef = useRef();
-
-  // Initial Callback
-  useEffect(()=>{
-    // if( onClick ){
-    //   onClick( elRef );
-    // }
-  },[ elRef ]);
 
   return (
     <Button

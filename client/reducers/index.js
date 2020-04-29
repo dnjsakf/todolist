@@ -1,9 +1,11 @@
 import { combineReducers } from 'redux';
 
-import { SelectReducer } from './form';
+import { 
+  DataReducer, 
+} from './form';
 
 const formReducer = combineReducers({
-  select: SelectReducer,
+  data: DataReducer,
 });
 
 const rootReducer = combineReducers({

@@ -2,10 +2,10 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 
 /* Redux */
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 /* Reducers */
-import { onChangeValue } from './../../../../reducers/form/SelectReducer';
+import { actionSetData } from './../../../../reducers/form/DataReducer';
 
 /* Materialize */
 import { makeStyles } from '@material-ui/core/styles';
@@ -27,26 +27,57 @@ const BaseSelect = ( props )=>{
   /* State */
   const classes = useStyles();
   const elRef = useRef();
+
   const dispatch = useDispatch();
+  const isError = useSelector(({ form })=>{
+    if( form.data[props.parent] && form.data[props.parent][props.name] ){
+      return form.data[props.parent][props.name].error;
+    }
+    return false;
+  });
+
   const [ value, setValue ] = useState( props.defaultValue ? props.defaultValue : "" );
+  const [ error, setError ] = useState( isError );
 
   /* Handlers */
-  const handleOnChange = useCallback((event)=>{
-    setValue( event.target.value );
-  }, [ value ]);
+  /* Handler: Reset value, error */
+  const handleChange = useCallback((event)=>{
+    const value = event.target.value;
 
+    /* Validation */
+    if( props.required ){
+      if( !value ){
+        setError( true );
+      } else {
+        setError( false );
+      }
+    }
+
+    setValue( value );
+
+  }, [ value, error ]);
+
+  /* Reset error */
+  useEffect(()=>{
+    setError( isError );
+  }, [ isError ]);
+
+  /* Call dispatch */
   useEffect(()=>{
     dispatch(
-      onChangeValue({
+      actionSetData({
         parent: props.parent,
         name: props.name,
-        value: value
+        value: value,
+        error: error,
+        required: !!props.required
       })
-    )
-  }, [ value ]);
+    );
+  }, [ value, error ]);
 
   return (
-    <FormControl 
+    <FormControl
+      component="fieldset"
       variant="outlined"
       className={ classes.formControl }
       fullWidth 
@@ -59,9 +90,11 @@ const BaseSelect = ( props )=>{
         id={ props.id }
         name={ props.name }
         value={ value }
-        onChange={ (event)=>handleOnChange(event) }
+        onChange={ handleChange }
         label={ props.label }
         className={ classes.selectBox }
+        error={ error }
+        required={ props.required }
       >
         <MenuItem value="">
           <em>선택</em>

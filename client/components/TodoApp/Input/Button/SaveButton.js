@@ -20,13 +20,6 @@ const SaveCancelButton = ({ cancel, save })=>{
   const classes = useStyles();
   const elRef = useRef();
 
-  // Initial Callback
-  useEffect(()=>{
-    // if( onClick ){
-    //   onClick( elRef );
-    // }
-  },[ elRef ]);
-
   return (
     <Grid 
       container

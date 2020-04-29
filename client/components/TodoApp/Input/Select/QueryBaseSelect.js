@@ -11,7 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { BaseSelect } from '.';
 
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(( theme ) => ({
   gridContainer: {
     height: 50
   }
@@ -48,6 +48,7 @@ const QueryBaseSelect = ( props )=>{
               }))
             }
             defaultValue={ props.defaultValue }
+            required={ props.required }
           />
           )
         : null

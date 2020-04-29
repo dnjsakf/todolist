@@ -2,10 +2,10 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 
 /* Redux */
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 /* Reducers */
-import { onChangeValue } from './../../../../reducers/form/SelectReducer';
+import { actionSetData } from './../../../../reducers/form/DataReducer';
 
 /* Materialize */
 import { makeStyles } from '@material-ui/core/styles';
@@ -13,7 +13,7 @@ import FormControl from '@material-ui/core/FormControl';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(( theme ) => ({
   textarea: {
     resize: "none"
   }
@@ -22,24 +22,56 @@ const useStyles = makeStyles((theme) => ({
 const BaseTextarea = ( props )=>{
   /* State */
   const classes = useStyles();
-  const dispatch = useDispatch();
   const elRef = useRef();
+
+  const dispatch = useDispatch();
+  const isError = useSelector(({ form })=>{
+    if( form.data[props.parent] && form.data[props.parent][props.name] ){
+      return form.data[props.parent][props.name].error;
+    }
+    return false;
+  });
+
   const [ value, setValue ] = useState( props.defaultValue || "" );
+  const [ error, setError ] = useState( isError );
 
   /* Handlers */
-  const handleBlur = useCallback((event)=>{
-    setValue( event.target.value );
-  }, [ value ]);
+  /* Handler: Reset value, error */
+  const handleBlur = useCallback(( event )=>{
+    const value = event.target.value;
 
+    /* Validation */
+    if( props.required ){
+      if( !value ){
+        setError( true );
+      } else if ( props.maxlength && value.length > props.maxlength ){
+        setError( true );
+      } else {
+        setError( false );
+      }
+    }
+
+    setValue( value );
+
+  }, [ value, error ]);
+
+  /* Reset error */
+  useEffect(()=>{
+    setError( isError );
+  }, [ isError ]);
+
+  /* Call dispatch */
   useEffect(()=>{
     dispatch(
-      onChangeValue({
+      actionSetData({
         parent: props.parent,
         name: props.name,
-        value: value
+        value: value,
+        error: error,
+        required: !!props.required
       })
-    )
-  },[ value ]);
+    );
+  }, [ value, error ]);
 
   return (
     <FormControl 
@@ -53,12 +85,14 @@ const BaseTextarea = ( props )=>{
         name={ props.name }
         className={ classes.textarea }
         aria-label="maximum height"
-        placeholder={ props.placeholder }
-        defaultValue={ props.defaultValue }
+
         rows={ 5 }
         rowsMax={ 5 }
-        maxLength={ 500 }
+        maxLength={ props.maxlength }
+
         onBlur= { handleBlur }
+        defaultValue={ props.defaultValue }
+        placeholder={ props.placeholder }
       />
     </FormControl>
   )

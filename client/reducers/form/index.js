@@ -1,1 +1,1 @@
-export { default as SelectReducer } from './SelectReducer';
+export { default as DataReducer } from './DataReducer';
