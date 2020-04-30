@@ -37,8 +37,8 @@ const QueryBaseSelect = ( props )=>{
         ? (
           <BaseSelect
             parent={ props.parent }
-            id={ props.name }
-            name={ data.common_code.code.toLowerCase() }
+            id={ props.id }
+            name={ props.name }
             label={ data.common_code.code_name }
             options={
               data.common_code.sub_codes.map(( sub )=>({

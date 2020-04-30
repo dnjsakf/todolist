@@ -83,3 +83,39 @@ query getTodoItem($id: String!){
   }
 }
 `);
+
+
+export const CREATE_TODO_ITEM_QUERY = gql(`
+mutation createTodoInfo(
+  $title: String!,
+  $main_cate: String!,
+  $sub_cate: String,
+  $status: String!,
+  $desc: String,
+  $due_date: String,
+  $due_time: String
+){
+  create_todo_info(
+    title: $title,
+    main_cate: $main_cate,
+    sub_cate: $sub_cate,
+    status: $status,
+    desc: $desc,
+    due_date: $due_date,
+    due_time: $due_time
+  ){
+    success
+    todo_info {
+     	title
+      main_cate
+      sub_cate
+      status
+      desc
+      due_date
+      due_time
+      reg_user
+      reg_dttm
+    }
+  }
+}
+`);

@@ -12,16 +12,16 @@ def init_db():
   import datetime
   from server.api.graphql.models import (
     RankModel, RankModeModel,
-    UserModel, HierarchyCodeModel, CommonCodeModel,
-    TodoItemInfoModel
+    UserModel, CommonCodeModel,
+    TodoInfoModel
   )
 
   reg_user = "admin"
   reg_dttm = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
   
   ### 유저 데이터
-  UserModel(email="admin@gmail.com", pwd="1234", name="admin", age=999, cell_phone="01012345678", reg_user=reg_user, reg_dttm=reg_dttm).save()
-  UserModel(email="admin2@gmail.com", pwd="1234", name="admin2", age=999, cell_phone="01012345678", reg_user=reg_user, reg_dttm=reg_dttm).save()
+  admin = UserModel(email="admin@gmail.com", pwd="1234", name="admin", age=999, cell_phone="01012345678").save()
+  admin2 = UserModel(email="admin2@gmail.com", pwd="1234", name="admin2", age=999, cell_phone="01012345678").save()
   
 
   ### 공통코드 그룹 데이터
@@ -29,15 +29,15 @@ def init_db():
   todo_cate = CommonCodeModel(code="TODO_CATE", code_name="카테고리", sort_order=2, reg_user=reg_user, reg_dttm=reg_dttm).save()
 
   ### 공통코드 데이터 'TODO 상태'
-  CommonCodeModel(p_code= todo_status, code="READY", code_name="대기", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  CommonCodeModel(p_code= todo_status, code="WORKING", code_name="진행중", sort_order=2, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  CommonCodeModel(p_code= todo_status, code="FINISH", code_name="완료", sort_order=3, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  CommonCodeModel(p_code= todo_status, code="GIVE_UP", code_name="포기", sort_order=4, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  CommonCodeModel(p_code= todo_status, code="CANCEL", code_name="취소", sort_order=5, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  CommonCodeModel(p_code= todo_status, code="DELETE", code_name="삭제", sort_order=6, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  CommonCodeModel(p_code=todo_status, code="READY", code_name="대기", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  CommonCodeModel(p_code=todo_status, code="WORKING", code_name="진행중", sort_order=2, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  CommonCodeModel(p_code=todo_status, code="FINISH", code_name="완료", sort_order=3, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  CommonCodeModel(p_code=todo_status, code="GIVE_UP", code_name="포기", sort_order=4, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  CommonCodeModel(p_code=todo_status, code="CANCEL", code_name="취소", sort_order=5, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  CommonCodeModel(p_code=todo_status, code="DELETE", code_name="삭제", sort_order=6, reg_user=reg_user, reg_dttm=reg_dttm).save()
 
   ### 공통코드 데이터 'TODO 카테고리'
-  todo_cate_develop = CommonCodeModel(p_code=todo_cate, code="DEVELOPMENT", code_name="개발", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  todo_cate_develop = CommonCodeModel(p_code=todo_cate, code="LANGUAGE", code_name="개발언어", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
 
   CommonCodeModel(p_code=todo_cate_develop, code="JAVA", code_name="Java", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
   todo_cate_develop_python = CommonCodeModel(p_code=todo_cate_develop, code="PYTHON", code_name="Python", sort_order=2, reg_user=reg_user, reg_dttm=reg_dttm).save()
@@ -52,18 +52,15 @@ def init_db():
   CommonCodeModel(p_code=todo_cate_develop_javascript_es6, code="TEST", code_name="TEST", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
 
 
-
-
   ### Todo 샘플 데이터
-  TodoItemInfoModel(
+  TodoInfoModel(
     title="ToDo List 만들기", 
-    main_cate="WEB_DEVELOPMENT", 
-    sub_cate=None,
+    main_cate="LANGUAGE",
+    sub_cate="JAVA",
     status="READY", 
     desc="나의 첫번째 ToDo List 만들기.",
-    start_date=datetime.datetime.now().strftime("%Y%m%d"),
     due_date="20201231",
-    working_day=None,
+    due_time="000000",
     reg_user=reg_user,
     reg_dttm=reg_dttm
   ).save()

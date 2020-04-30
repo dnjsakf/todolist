@@ -6,9 +6,9 @@ from mongoengine.fields import (
 from .CommonModels import BaseDocument
 
 ### ToDo 정보 모델
-class TodoItemInfoModel(BaseDocument):
+class TodoInfoModel(BaseDocument):
   meta = {
-    'collection': 'todo_item_info'
+    'collection': 'todo_info'
   }
 
   title = StringField(required=True)
@@ -18,18 +18,17 @@ class TodoItemInfoModel(BaseDocument):
   status = StringField()
   desc = StringField()
   
-  start_date = StringField()
   due_date = StringField()
-  working_day = IntField()
+  due_time = StringField()
 
 
 ### ToDo 댓글 모델
-class TodoItemComments(BaseDocument):
+class TodoCommentModel(BaseDocument):
   meta = {
-    'collection': 'todo_item_comments'
+    'collection': 'todo_comments'
   }
   
-  todo_item = ReferenceField(TodoItemInfoModel)
+  todo_info = ReferenceField('TodoInfoModel')
 
   commont = StringField(required=True)
   good = IntField(default_value=0)

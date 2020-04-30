@@ -3,18 +3,24 @@ import graphene
 
 from graphene_mongo import MongoengineConnectionField
 
-from ..models import TodoItemInfoModel
-from ..types import TodoItemInfoType
+from ..models import TodoInfoModel
+from ..types import TodoInfoType
 
-class TodoItemInfoQuery(graphene.ObjectType):
+class TodoInfoQuery(graphene.ObjectType):
   class Meta:
     abstract = True
 
-  todo_item_info_list = graphene.List(
-    TodoItemInfoType,
+  todo = MongoengineConnectionField(TodoInfoType)
+  todo_info = graphene.Field(TodoInfoType)
+  todo_info_list = graphene.List(
+    TodoInfoType,
     user=graphene.String()
   )
 
   @classmethod
-  def resolve_todo_item_info_list(cls, root, info, **input):
-    return TodoItemInfoModel.objects(**input).all()
+  def resolve_todo_info(cls, root, info, **input):
+    return TodoInfoModel.objects(**input).first()
+
+  @classmethod
+  def resolve_todo_info_list(cls, root, info, **input):
+    return TodoInfoModel.objects(**input).all()

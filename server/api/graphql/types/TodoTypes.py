@@ -1,12 +1,13 @@
 # api/models.py
 import datetime
 
+from graphene.relay import Node
 from graphene_mongo import MongoengineObjectType
 
 from .CommonTypes import BaseType
-from ..models import TodoItemInfoModel
+from ..models import TodoInfoModel
 
-class TodoItemInfoType(BaseType):
+class TodoInfoType(BaseType):
   class Meta:
-    model = TodoItemInfoModel
-  
+    model = TodoInfoModel
+    interfaces = (Node, )

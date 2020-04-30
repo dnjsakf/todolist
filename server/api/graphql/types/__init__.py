@@ -2,10 +2,9 @@
 from .CommonTypes import (
   BaseType
   , CommonCodeType
-  , HierarchyCodeType
 )
 from .TodoTypes import (
-  TodoItemInfoType
+  TodoInfoType
 )
 from .TestTypes import (
   RankType

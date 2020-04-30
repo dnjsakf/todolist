@@ -3,7 +3,12 @@ import graphene
 
 from server.api.graphql.queries import Query
 from server.api.graphql.mutations import Mutation
-from server.api.graphql.types import RankType, RankModeType, CommonCodeType
+from server.api.graphql.types import (
+  RankType, 
+  RankModeType, 
+  CommonCodeType, 
+  TodoInfoType
+)
 
 # Schema 생성
 schema = graphene.Schema(
@@ -12,7 +17,8 @@ schema = graphene.Schema(
   types=[
     RankType,
     RankModeType,
-    CommonCodeType
+    CommonCodeType,
+    TodoInfoType
   ],
   auto_camelcase=False
 )

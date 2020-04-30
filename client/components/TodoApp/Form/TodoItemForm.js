@@ -8,7 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { actionSetError } from './../../../reducers/form/DataReducer';
 
 /* GraphQL */
-import { COMMON_CODE_QUERY } from './../../../graphql/queries/todos';
+import { useQuery, useMutation } from '@apollo/react-hooks';
+import { COMMON_CODE_QUERY, CREATE_TODO_ITEM_QUERY } from './../../../graphql/queries/todos';
 
 /* Materialize */
 import { makeStyles } from '@material-ui/core/styles';
@@ -36,6 +37,12 @@ const TodoItemForm = ( props ) => {
 
   const dispatch = useDispatch();
   const formData = useSelector(({ form })=>( form.data[props.id] ), [ null ]);
+
+  const [ createTodoInfo, { 
+    data: created, 
+    loading: mutationLoading, 
+    error: mutationError 
+  }] = useMutation( CREATE_TODO_ITEM_QUERY );
 
   /* Handlers */
   /* Handler: Clear form-data */
@@ -65,18 +72,25 @@ const TodoItemForm = ( props ) => {
         )
       ));
     } else {
-      console.log("Do Save");
+      const save_data = {
+        variables: {
+          title: formData.title.data,
+          main_cate: formData.category.data,
+          status: formData.status.data,
+          desc: formData.description.data,
+          due_date: formData.due_date.data,
+          due_time: formData.due_time.data,
+        }
+      }
+      console.log("Do Save", save_data);
+
+      /* Save todo-info: return promise */
+      createTodoInfo(save_data);
     }
   }, [ formData ]);
 
-  /* For data output */
-  useEffect(()=>{ 
-    console.log( 'formData', formData );
-  }, [ formData ]);
-
   /* Request GraphQL Data */
-  if( props.mode !== 'save' && props.query && props.variables ){
-    /* React Hooks Methods 보다 밑에 있어야됨 */
+  if( props.mode === 'update' && props.query && props.variables ){
     const { loading, error, data } = useQuery(props.query, { variables: props.variables });
 
     if( loading ) return null;
@@ -85,6 +99,15 @@ const TodoItemForm = ( props ) => {
       return null;
     };
   }
+
+  /* For data output */
+  useEffect(()=>{ 
+    console.log( 'formData', formData );
+  }, [ formData ]);
+
+  useEffect(()=>{
+    console.log( 'created', created );
+  }, [ created ]);
 
   return (
     <Grid container spacing={ 0 }>
@@ -112,6 +135,8 @@ const TodoItemForm = ( props ) => {
                 placeholder="제목을 입력해주세요."
                 maxlength={ 30 }
                 required={ true }
+
+                defaultValue="테스트"
               />
             </Grid>
           </Grid>
@@ -134,6 +159,8 @@ const TodoItemForm = ( props ) => {
                   ]
                 }}
                 required={ true }
+
+                defaultValue="FINISH"
               />
             </Grid>
           </Grid>
@@ -151,12 +178,14 @@ const TodoItemForm = ( props ) => {
                 query={ COMMON_CODE_QUERY }
                 variables={{ 
                   p_code: "TODO_CATE",
-                  code: "DEVELOPMENT",
+                  code: "LANGUAGE",
                   order: [
                     "sort_order"
                   ]
                 }}
                 required={ true }
+
+                defaultValue="PYTHON"
               />
             </Grid>
           </Grid>

@@ -4,8 +4,8 @@ import graphene
 from mongoengine import QuerySet
 from graphene_mongo import MongoengineConnectionField
 
-from ..models import CommonCodeModel, HierarchyCodeModel
-from ..types import CommonCodeType, HierarchyCodeType
+from ..models import CommonCodeModel
+from ..types import CommonCodeType
 
 class CommonCodeQuery(graphene.ObjectType):
   class Meta:
