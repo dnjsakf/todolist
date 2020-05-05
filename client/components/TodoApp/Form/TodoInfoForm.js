@@ -9,7 +9,10 @@ import { actionSetError } from './../../../reducers/form/DataReducer';
 
 /* GraphQL */
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { COMMON_CODE_QUERY, CREATE_TODO_ITEM_QUERY } from './../../../graphql/queries/todos';
+import { 
+  COMMON_CODE_QUERY, 
+  CREATE_TODO_INFO_QUERY 
+} from './../../../graphql/queries/todos';
 
 /* Materialize */
 import { makeStyles } from '@material-ui/core/styles';
@@ -30,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   todoForm: { }
 }));
 
-const TodoItemForm = ( props ) => {
+const TodoInfoForm = ( props ) => {
   /* State */
   const classes = useStyles();
   const elRef = useRef();
@@ -42,7 +45,7 @@ const TodoItemForm = ( props ) => {
     data: created, 
     loading: mutationLoading, 
     error: mutationError 
-  }] = useMutation( CREATE_TODO_ITEM_QUERY );
+  }] = useMutation( CREATE_TODO_INFO_QUERY );
 
   /* Handlers */
   /* Handler: Clear form-data */
@@ -89,17 +92,6 @@ const TodoItemForm = ( props ) => {
     }
   }, [ formData ]);
 
-  /* Request GraphQL Data */
-  if( props.mode === 'update' && props.query && props.variables ){
-    const { loading, error, data } = useQuery(props.query, { variables: props.variables });
-
-    if( loading ) return null;
-    if( error ) {
-      console.error( error );
-      return null;
-    };
-  }
-
   /* For data output */
   useEffect(()=>{ 
     console.log( 'formData', formData );
@@ -135,8 +127,8 @@ const TodoItemForm = ( props ) => {
                 placeholder="제목을 입력해주세요."
                 maxlength={ 30 }
                 required={ true }
-
-                defaultValue="테스트"
+                readOnly={ props.mode === "view" }
+                defaultValue={ props.info ? props.info.title : null }
               />
             </Grid>
           </Grid>
@@ -159,8 +151,8 @@ const TodoItemForm = ( props ) => {
                   ]
                 }}
                 required={ true }
-
-                defaultValue="FINISH"
+                readOnly={ props.mode === "view" }
+                defaultValue={ props.info ? props.info.status : null }
               />
             </Grid>
           </Grid>
@@ -178,14 +170,14 @@ const TodoItemForm = ( props ) => {
                 query={ COMMON_CODE_QUERY }
                 variables={{ 
                   p_code: "TODO_CATE",
-                  code: "LANGUAGE",
+                  code: props.info ? props.info.main_cate : "LANGUAGE",
                   order: [
                     "sort_order"
                   ]
                 }}
                 required={ true }
-
-                defaultValue="PYTHON"
+                readOnly={ props.mode === "view" }
+                defaultValue={ props.info ? props.info.sub_cate : null }
               />
             </Grid>
           </Grid>
@@ -199,6 +191,8 @@ const TodoItemForm = ( props ) => {
                 format="YYYY-MM-DD"
                 valueFormat="YYYYMMDD"
                 required={ true }
+                readOnly={ props.mode === "view" }
+                defaultValue={ props.info ? props.info.due_date : null }
               />
             </Grid>
             <Grid item xs={ 6 }>
@@ -210,6 +204,8 @@ const TodoItemForm = ( props ) => {
                 format="HH:mm:ss"
                 valueFormat="HHmmss"
                 required={ true }
+                readOnly={ props.mode === "view" }
+                defaultValue={ props.info ? props.info.due_time : null }
               />
             </Grid>
           </Grid>
@@ -221,28 +217,35 @@ const TodoItemForm = ( props ) => {
                 rows={ 5 }
                 maxlength={ 100 }
                 placeholder="Description"
+                required={ true }
+                readOnly={ props.mode === "view" }
+                defaultValue={ props.info ? props.info.desc : null }
               />
             </Grid>
           </Grid>
-          <Grid container direction="row">
-            <Grid item xs={ 12 }>
-              <SaveButton
-                cancel={{
-                  className: 'btn-save',
-                  label: '취소',
-                  onClick: handleCancel
-                }}
-                save={{
-                  className: 'btn-save',
-                  label: '저장',
-                  onClick: handleSave
-                }}
-              />
-            </Grid>
-          </Grid>
+          {
+            props.mode === "view"
+            ? null
+            : <Grid container direction="row">
+                <Grid item xs={ 12 }>
+                  <SaveButton
+                    cancel={{
+                      className: 'btn-save',
+                      label: '취소',
+                      onClick: handleCancel
+                    }}
+                    save={{
+                      className: 'btn-save',
+                      label: '저장',
+                      onClick: handleSave
+                    }}
+                  />
+                </Grid>
+              </Grid>
+          }
       </form>
     </Grid>
   )
 }
 
-export default TodoItemForm;
+export default TodoInfoForm;

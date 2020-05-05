@@ -10,16 +10,19 @@ class TodoInfoQuery(graphene.ObjectType):
   class Meta:
     abstract = True
 
-  todo = MongoengineConnectionField(TodoInfoType)
-  todo_info = graphene.Field(TodoInfoType)
+  todo_info_edges = MongoengineConnectionField(TodoInfoType)
+  todo_info = graphene.Field(
+    TodoInfoType,
+    no=graphene.Int()
+  )
   todo_info_list = graphene.List(
     TodoInfoType,
     user=graphene.String()
   )
 
   @classmethod
-  def resolve_todo_info(cls, root, info, **input):
-    return TodoInfoModel.objects(**input).first()
+  def resolve_todo_info(cls, root, info, no):
+    return TodoInfoModel.objects(no=no).first()
 
   @classmethod
   def resolve_todo_info_list(cls, root, info, **input):

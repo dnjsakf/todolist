@@ -106,6 +106,7 @@ const DatePicker = ( props )=>{
             'aria-label': 'change date',
           }}
           error={ error }
+          disabled={ props.readOnly }
         />
       </Grid>
     </MuiPickersUtilsProvider>

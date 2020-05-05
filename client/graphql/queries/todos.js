@@ -1,6 +1,60 @@
 import gql from 'graphql-tag';
 
 
+/**
+ * DETAIL
+ */
+export const COMMON_CODE_QUERY = gql(`
+query commonCodeQuery(
+  $p_code: String
+  $code: String!
+){
+	common_code (
+    p_code: $p_code
+    code: $code
+  ) {
+    id
+    code
+    code_name
+    sub_codes {
+      id
+      code
+      code_name
+    }
+  }
+}
+`);
+
+export const TODO_INFO_QUERY = gql(`
+query todoInfoQuery(
+  $no: Int!
+){
+  todo_info(
+    no: $no
+  ){
+    id
+    no
+    title
+    desc
+    main_cate
+    sub_cate
+    status
+    star
+    due_date
+    due_time
+    sort_order
+    reg_user
+    reg_dttm
+    upd_user
+    upd_dttm
+  }
+}
+`);
+
+
+/**
+ * LIST
+ */
 export const COMMON_CODE_LIST_QUERY = gql(`
 query subCommonCodeListQuery(
   $p_code: String!,
@@ -24,30 +78,15 @@ query subCommonCodeListQuery(
 }
 `);
 
-export const COMMON_CODE_QUERY = gql(`
-query commonCodeQuery(
-  $p_code: String
-  $code: String!
-){
-	common_code (
-    p_code: $p_code
-    code: $code
-  ) {
-    id
-    code
-    code_name
-    sub_codes {
-      id
-      code
-      code_name
-    }
-  }
-}
-`);
-
 export const TODO_LIST_QUERY = gql(`
-query ranking($mode: String, $order: [String], $count_for_rows: Int){
-  modes(mode: $mode){
+query rankingQuery(
+  $mode: String, 
+  $order: [String], 
+  $count_for_rows: Int
+){
+  modes(
+    mode: $mode
+  ){
     id
     mode
     ranking(
@@ -70,23 +109,58 @@ query ranking($mode: String, $order: [String], $count_for_rows: Int){
 `);
 
 
-export const TODO_ITEM_QUERY = gql(`
-query getTodoItem($id: String!){
-  rank(id: $id){
-    id
-    name
-    mode
-    is_mobile
-    score
-    reg_dttm
-    upd_dttm
+/**
+ * EDGES
+ */
+export const TODO_INFO_EDGES_QUERY = gql(`
+query todoInfoEdgesQuery(
+  $first: Int,
+  $last: Int,
+  $before: String,
+  $after: String
+) {
+  todo_info_edges(
+    first: $first,
+    last: $last,
+    before: $before,
+    after: $after
+  ) {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    edges {
+      cursor
+      node {
+        id
+        no
+        title
+        main_cate
+        sub_cate
+        status
+        star
+        due_date
+        due_time
+        sort_order
+        reg_user
+        reg_dttm
+        upd_user
+        upd_dttm
+      }
+    }
   }
 }
-`);
+`)
 
 
-export const CREATE_TODO_ITEM_QUERY = gql(`
-mutation createTodoInfo(
+
+/**
+ * CRUD
+ */
+export const CREATE_TODO_INFO_QUERY = gql(`
+mutation createTodoInfoMutation(
   $title: String!,
   $main_cate: String!,
   $sub_cate: String,

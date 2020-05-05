@@ -39,7 +39,7 @@ const TimePicker = ( props )=>{
 
   const [ value, setValue ] = useState(()=>(
     props.defaultValue ? moment( props.defaultValue, "HHmmss" ) : moment().second(0)
-  ));
+  ), [ props.defaultValue ]);
   const [ error,  setError ] = useState( isError );
 
   /* Handlers */
@@ -91,6 +91,7 @@ const TimePicker = ( props )=>{
           KeyboardButtonProps={{
             'aria-label': 'change time',
           }}
+          disabled={ props.readOnly }
         />
       </Grid>
     </MuiPickersUtilsProvider>

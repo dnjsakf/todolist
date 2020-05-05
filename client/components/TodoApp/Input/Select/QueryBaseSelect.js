@@ -35,11 +35,7 @@ const QueryBaseSelect = ( props )=>{
       { /* 상위 카테고리 */
         Array.isArray(data.common_code.sub_codes) && data.common_code.sub_codes.length > 0
         ? (
-          <BaseSelect
-            parent={ props.parent }
-            id={ props.id }
-            name={ props.name }
-            label={ data.common_code.code_name }
+          <BaseSelect {...props}
             options={
               data.common_code.sub_codes.map(( sub )=>({
                 id: sub.id,
@@ -47,8 +43,6 @@ const QueryBaseSelect = ( props )=>{
                 label: sub.code_name
               }))
             }
-            defaultValue={ props.defaultValue }
-            required={ props.required }
           />
           )
         : null

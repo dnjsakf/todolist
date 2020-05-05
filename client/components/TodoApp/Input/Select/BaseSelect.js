@@ -94,7 +94,10 @@ const BaseSelect = ( props )=>{
         label={ props.label }
         className={ classes.selectBox }
         error={ error }
-        required={ props.required }
+        required={ props.required && !props.readOnly }
+        inputProps={{
+          readOnly: props.readOnly
+        }}
       >
         <MenuItem value="">
           <em>선택</em>

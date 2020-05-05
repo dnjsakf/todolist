@@ -93,6 +93,7 @@ const BaseTextarea = ( props )=>{
         onBlur= { handleBlur }
         defaultValue={ props.defaultValue }
         placeholder={ props.placeholder }
+        readOnly={ props.readOnly }
       />
     </FormControl>
   )
