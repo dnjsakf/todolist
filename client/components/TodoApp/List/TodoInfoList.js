@@ -3,6 +3,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 
 /* Redux */
 import { useDispatch, useSelector } from 'react-redux';
+import { actionSetData } from './../../../reducers/list/DataReducer';
 
 /* GraphQL */
 import { useQuery } from '@apollo/react-hooks';
@@ -12,7 +13,6 @@ import { TODO_INFO_EDGES_QUERY } from './../../../graphql/queries/todos';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
-
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
@@ -20,6 +20,7 @@ import Fade from '@material-ui/core/Fade';
 /* Components */
 import { TodoListItem } from './../Item';
 import { TodoInfoItem } from './../Item';
+import { BaseButton } from './../Input/Button';
 
 /* CSS */
 import './TodoInfoList.css';
@@ -43,96 +44,119 @@ const useStyles = makeStyles((theme)=>({
   },
 }));
 
-const TodoInfoList = ({ variables })=>{
-  const classes = useStyles();
 
+const TodoInfoList = ( props )=>{
+  /* State */
+  const [ variables, setVariables ] = useState( props.variables );
   const { loading, error, data } = useQuery(TODO_INFO_EDGES_QUERY, { variables });
 
-  const [ edges, setEdges ] = useState(null);
-  const [ pageInfo, setPageInfo ] = useState(null);
-  const [ openModal, setOpenModal ] = useState( -1 );
+  const classes = useStyles();
+  const dispatch = useDispatch();
 
-  const handleClickItem = useCallback((event, no)=>{
-    setOpenModal( no );
-  }, [ openModal ]);
+  const [ mode, setMode ] = useState("view");
+  const [ itemNo, setItemNo ] = useState(-1);
+
+  const { edges, pageInfo } = useSelector(({ list })=>(
+    list.data.todo_info_edges || { edges: [], pageInfo: {}}
+  ));
+  
+  
+  /* Handlers */
+  const handleViewItem = useCallback((event, no)=>{
+    setMode("view");
+    setItemNo( no );
+  }, [ itemNo, mode ]);
+
+  const handleCreateItem = useCallback((event)=>{
+    setMode("create");
+    setItemNo( 0 );
+  }, [ itemNo, mode ]);
 
   const handleModalClose = useCallback(()=>{
-    setOpenModal( -1 );
-  }, [ openModal ]);
-  
-  useEffect(()=>{
-    console.log("[data]", data);
+    setItemNo( -1 );
+  }, [ itemNo ]);
 
+
+  /* Set edges, pageInfo */
+  useEffect(()=>{
     if( data && !error ){
       const info = data[Object.keys(data)[0]];
-      
-      setEdges( info.edges );
-      setPageInfo( info.pageInfo );
+
+      dispatch(actionSetData(data));
     }
   }, [ data ]);
 
-  useEffect(()=>{
-    console.log( "[pageInfo]", pageInfo );
-  }, [ pageInfo ]);
 
-  useEffect(()=>{
-    console.log( "[edges]", edges );
-  }, [ edges ]);
-
+  if( loading ){
+    return <span>Data loading....</span>;
+  }
   if( error ){
     console.error( error );
     return null;
   }
 
   return (
-    loading
-    ? <span>Data loading....</span>
-    : <Grid container>
-        {/* Some Component... */}
-        <Grid item xs={ 12 }>
-          <List 
-            component="nav" 
-            className={classes.root} 
-            aria-label="contacts"
-          >
-            {
-              edges
-              ? edges.map((edge)=>(
-                  <TodoListItem
-                    key={ edge.cursor }
-                    item={ edge.node }
-                    handleClick={ handleClickItem }
-                  />
-                ))
-              : <span>Now Loading...</span>
-            }
-          </List>
-        </Grid>
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          className={ classes.modal }
-          open={ openModal !== -1 }
-          onClose={ handleModalClose }
-          closeAfterTransition
-          BackdropComponent={ Backdrop }
-          BackdropProps={{
-            timeout: 500,
-          }}
-        >
-          <Fade in={ openModal !== -1 }>
-            <div>
-              <TodoInfoItem
-                mode={ 'view' }
-                handleCancel={ handleModalClose }
-                variables={{
-                  no: openModal
-                }}
-              />
-            </div>
-          </Fade>
-        </Modal>
+    <Grid container>
+      {/* Some Component... */}
+      <Grid>
+        <BaseButton
+          label="추가"
+          handleClick={ handleCreateItem }
+        />
       </Grid>
+      <Grid item xs={ 12 }>
+        <List
+          component="nav" 
+          className={classes.root} 
+          aria-label="contacts"
+        >
+          {
+            edges
+            ? edges.map((edge)=>(
+                <TodoListItem
+                  key={ edge.cursor }
+                  item={ edge.node }
+                  handleClick={ handleViewItem }
+                />
+              ))
+            : <span>Now Loading...</span>
+          }
+        </List>
+      </Grid>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={ classes.modal }
+        open={ itemNo !== -1 }
+        onClose={ handleModalClose }
+        closeAfterTransition
+        BackdropComponent={ Backdrop }
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={ itemNo !== -1 }>
+          <div>
+            <TodoInfoItem
+              mode={ mode }
+              variables={{
+                no: itemNo
+              }}
+            />
+          </div>
+        </Fade>
+      </Modal>
+      <BaseButton
+        label={ "추가"}
+        disabled={ pageInfo && !pageInfo.hasNextPage }
+        handleClick={()=>{
+          setVariables({
+            after: pageInfo.endCursor,
+            first: 5
+          })
+        }}
+      />
+    </Grid>
   )
 }
 

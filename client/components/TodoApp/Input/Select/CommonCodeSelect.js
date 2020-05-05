@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react';
 
 /* GraphQL */
 import { useQuery } from '@apollo/react-hooks';
+import { 
+  COMMON_CODE_QUERY
+} from './../../../../graphql/queries/todos';
 
 /* Materialize */
 import { makeStyles } from '@material-ui/core/styles';
@@ -17,15 +20,15 @@ const useStyles = makeStyles(( theme ) => ({
   }
 }));
 
-const QueryBaseSelect = ( props )=>{
+const CommonCodeSelect = ( props )=>{
   /* State */
   const classes = useStyles();
 
   /* React Hooks Methods 보다 밑에 있어야됨 */
-  const { loading, error, data } = useQuery(props.query, { variables: props.variables });
+  const { loading, error, data } = useQuery(COMMON_CODE_QUERY, { variables: props.variables });
 
   if( loading ){
-    return null;
+    return <span>Data Loadding...</span>;
   }
   if( error ) {
     console.error( error );
@@ -37,7 +40,8 @@ const QueryBaseSelect = ( props )=>{
     {
       Array.isArray(data.common_code.sub_codes) && data.common_code.sub_codes.length > 0
       ? (
-        <BaseSelect {...props}
+        <BaseSelect 
+          { ...props }
           label={ data.common_code.code_name}
           options={
             data.common_code.sub_codes.map(( sub )=>({
@@ -54,4 +58,4 @@ const QueryBaseSelect = ( props )=>{
   )
 }
 
-export default QueryBaseSelect;
+export default CommonCodeSelect;

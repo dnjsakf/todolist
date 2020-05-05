@@ -80,19 +80,6 @@ const DatePicker = ( props )=>{
   return (
     <MuiPickersUtilsProvider utils={ MomentUtils }>
       <Grid container justify="space-around">
-        {/* <KeyboardDatePicker
-          disableToolbar
-          variant="inline"
-          format="yyyy-MM-dd"
-          margin="normal"
-          id="MM/dd/yyyy"
-          label="Date picker inline"
-          value={ value }
-          onChange={handleDateChange}
-          KeyboardButtonProps={{
-            'aria-label': 'change date',
-          }}
-        /> */}
         <KeyboardDatePicker
           margin="normal"
           inputRef={ elRef }
@@ -106,7 +93,7 @@ const DatePicker = ( props )=>{
             'aria-label': 'change date',
           }}
           error={ error }
-          disabled={ props.readOnly }
+          readOnly={ props.readOnly }
         />
       </Grid>
     </MuiPickersUtilsProvider>

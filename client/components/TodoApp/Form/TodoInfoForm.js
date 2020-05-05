@@ -10,7 +10,6 @@ import { actionSetError } from './../../../reducers/form/DataReducer';
 /* GraphQL */
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { 
-  COMMON_CODE_QUERY, 
   CREATE_TODO_INFO_QUERY 
 } from './../../../graphql/queries/todos';
 
@@ -19,7 +18,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 
 /* Components */
-import { QueryBaseSelect } from './../Input/Select';
+import { CommonCodeSelect } from './../Input/Select';
 import { SaveButton } from './../Input/Button';
 import { BaseText } from './../Input/Text';
 import { BaseTextarea } from './../Input/Textarea';
@@ -39,7 +38,7 @@ const TodoInfoForm = ( props ) => {
   const elRef = useRef();
 
   const dispatch = useDispatch();
-  const formData = useSelector(({ form })=>( form.data[props.id] ), [ null ]);
+  const form_data = useSelector(({ form })=>( form.data[props.id] ));
 
   const [ createTodoInfo, { 
     data: created, 
@@ -52,19 +51,20 @@ const TodoInfoForm = ( props ) => {
   const handleCancel = useCallback((event)=>{
     event.preventDefault();
 
-    console.log( 'cancle', formData );
+    console.log( 'cancle', form_data );
 
-  }, [ formData ]);
+  }, [ form_data ]);
 
   /* Handler: Save form-data */
   const handleSave = useCallback((event)=>{
     event.preventDefault();
 
-    const errors = Object.keys( formData ).filter(( key )=>(
-      ( formData[key].required && !formData[key].data ) || formData[key].error
+    const errors = Object.keys( form_data ).filter(( key )=>(
+      ( form_data[key].required && !form_data[key].data ) || form_data[key].error
     ));
 
     if( errors.length > 0 ){
+      console.log( errors );
       errors.forEach(( name )=>(
         dispatch(
           actionSetError({
@@ -77,12 +77,12 @@ const TodoInfoForm = ( props ) => {
     } else {
       const save_data = {
         variables: {
-          title: formData.title.data,
-          main_cate: formData.category.data,
-          status: formData.status.data,
-          desc: formData.description.data,
-          due_date: formData.due_date.data,
-          due_time: formData.due_time.data,
+          title: form_data.title.data,
+          main_cate: form_data.category.data,
+          status: form_data.status.data,
+          desc: form_data.description.data,
+          due_date: form_data.due_date.data,
+          due_time: form_data.due_time.data,
         }
       }
       console.log("Do Save", save_data);
@@ -90,16 +90,17 @@ const TodoInfoForm = ( props ) => {
       /* Save todo-info: return promise */
       createTodoInfo(save_data);
     }
-  }, [ formData ]);
+  }, [ form_data ]);
 
   /* For data output */
-  useEffect(()=>{ 
-    console.log( 'formData', formData );
-  }, [ formData ]);
-
   useEffect(()=>{
     console.log( 'created', created );
   }, [ created ]);
+
+  
+  if( mutationError ){
+    console.error( mutationError );
+  }
 
   return (
     <Grid container spacing={ 0 }>
@@ -140,10 +141,9 @@ const TodoInfoForm = ( props ) => {
             className={ classes.gridContainer }
           >
             <Grid item xs={ 12 }>
-              <QueryBaseSelect
+              <CommonCodeSelect
                 parent={ props.id }
                 name="status"
-                query={ COMMON_CODE_QUERY }
                 variables={{
                   code: "TODO_STATUS",
                   order: [
@@ -164,13 +164,12 @@ const TodoInfoForm = ( props ) => {
             className={ classes.gridContainer }
           >
             <Grid item xs={ 12 }>
-              <QueryBaseSelect
+              <CommonCodeSelect
                 parent={ props.id }
                 name="category"
-                query={ COMMON_CODE_QUERY }
                 variables={{ 
                   p_code: "TODO_CATE",
-                  code: props.info ? props.info.main_cate : "LANGUAGE",
+                  code: "LANGUAGE",
                   order: [
                     "sort_order"
                   ]
@@ -217,7 +216,6 @@ const TodoInfoForm = ( props ) => {
                 rows={ 5 }
                 maxlength={ 100 }
                 placeholder="Description"
-                required={ true }
                 readOnly={ props.mode === "view" }
                 defaultValue={ props.info ? props.info.desc : null }
               />

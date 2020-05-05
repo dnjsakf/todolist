@@ -35,7 +35,7 @@ const SaveCancelButton = ({ cancel, save })=>{
               <BaseButton 
                 className={ cancel.className }
                 label={ cancel.label }
-                onClick={ cancel.onClick }
+                handleClick={ cancel.onClick }
               />
             )
           : null
@@ -43,7 +43,7 @@ const SaveCancelButton = ({ cancel, save })=>{
         <BaseButton 
             className={ save.className }
             label={ save.label }
-            onClick={ save.onClick }
+            handleClick={ save.onClick }
           />
       </ButtonGroup>
     </Grid>

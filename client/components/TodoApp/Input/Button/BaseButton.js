@@ -22,9 +22,10 @@ const BaseButton = ( props )=>{
       id={ props.id }
       name={ props.name }
       className={ classes.button }
-      onClick={ props.onClick }
+      onClick={ props.handleClick }
       variant="contained"
       color="primary"
+      disabled={ !!props.disabled }
       >
       { props.label }
     </Button>

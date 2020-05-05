@@ -27,9 +27,8 @@ const TodoListItem = ({ item, handleClick })=>{
         : null
       }
       <ListItemText
-        primary={ item.title }
+        primary={ `${ item.no } - ${ item.title }` }
         inset={ false }
-
         onClick={ (event)=>( handleClick(event, item.no) ) }
       />
     </ListItem>

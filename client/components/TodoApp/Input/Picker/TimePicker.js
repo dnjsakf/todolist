@@ -91,7 +91,7 @@ const TimePicker = ( props )=>{
           KeyboardButtonProps={{
             'aria-label': 'change time',
           }}
-          disabled={ props.readOnly }
+          readOnly={ props.readOnly }
         />
       </Grid>
     </MuiPickersUtilsProvider>

@@ -22,45 +22,35 @@ const useStyles = makeStyles((theme)=>({
 
 const TodoInfoItem = ({ variables, className, mode })=>{
   const classes = useStyles();
-  const [ info, setInfo ] = useState(null);
   
   const { loading, error, data } = useQuery( TODO_INFO_QUERY, { variables } );
 
-  useEffect(()=>{
-    if( data && !error ){
-      setInfo(data[Object.keys(data)[0]]);
-    }
-  }, [ data ]);
-
-  useEffect(()=>{
-    // console.log("[info]", info);
-  }, [ info ]);
-
+  if( loading ){
+    return <span>Now Loading....</span>;
+  }
   if( error ){
     console.error( error );
     return null;
   }
 
   return (
-    loading
-    ? <span>Now Loading....</span>
-    : <Paper 
-        elevation={ 5 }
-        className={ `w350 p10 ${ className }` }
-      >
-        <Grid container>  
-          <Grid item xs={ 12 }>
-            <TodoInfoForm
-              id={ 'todo_item_form' }
-              mode={ mode ? mode : 'insert' }
-              info={ info }
-            />
-          </Grid> 
-          <Grid item xs={ 12 }>
-            <label>{ 'Comments' } </label>
-          </Grid>
+    <Paper 
+      elevation={ 5 }
+      className={ `w350 p10 ${ className }` }
+    >
+      <Grid container>  
+        <Grid item xs={ 12 }>
+          <TodoInfoForm
+            id={ 'todo_item_form' }
+            mode={ mode }
+            info={ data[Object.keys(data)[0]] }
+          />
+        </Grid> 
+        <Grid item xs={ 12 }>
+          <label>{ 'Comments' } </label>
         </Grid>
-      </Paper>
+      </Grid>
+    </Paper>
   )
 }
 

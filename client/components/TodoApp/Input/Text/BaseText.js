@@ -84,18 +84,18 @@ const BaseText = ( props )=>{
       size="small"
 
       onBlur={ handleBlur }
-      value={ props.defaultValue || "" }
+      value={ props.defaultValue || undefined }
       placeholder={ props.placeholder }
 
       inputProps={{
-        readOnly: !!props.defaultValue,
+        readOnly: !!props.readOnly,
         maxLength: props.maxlength
       }}
 
-      required={ props.required && !props.defaultValue }
+      required={ props.required && !props.readOnly }
       error={ error }
 
-      autoFocus={ true }
+      autoFocus={ !props.readOnly }
     />
   )
 }

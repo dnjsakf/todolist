@@ -96,7 +96,7 @@ const BaseSelect = ( props )=>{
         error={ error }
         required={ props.required && !props.readOnly }
         inputProps={{
-          readOnly: props.readOnly
+          readOnly: !!props.readOnly
         }}
       >
         <MenuItem value="">
