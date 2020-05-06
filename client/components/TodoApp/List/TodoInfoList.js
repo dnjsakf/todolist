@@ -3,7 +3,10 @@ import React, { useEffect, useState, useCallback } from 'react';
 
 /* Redux */
 import { useDispatch, useSelector } from 'react-redux';
-import { actionSetData } from './../../../reducers/list/DataReducer';
+import {
+  actionModalOpen, 
+  actionModalClose
+} from './../../../reducers/modal';
 
 /* GraphQL */
 import { useQuery } from '@apollo/react-hooks';
@@ -53,32 +56,37 @@ const TodoInfoList = ( props )=>{
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const [ mode, setMode ] = useState("view");
-  const [ itemNo, setItemNo ] = useState(-1);
+  const { open, mode, id: itemNo } = useSelector(({ modal })=>(modal));
 
-  /*
-  const { edges, pageInfo } = useSelector(({ list })=>(
-    list.data.todo_info_edges || { edges: [], pageInfo: {}}
-  ));
-  */
+  console.log( open, mode, itemNo );
   
   /* Handlers */
   const handleViewItem = useCallback((event, no)=>{
-    setMode("view");
-    setItemNo( no );
-  }, [ itemNo, mode ]);
+    dispatch(
+      actionModalOpen({
+        mode: "view",
+        id: no,
+        data: null,
+      })
+    );
+  }, [ open, mode, itemNo ]);
 
   const handleCreateItem = useCallback((event)=>{
-    setMode("create");
-    setItemNo( 0 );
-  }, [ itemNo, mode ]);
+    dispatch(
+      actionModalOpen({
+        mode: "create",
+        id: null,
+        data: null,
+      })
+    );
+  }, [ open, mode, itemNo ]);
 
   const handleModalClose = useCallback(()=>{
-    setItemNo( -1 );
-    
+    dispatch(
+      actionModalClose()
+    );
     refetch()
-  }, [ itemNo ]);
-
+  }, [ open ]);
 
   /* Set edges, pageInfo */
   useEffect(()=>{
@@ -132,7 +140,7 @@ const TodoInfoList = ( props )=>{
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         className={ classes.modal }
-        open={ itemNo !== -1 }
+        open={ open }
         onClose={ handleModalClose }
         closeAfterTransition
         BackdropComponent={ Backdrop }
@@ -140,7 +148,7 @@ const TodoInfoList = ( props )=>{
           timeout: 500,
         }}
       >
-        <Fade in={ itemNo !== -1 }>
+        <Fade in={ open }>
           <div>
             <TodoInfoItem
               mode={ mode }

@@ -1,12 +1,17 @@
 /* React */
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 /* Redux */
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+
+/* Reducers */
+import * as actions from './../../../reducers/form/TodoInfoReducer';
 
 /* GraphQL */
-import { useQuery } from '@apollo/react-hooks';
-import { TODO_INFO_QUERY } from './../../../graphql/queries/todos'
+import { useLazyQuery } from '@apollo/react-hooks';
+import {
+  TODO_INFO_QUERY
+} from './../../../graphql/queries/todos'
 
 /* Material */
 import { makeStyles } from '@material-ui/core/styles';
@@ -23,16 +28,33 @@ const useStyles = makeStyles((theme)=>({
 
 const TodoInfoItem = ( props )=>{
   const classes = useStyles();
-  
-  const { loading, error, data } = useQuery( TODO_INFO_QUERY, { variables: props.variables } );
+  const dispatch = useDispatch();
 
-  if( loading ){
-    return <span>Now Loading....</span>;
-  }
-  if( error ){
-    console.error( error );
-    return null;
-  }
+  const [
+    getData,
+    { 
+      loading, 
+      error, 
+      data
+    }
+  ] = useLazyQuery( TODO_INFO_QUERY, { variables: props.variables } );
+
+  useEffect(()=>{
+    if( props.mode === "view" ){
+      getData();
+    }
+  }, []);
+
+  useEffect(()=>{
+    if( props.mode === "view" && data ){
+      dispatch(actions.setData( data.todo_info ));
+    }
+  }, [ data ]);
+
+  if( loading ) return <span>Now Loading....</span>;
+  if( error ) return null;
+
+  console.log( data );
 
   return (
     <Paper 
@@ -42,9 +64,7 @@ const TodoInfoItem = ( props )=>{
       <Grid container>  
         <Grid item xs={ 12 }>
           <TodoInfoForm
-            id={ 'todo_item_form' }
-            mode={ props.mode }
-            info={ data[Object.keys(data)[0]] }
+            data={ data ? data.todo_info : data }
             { ...props }
           />
         </Grid> 

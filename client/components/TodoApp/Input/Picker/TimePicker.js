@@ -2,10 +2,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 
 /* Redux */
-import { useDispatch, useSelector } from 'react-redux';
-
-/* Reducers */
-import { actionSetData } from './../../../../reducers/form/DataReducer';
+import { useDispatch } from 'react-redux';
 
 /* Materialize */
 import { makeStyles } from '@material-ui/core/styles';
@@ -30,17 +27,11 @@ const TimePicker = ( props )=>{
   const elRef = useRef();
 
   const dispatch = useDispatch();
-  const isError = useSelector(({ form })=>{
-    if( form.data[props.parent] && form.data[props.parent][props.name] ){
-      return form.data[props.parent][props.name].error;
-    }
-    return false;
-  });
 
   const [ value, setValue ] = useState(()=>(
     props.defaultValue ? moment( props.defaultValue, "HHmmss" ) : moment().second(0)
   ), [ props.defaultValue ]);
-  const [ error,  setError ] = useState( isError );
+  const [ error,  setError ] = useState( false );
 
   /* Handlers */
   /* Handler: Reset value, error */
@@ -55,26 +46,12 @@ const TimePicker = ( props )=>{
       }
     }
 
+    if( props.action ){
+      dispatch( props.action( value ) );
+    }
+
     setValue( date );
 
-  }, [ value, error ]);
-
-  /* Reset error */
-  useEffect(()=>{
-    setError( isError );
-  }, [ isError ]);
-
-  /* Call dispatch */
-  useEffect(()=>{
-    dispatch(
-      actionSetData({
-        parent: props.parent,
-        name: props.name,
-        value: value ? value.format( props.valueFormat || "HHmmss") : value,
-        error: error,
-        required: !!props.required
-      })
-    )
   }, [ value, error ]);
 
   return (

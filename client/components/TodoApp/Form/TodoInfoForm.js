@@ -1,14 +1,15 @@
 /* React */
-import React, { useRef, useCallback, useEffect } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 
 /* Redux */
 import { useDispatch, useSelector } from 'react-redux';
 
 /* Reducers */
 import { actionSetError } from './../../../reducers/form/DataReducer';
+import * as actions from './../../../reducers/form/TodoInfoReducer';
 
 /* GraphQL */
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 import { 
   CREATE_TODO_INFO_QUERY 
 } from './../../../graphql/queries/todos';
@@ -36,18 +37,21 @@ const TodoInfoForm = ( props ) => {
   /* State */
   const classes = useStyles();
   const elRef = useRef();
-
   const dispatch = useDispatch();
-  const form_data = useSelector(({ form })=>( form.data[props.id] ));
 
-  const [ createTodoInfo, {
-    data: created, 
-    loading: mutationLoading, 
-    error: mutationError 
-  }] = useMutation( CREATE_TODO_INFO_QUERY, {
+  const { todoInfo } = useSelector(({ form })=>({
+    todoInfo: form.todoInfo
+  }));
+
+  const [ 
+    createTodoInfo, 
+    { 
+      data: created, 
+      loading: mutationLoading, 
+      error: mutationError
+    }
+  ] = useMutation( CREATE_TODO_INFO_QUERY, {
     onCompleted({ create_todo_info: { todo_info: { no } } }) {
-      alert(`Todo가 추가되었습니다. (ID: ${no})`);
-      
       props.handleClose();
     }
   });
@@ -57,21 +61,21 @@ const TodoInfoForm = ( props ) => {
   const handleCancel = useCallback((event)=>{
     event.preventDefault();
 
-    console.log( 'cancle', form_data );
+    console.log( 'cancle', todoInfo );
 
-  }, [ form_data ]);
+  }, [ todoInfo ]);
 
   /* Handler: Save form-data */
   const handleSave = useCallback((event)=>{
     event.preventDefault();
 
-    const errors = Object.keys( form_data ).filter(( key )=>(
-      ( form_data[key].required && !form_data[key].data ) || form_data[key].error
+    const invalid = Object.keys( todoInfo ).filter(( key )=>(
+      ( todoInfo[key].required && !todoInfo[key].data ) || todoInfo[key].error
     ));
 
-    if( errors.length > 0 ){
-      console.log( errors );
-      errors.forEach(( name )=>(
+    if( invalid.length > 0 ){
+      console.log( invalid );
+      invalid.forEach(( name )=>(
         dispatch(
           actionSetError({
             parent: props.id,
@@ -83,12 +87,12 @@ const TodoInfoForm = ( props ) => {
     } else {
       const save_data = {
         variables: {
-          title: form_data.title.data,
-          main_cate: form_data.category.data,
-          status: form_data.status.data,
-          desc: form_data.description.data,
-          due_date: form_data.due_date.data,
-          due_time: form_data.due_time.data,
+          title: todoInfo.title.data,
+          main_cate: todoInfo.category.data,
+          status: todoInfo.status.data,
+          desc: todoInfo.description.data,
+          due_date: todoInfo.due_date.data,
+          due_time: todoInfo.due_time.data,
         }
       }
       console.log("Do Save", save_data);
@@ -96,17 +100,20 @@ const TodoInfoForm = ( props ) => {
       /* Save todo-info: return promise */
       createTodoInfo(save_data);
     }
-  }, [ form_data ]);
+  }, [ todoInfo ]);
 
   /* For data output */
   useEffect(()=>{
     console.log( 'created', created );
   }, [ created ]);
 
+  /* For data output */
+  useEffect(()=>{
+    console.log( 'todoInfo', todoInfo );
+  }, [ todoInfo ]);
   
-  if( mutationError ){
-    console.error( mutationError );
-  }
+  if( mutationLoading || !todoInfo ) return <span>Now Loading....</span>;
+  if( mutationError ) console.error( mutationError );
 
   return (
     <Grid container spacing={ 0 }>
@@ -135,7 +142,8 @@ const TodoInfoForm = ( props ) => {
                 maxlength={ 30 }
                 required={ true }
                 readOnly={ props.mode === "view" }
-                defaultValue={ props.info ? props.info.title : null }
+                defaultValue={ todoInfo ? todoInfo.title : null }
+                action={ actions.setTitle }
               />
             </Grid>
           </Grid>
@@ -158,7 +166,8 @@ const TodoInfoForm = ( props ) => {
                 }}
                 required={ true }
                 readOnly={ props.mode === "view" }
-                defaultValue={ props.info ? props.info.status : null }
+                defaultValue={ todoInfo ? todoInfo.status : null }
+                action={ actions.setStatus }
               />
             </Grid>
           </Grid>
@@ -182,7 +191,8 @@ const TodoInfoForm = ( props ) => {
                 }}
                 required={ true }
                 readOnly={ props.mode === "view" }
-                defaultValue={ props.info ? props.info.sub_cate : null }
+                defaultValue={ todoInfo ? todoInfo.sub_cate : null }
+                action={ actions.setSubCate }
               />
             </Grid>
           </Grid>
@@ -197,7 +207,8 @@ const TodoInfoForm = ( props ) => {
                 valueFormat="YYYYMMDD"
                 required={ true }
                 readOnly={ props.mode === "view" }
-                defaultValue={ props.info ? props.info.due_date : null }
+                defaultValue={ todoInfo ? todoInfo.due_date : null }
+                action={ actions.setDueDate }
               />
             </Grid>
             <Grid item xs={ 6 }>
@@ -210,7 +221,7 @@ const TodoInfoForm = ( props ) => {
                 valueFormat="HHmmss"
                 required={ true }
                 readOnly={ props.mode === "view" }
-                defaultValue={ props.info ? props.info.due_time : null }
+                defaultValue={ todoInfo ? todoInfo.due_time : null }
               />
             </Grid>
           </Grid>
@@ -223,7 +234,7 @@ const TodoInfoForm = ( props ) => {
                 maxlength={ 100 }
                 placeholder="Description"
                 readOnly={ props.mode === "view" }
-                defaultValue={ props.info ? props.info.desc : null }
+                defaultValue={ todoInfo ? todoInfo.desc : null }
               />
             </Grid>
           </Grid>

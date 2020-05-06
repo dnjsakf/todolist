@@ -41,7 +41,6 @@ const CommonCodeSelect = ( props )=>{
       Array.isArray(data.common_code.sub_codes) && data.common_code.sub_codes.length > 0
       ? (
         <BaseSelect 
-          { ...props }
           label={ data.common_code.code_name}
           options={
             data.common_code.sub_codes.map(( sub )=>({
@@ -50,6 +49,7 @@ const CommonCodeSelect = ( props )=>{
               label: sub.code_name
             }))
           }
+          { ...props }
         />
         )
       : null
