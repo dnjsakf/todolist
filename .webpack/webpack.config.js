@@ -2,17 +2,14 @@ const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CopyWebpackPlugin  = require('copy-webpack-plugin');
 
-const outputPath = path.join(__dirname, '/client/dist');
-const staticPath = path.join(__dirname, '/client/public');
+const outputPath = path.join(__dirname, '../client/dist');
+const staticPath = path.join(__dirname, '../client/public');
 const publicPath = '/public/';
 
 module.exports = {
-  name: 'my_graphql',
-  mode: 'development',
-  devtool: 'inline-source-map',
+  name: 'todolist',
   resolve: {
     extensions: ['.js', '.jsx'],
   },
@@ -63,12 +60,6 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.join(staticPath, 'index.html'),
     }),
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static',         // default: 'server', save file to {output.path}
-      openAnalyzer: false,
-      reportFilename: "report.html",
-      //analyzerPort: 3001,
-    }),
   ],
   module: {
     rules: [
@@ -118,18 +109,5 @@ module.exports = {
     alias: {
       Components: path.resolve( __dirname, 'client/components')
     }
-  },
-  devServer: {
-    host: 'localhost',
-    port: 4000,
-    historyApiFallback: true,
-    hot: true,
-    contentBase: outputPath,
-    proxy: {
-      '/graphql': {
-        target: 'http://localhost:3000/graphql',
-        secure: false,
-      },
-    },
-  },
+  }
 };
