@@ -117,13 +117,15 @@ query todoInfoEdgesQuery(
   $first: Int,
   $last: Int,
   $before: String,
-  $after: String
+  $after: String,
+  $orderBy: [String]
 ) {
   todo_info_edges(
     first: $first,
     last: $last,
     before: $before,
-    after: $after
+    after: $after,
+    orderBy: $orderBy
   ) {
     pageInfo {
       hasNextPage
@@ -180,6 +182,7 @@ mutation createTodoInfoMutation(
   ){
     success
     todo_info {
+      no
      	title
       main_cate
       sub_cate

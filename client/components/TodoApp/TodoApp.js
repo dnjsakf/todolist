@@ -15,7 +15,8 @@ const TodoList = () => {
       <div className="p5">
         <TodoInfoList 
           variables={{
-            first: 5
+            first: 5,
+            orderBy: ["-no"]
           }}
         />
         {/* <TodoInfoItem

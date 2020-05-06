@@ -40,11 +40,17 @@ const TodoInfoForm = ( props ) => {
   const dispatch = useDispatch();
   const form_data = useSelector(({ form })=>( form.data[props.id] ));
 
-  const [ createTodoInfo, { 
+  const [ createTodoInfo, {
     data: created, 
     loading: mutationLoading, 
     error: mutationError 
-  }] = useMutation( CREATE_TODO_INFO_QUERY );
+  }] = useMutation( CREATE_TODO_INFO_QUERY, {
+    onCompleted({ create_todo_info: { todo_info: { no } } }) {
+      alert(`Todo가 추가되었습니다. (ID: ${no})`);
+      
+      props.handleClose();
+    }
+  });
 
   /* Handlers */
   /* Handler: Clear form-data */

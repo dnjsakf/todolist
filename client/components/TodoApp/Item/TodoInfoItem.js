@@ -16,14 +16,15 @@ import Paper from '@material-ui/core/Paper';
 /* Components */
 import { TodoInfoForm } from './../Form';
 
+
 const useStyles = makeStyles((theme)=>({
 
 }));
 
-const TodoInfoItem = ({ variables, className, mode })=>{
+const TodoInfoItem = ( props )=>{
   const classes = useStyles();
   
-  const { loading, error, data } = useQuery( TODO_INFO_QUERY, { variables } );
+  const { loading, error, data } = useQuery( TODO_INFO_QUERY, { variables: props.variables } );
 
   if( loading ){
     return <span>Now Loading....</span>;
@@ -36,14 +37,15 @@ const TodoInfoItem = ({ variables, className, mode })=>{
   return (
     <Paper 
       elevation={ 5 }
-      className={ `w350 p10 ${ className }` }
+      className={ `w350 p10 ${ props.className }` }
     >
       <Grid container>  
         <Grid item xs={ 12 }>
           <TodoInfoForm
             id={ 'todo_item_form' }
-            mode={ mode }
+            mode={ props.mode }
             info={ data[Object.keys(data)[0]] }
+            { ...props }
           />
         </Grid> 
         <Grid item xs={ 12 }>

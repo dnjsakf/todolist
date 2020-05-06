@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme)=>({
 const TodoInfoList = ( props )=>{
   /* State */
   const [ variables, setVariables ] = useState( props.variables );
-  const { loading, error, data } = useQuery(TODO_INFO_EDGES_QUERY, { variables });
+  const { loading, error, data, refetch } = useQuery(TODO_INFO_EDGES_QUERY, { variables });
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -56,10 +56,11 @@ const TodoInfoList = ( props )=>{
   const [ mode, setMode ] = useState("view");
   const [ itemNo, setItemNo ] = useState(-1);
 
+  /*
   const { edges, pageInfo } = useSelector(({ list })=>(
     list.data.todo_info_edges || { edges: [], pageInfo: {}}
   ));
-  
+  */
   
   /* Handlers */
   const handleViewItem = useCallback((event, no)=>{
@@ -74,6 +75,8 @@ const TodoInfoList = ( props )=>{
 
   const handleModalClose = useCallback(()=>{
     setItemNo( -1 );
+    
+    refetch()
   }, [ itemNo ]);
 
 
@@ -82,7 +85,7 @@ const TodoInfoList = ( props )=>{
     if( data && !error ){
       const info = data[Object.keys(data)[0]];
 
-      dispatch(actionSetData(data));
+      //dispatch(actionSetData(data));
     }
   }, [ data ]);
 
@@ -94,6 +97,8 @@ const TodoInfoList = ( props )=>{
     console.error( error );
     return null;
   }
+  
+  const { edges, pageInfo } = data.todo_info_edges;
 
   return (
     <Grid container>
@@ -142,12 +147,13 @@ const TodoInfoList = ( props )=>{
               variables={{
                 no: itemNo
               }}
+              handleClose={ handleModalClose }
             />
           </div>
         </Fade>
       </Modal>
       <BaseButton
-        label={ "추가"}
+        label={ "Load..."}
         disabled={ pageInfo && !pageInfo.hasNextPage }
         handleClick={()=>{
           setVariables({

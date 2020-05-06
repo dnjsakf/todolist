@@ -5,12 +5,17 @@ from graphene_mongo import MongoengineConnectionField
 
 from ..models import TodoInfoModel
 from ..types import TodoInfoType
+from ..connections import OrderedConnectionField
+
 
 class TodoInfoQuery(graphene.ObjectType):
   class Meta:
     abstract = True
 
-  todo_info_edges = MongoengineConnectionField(TodoInfoType)
+  todo_info_edges = OrderedConnectionField(
+    TodoInfoType
+    , orderBy=graphene.List(graphene.String)
+  )
   todo_info = graphene.Field(
     TodoInfoType,
     no=graphene.Int()
