@@ -54,13 +54,37 @@ def init_db():
 
   ### Todo 샘플 데이터
   TodoInfoModel(
-    title="ToDo List 만들기", 
-    main_cate="LANGUAGE",
-    sub_cate="JAVA",
-    status="READY", 
-    desc="나의 첫번째 ToDo List 만들기.",
+    title="ToDo List 만들기",
+    status={
+      "p_code": "TODO_STATUS",
+      "code": "READY"
+    },
+    category={
+      "p_code": "TODO_CATE:LANGUAGE",
+      "code": "JAVA"
+    },
     due_date="20201231",
     due_time="000000",
+    description="나의 첫번째 ToDo List 만들기.",
+    reg_user=reg_user,
+    reg_dttm=reg_dttm
+  ).save()
+
+  ### Todo 샘플 데이터
+  TodoInfoModel(
+    title="ToDo List 만들기2",
+    status={
+      "p_code": "TODO_STATUS",
+      "code": "READY"
+    },
+    category={
+      "p_code": "TODO_CATE:LANGUAGE:PYTHON",
+      "code": "PYTHON3"
+    },
+    due_date="20201231",
+    due_time="000000",
+    description="나의 첫번째 ToDo List 만들기.",
+    star=True,
     reg_user=reg_user,
     reg_dttm=reg_dttm
   ).save()

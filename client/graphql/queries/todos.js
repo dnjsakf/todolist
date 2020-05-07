@@ -1,16 +1,13 @@
 import gql from 'graphql-tag';
 
-
 /**
  * DETAIL
  */
 export const COMMON_CODE_QUERY = gql(`
 query commonCodeQuery(
-  $p_code: String
   $code: String!
 ){
 	common_code (
-    p_code: $p_code
     code: $code
   ) {
     id
@@ -35,13 +32,12 @@ query todoInfoQuery(
     id
     no
     title
-    desc
-    main_cate
-    sub_cate
     status
-    star
+    category
     due_date
     due_time
+    description
+    star
     sort_order
     reg_user
     reg_dttm
@@ -56,15 +52,13 @@ query todoInfoQuery(
  * LIST
  */
 export const COMMON_CODE_LIST_QUERY = gql(`
-query subCommonCodeListQuery(
-  $p_code: String!,
-  $p_order: [String]
-  $code: String,
+query commonCodeListQuery(
+  $code: String!
+  $order: [String]
 ) {
   common_code_list(
-    p_code: $p_code
     code: $code
-    order: $p_order
+    order: $order
   ) {
     id
     code
@@ -78,53 +72,23 @@ query subCommonCodeListQuery(
 }
 `);
 
-export const TODO_LIST_QUERY = gql(`
-query rankingQuery(
-  $mode: String, 
-  $order: [String], 
-  $count_for_rows: Int
-){
-  modes(
-    mode: $mode
-  ){
-    id
-    mode
-    ranking(
-      order: $order
-      count_for_rows: $count_for_rows
-    ) {
-      edges {
-        node {
-          id
-          mode
-          name
-          score
-          is_mobile
-          reg_dttm
-        }
-      }
-    }
-  }
-}
-`);
-
 
 /**
  * EDGES
  */
 export const TODO_INFO_EDGES_QUERY = gql(`
 query todoInfoEdgesQuery(
-  $first: Int,
-  $last: Int,
-  $before: String,
-  $after: String,
+  $first: Int
+  $last: Int
+  $before: String
+  $after: String
   $orderBy: [String]
 ) {
   todo_info_edges(
-    first: $first,
-    last: $last,
-    before: $before,
-    after: $after,
+    first: $first
+    last: $last
+    before: $before
+    after: $after
     orderBy: $orderBy
   ) {
     pageInfo {
@@ -139,12 +103,11 @@ query todoInfoEdgesQuery(
         id
         no
         title
-        main_cate
-        sub_cate
         status
-        star
+        category
         due_date
         due_time
+        star
         sort_order
         reg_user
         reg_dttm
@@ -163,33 +126,32 @@ query todoInfoEdgesQuery(
  */
 export const CREATE_TODO_INFO_QUERY = gql(`
 mutation createTodoInfoMutation(
-  $title: String!,
-  $main_cate: String!,
-  $sub_cate: String,
-  $status: String!,
-  $desc: String,
-  $due_date: String,
+  $title: String!
+  $status: JsonString!
+  $category: JsonString!
+  $due_date: String
   $due_time: String
+  $description: String
+  $star: Boolean
 ){
   create_todo_info(
-    title: $title,
-    main_cate: $main_cate,
-    sub_cate: $sub_cate,
-    status: $status,
-    desc: $desc,
-    due_date: $due_date,
+    title: $title
+    status: $status
+    category: $category
+    due_date: $due_date
     due_time: $due_time
+    description: $description
+    star: $star
   ){
     success
     todo_info {
       no
      	title
-      main_cate
-      sub_cate
       status
-      desc
+      category
       due_date
       due_time
+      description
       reg_user
       reg_dttm
     }

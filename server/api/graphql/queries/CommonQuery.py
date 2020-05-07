@@ -13,62 +13,60 @@ class CommonCodeQuery(graphene.ObjectType):
     
   common_code_list = graphene.List(
     CommonCodeType,
-    p_code=graphene.String(),
-    code=graphene.String(),
+    code=graphene.String(required=True),
     order=graphene.List(graphene.String)
   )
 
   common_code = graphene.Field(
     CommonCodeType,
-    p_code=graphene.String(),
-    code=graphene.String(default_value=None)
+    code=graphene.String(required=True)
   )
 
   # 공통 코드 목록 조회
-  def resolve_common_code_list(parent, info, order=list(), **input):
-    cond = dict()
+  def resolve_common_code_list(parent, info, code, order=list()):
 
-    if 'p_code' in input:
-      p_codes = input.get('p_code').split(":")
-      
-      p_model = None
-      for _p_code in p_codes:
-        p_cond = { "code": _p_code }
+    codes = code.split(":")
+    p_codes = codes[:-1]
+    code = codes[-1]
 
-        if p_model is not None:
-          p_cond["p_code"] = p_model
+    p_model = None
+    for p_code in p_codes:
+      p_cond = { 
+        "p_code": p_model if p_model is not None else None,
+        "code": p_code
+      }
 
-        p_model = CommonCodeModel.objects(**p_cond).first()
-      
-      cond["p_code"] = p_model
-
-      if not p_model:
-        return []
-
-    if 'code' in input:
-      cond["code"] = input.get('code')
+      p_model = CommonCodeModel.objects(**p_cond).first()
+    
+    cond = {
+      "p_code": p_model,
+      "code": code
+    }
 
     return CommonCodeModel.objects(**cond).order_by(*order).all()
 
   # 공통 코드 상세 조회
   def resolve_common_code(parent, info, code=None, **input):
-    cond = dict()
 
-    if 'p_code' in input:
-      p_codes = input.get('p_code').split(":")
-      
-      p_model = None
-      for _p_code in p_codes:
-        p_cond = { "code": _p_code }
+    codes = code.split(":")
+    p_codes = codes[:-1]
+    code = codes[-1]
 
-        if p_model is not None:
-          p_cond["p_code"] = p_model
+    p_model = None
+    for p_code in p_codes:
+      p_cond = { 
+        "p_code": p_model if p_model is not None else None,
+        "code": p_code
+      }
 
-        p_model = CommonCodeModel.objects(**p_cond).first()
-
-      p_code = p_model
-
-    return CommonCodeModel.objects(**cond, code=code).first()
+      p_model = CommonCodeModel.objects(**p_cond).first()
+    
+    cond = {
+      "p_code": p_model,
+      "code": code
+    }
+    
+    return CommonCodeModel.objects(**cond).first()
 
 
   

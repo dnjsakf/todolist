@@ -1,8 +1,5 @@
 # api/models.py
-from mongoengine.fields import (
-  StringField, IntField, ReferenceField, SequenceField, BooleanField
-)
-
+from mongoengine import fields
 from .CommonModels import BaseDocument
 
 ### ToDo 정보 모델
@@ -10,19 +7,17 @@ class TodoInfoModel(BaseDocument):
   meta = {
     "collection": "todo_info"
   }
-  no = SequenceField(collection_name="todo_info")
+  no = fields.SequenceField(collection_name="todo_info")
 
-  title = StringField(required=True)
-  main_cate = StringField(required=True)
-  sub_cate = StringField()
+  title = fields.StringField(required=True)
+  status = fields.DictField(required=True)
+  category = fields.DictField(required=True)
   
-  status = StringField()
-  desc = StringField()
-
-  star = BooleanField(default=False)
+  due_date = fields.StringField()
+  due_time = fields.StringField()
   
-  due_date = StringField()
-  due_time = StringField()
+  description = fields.StringField()
+  star = fields.BooleanField(default=False)
 
 
 ### ToDo 댓글 모델
@@ -31,9 +26,9 @@ class TodoCommentModel(BaseDocument):
     "collection": "todo_comments"
   }
   
-  todo_info = ReferenceField("TodoInfoModel")
+  todo_info = fields.ReferenceField("TodoInfoModel")
 
-  commont = StringField(required=True)
-  good = IntField(default_value=0)
-  bad = IntField(default_value=0)
+  commont = fields.StringField(required=True)
+  good = fields.IntField(default_value=0)
+  bad = fields.IntField(default_value=0)
   

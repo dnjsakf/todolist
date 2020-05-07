@@ -5,8 +5,7 @@ import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 /* Reducers */
-import { actionSetError } from './../../../reducers/form/DataReducer';
-import * as actions from './../../../reducers/form/TodoInfoReducer';
+import { actions } from './../../../reducers/form/TodoInfoForm';
 
 /* GraphQL */
 import { useMutation } from '@apollo/react-hooks';
@@ -37,83 +36,46 @@ const TodoInfoForm = ( props ) => {
   /* State */
   const classes = useStyles();
   const elRef = useRef();
-  const dispatch = useDispatch();
-
-  const { todoInfo } = useSelector(({ form })=>({
-    todoInfo: form.todoInfo
-  }));
 
   const [ 
-    createTodoInfo, 
+    saveTodoInfo, 
     { 
       data: created, 
       loading: mutationLoading, 
-      error: mutationError
     }
   ] = useMutation( CREATE_TODO_INFO_QUERY, {
+    onError( error ){
+      console.error( error );
+    },
     onCompleted({ create_todo_info: { todo_info: { no } } }) {
       props.handleClose();
     }
   });
+
+  const { todoInfo } = useSelector(({ form })=>({
+    todoInfo: form.todoInfo
+  }))
 
   /* Handlers */
   /* Handler: Clear form-data */
   const handleCancel = useCallback((event)=>{
     event.preventDefault();
 
-    console.log( 'cancle', todoInfo );
+    console.log( 'cancel' );
 
-  }, [ todoInfo ]);
+  }, []);
 
   /* Handler: Save form-data */
   const handleSave = useCallback((event)=>{
     event.preventDefault();
 
-    const invalid = Object.keys( todoInfo ).filter(( key )=>(
-      ( todoInfo[key].required && !todoInfo[key].data ) || todoInfo[key].error
-    ));
+    // saveTodoInfo(save_data);
+    console.log( 'save' );
 
-    if( invalid.length > 0 ){
-      console.log( invalid );
-      invalid.forEach(( name )=>(
-        dispatch(
-          actionSetError({
-            parent: props.id,
-            name: name,
-            error: true
-          })
-        )
-      ));
-    } else {
-      const save_data = {
-        variables: {
-          title: todoInfo.title.data,
-          main_cate: todoInfo.category.data,
-          status: todoInfo.status.data,
-          desc: todoInfo.description.data,
-          due_date: todoInfo.due_date.data,
-          due_time: todoInfo.due_time.data,
-        }
-      }
-      console.log("Do Save", save_data);
-
-      /* Save todo-info: return promise */
-      createTodoInfo(save_data);
-    }
-  }, [ todoInfo ]);
-
-  /* For data output */
-  useEffect(()=>{
-    console.log( 'created', created );
-  }, [ created ]);
-
-  /* For data output */
-  useEffect(()=>{
-    console.log( 'todoInfo', todoInfo );
-  }, [ todoInfo ]);
+  }, []);
   
-  if( mutationLoading || !todoInfo ) return <span>Now Loading....</span>;
-  if( mutationError ) console.error( mutationError );
+  if( mutationLoading ) return <span>Now Loading....</span>;
+  if( !todoInfo || !todoInfo.no ) return null;
 
   return (
     <Grid container spacing={ 0 }>
@@ -158,16 +120,10 @@ const TodoInfoForm = ( props ) => {
               <CommonCodeSelect
                 parent={ props.id }
                 name="status"
-                variables={{
-                  code: "TODO_STATUS",
-                  order: [
-                    "sort_order"
-                  ]
-                }}
+                code={ todoInfo ? JSON.parse(todoInfo.status).p_code : null }
                 required={ true }
                 readOnly={ props.mode === "view" }
-                defaultValue={ todoInfo ? todoInfo.status : null }
-                action={ actions.setStatus }
+                defaultValue={ todoInfo ? JSON.parse(todoInfo.status).code : null }
               />
             </Grid>
           </Grid>
@@ -182,17 +138,10 @@ const TodoInfoForm = ( props ) => {
               <CommonCodeSelect
                 parent={ props.id }
                 name="category"
-                variables={{ 
-                  p_code: "TODO_CATE",
-                  code: "LANGUAGE",
-                  order: [
-                    "sort_order"
-                  ]
-                }}
+                code={ todoInfo ? JSON.parse(todoInfo.category).p_code : null }
                 required={ true }
                 readOnly={ props.mode === "view" }
-                defaultValue={ todoInfo ? todoInfo.sub_cate : null }
-                action={ actions.setSubCate }
+                defaultValue={ todoInfo ? JSON.parse(todoInfo.category).code : null }
               />
             </Grid>
           </Grid>
@@ -208,7 +157,6 @@ const TodoInfoForm = ( props ) => {
                 required={ true }
                 readOnly={ props.mode === "view" }
                 defaultValue={ todoInfo ? todoInfo.due_date : null }
-                action={ actions.setDueDate }
               />
             </Grid>
             <Grid item xs={ 6 }>

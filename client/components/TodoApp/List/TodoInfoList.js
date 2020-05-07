@@ -3,10 +3,9 @@ import React, { useEffect, useState, useCallback } from 'react';
 
 /* Redux */
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  actionModalOpen, 
-  actionModalClose
-} from './../../../reducers/modal';
+
+/* Reducers */
+import { actions } from './../../../reducers/modal/TodoInfoModal';
 
 /* GraphQL */
 import { useQuery } from '@apollo/react-hooks';
@@ -50,63 +49,51 @@ const useStyles = makeStyles((theme)=>({
 
 const TodoInfoList = ( props )=>{
   /* State */
-  const [ variables, setVariables ] = useState( props.variables );
-  const { loading, error, data, refetch } = useQuery(TODO_INFO_EDGES_QUERY, { variables });
-
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { open, mode, id: itemNo } = useSelector(({ modal })=>(modal));
+  const { open, mode, data } = useSelector(({ modal })=>( modal.todoInfo ));
+  const [ variables, setVariables ] = useState({ first: 5 });
+  const { loading, error, data: list, refetch } = useQuery(
+    TODO_INFO_EDGES_QUERY, {
+      variables,
+      onError(error){
+        console.error( error );
+      }
+    }
+  );
 
-  console.log( open, mode, itemNo );
-  
   /* Handlers */
   const handleViewItem = useCallback((event, no)=>{
     dispatch(
-      actionModalOpen({
+      actions.openModal({
         mode: "view",
-        id: no,
-        data: null,
+        data: {
+          id: no
+        },
       })
     );
-  }, [ open, mode, itemNo ]);
+  }, [ open, mode, data ]);
 
   const handleCreateItem = useCallback((event)=>{
     dispatch(
-      actionModalOpen({
+      actions.openModal({
         mode: "create",
-        id: null,
         data: null,
       })
     );
-  }, [ open, mode, itemNo ]);
+  }, [ open, mode, data ]);
 
   const handleModalClose = useCallback(()=>{
-    dispatch(
-      actionModalClose()
-    );
-    refetch()
+    dispatch(actions.closeModal());
+
+    refetch();
   }, [ open ]);
 
-  /* Set edges, pageInfo */
-  useEffect(()=>{
-    if( data && !error ){
-      const info = data[Object.keys(data)[0]];
-
-      //dispatch(actionSetData(data));
-    }
-  }, [ data ]);
-
-
-  if( loading ){
-    return <span>Data loading....</span>;
-  }
-  if( error ){
-    console.error( error );
-    return null;
-  }
+  if( loading ) return <span>Data loading....</span>;
+  if( error ) return null;
   
-  const { edges, pageInfo } = data.todo_info_edges;
+  const { edges, pageInfo } = list.todo_info_edges;
 
   return (
     <Grid container>
@@ -152,9 +139,7 @@ const TodoInfoList = ( props )=>{
           <div>
             <TodoInfoItem
               mode={ mode }
-              variables={{
-                no: itemNo
-              }}
+              id={ data && data.id }
               handleClose={ handleModalClose }
             />
           </div>

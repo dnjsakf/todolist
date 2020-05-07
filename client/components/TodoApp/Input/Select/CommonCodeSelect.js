@@ -25,15 +25,23 @@ const CommonCodeSelect = ( props )=>{
   const classes = useStyles();
 
   /* React Hooks Methods 보다 밑에 있어야됨 */
-  const { loading, error, data } = useQuery(COMMON_CODE_QUERY, { variables: props.variables });
+  const { loading, error, data } = useQuery(
+    COMMON_CODE_QUERY, {
+      skip: !props.code,
+      variables: {
+        code: props.code,
+        order: [
+          "sort_order"
+        ]
+      },
+      onError(error){
+        console.error( error );
+      }
+    }
+  );
 
-  if( loading ){
-    return <span>Data Loadding...</span>;
-  }
-  if( error ) {
-    console.error( error );
-    return null;
-  };
+  if( loading ) return <span>Data Loadding...</span>;
+  if( error ) return null;
 
   return (
     <>

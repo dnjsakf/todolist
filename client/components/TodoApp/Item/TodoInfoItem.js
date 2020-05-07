@@ -1,14 +1,14 @@
 /* React */
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef } from 'react';
 
 /* Redux */
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 /* Reducers */
-import * as actions from './../../../reducers/form/TodoInfoReducer';
+import { actions } from './../../../reducers/form/TodoInfoForm';
 
 /* GraphQL */
-import { useLazyQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import {
   TODO_INFO_QUERY
 } from './../../../graphql/queries/todos'
@@ -23,48 +23,50 @@ import { TodoInfoForm } from './../Form';
 
 
 const useStyles = makeStyles((theme)=>({
-
+  form: {
+    padding: 10,
+    width: 350
+  }
 }));
 
 const TodoInfoItem = ( props )=>{
+  /* State */
   const classes = useStyles();
+  const elRef = useRef();
   const dispatch = useDispatch();
 
-  const [
-    getData,
-    { 
-      loading, 
-      error, 
-      data
+  const { loading, error, data } = useQuery(
+    TODO_INFO_QUERY, { 
+      variables: {
+        no: props.id
+      },
+      onError(error){
+        console.error( error );
+      },
+      onCompleted( _data ){
+        if( _data && _data.todo_info ){
+          dispatch(actions.setTodoInfo(
+            _data.todo_info
+          ));
+        }
+      }
     }
-  ] = useLazyQuery( TODO_INFO_QUERY, { variables: props.variables } );
-
-  useEffect(()=>{
-    if( props.mode === "view" ){
-      getData();
-    }
-  }, []);
-
-  useEffect(()=>{
-    if( props.mode === "view" && data ){
-      dispatch(actions.setData( data.todo_info ));
-    }
-  }, [ data ]);
+  );
 
   if( loading ) return <span>Now Loading....</span>;
   if( error ) return null;
 
-  console.log( data );
+  const { todo_info } = data;
 
   return (
     <Paper 
       elevation={ 5 }
-      className={ `w350 p10 ${ props.className }` }
+      className={ classes.form }
     >
       <Grid container>  
         <Grid item xs={ 12 }>
           <TodoInfoForm
-            data={ data ? data.todo_info : data }
+            data={ todo_info }
             { ...props }
           />
         </Grid> 
