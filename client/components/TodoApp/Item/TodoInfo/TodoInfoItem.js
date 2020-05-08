@@ -5,13 +5,11 @@ import React, { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 
 /* Reducers */
-import { actions } from './../../../reducers/form/TodoInfoForm';
+import { actions } from './../../../../reducers/form/TodoInfo';
 
 /* GraphQL */
 import { useQuery } from '@apollo/react-hooks';
-import {
-  TODO_INFO_QUERY
-} from './../../../graphql/queries/todos'
+import TodoQuery from './../../../../graphql/Query/Field/Todo'
 
 /* Material */
 import { makeStyles } from '@material-ui/core/styles';
@@ -19,7 +17,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 
 /* Components */
-import { TodoInfoForm } from './../Form';
+import { TodoInfoForm } from './../../Form/Todo';
 
 
 const useStyles = makeStyles((theme)=>({
@@ -36,7 +34,7 @@ const TodoInfoItem = ( props )=>{
   const dispatch = useDispatch();
 
   const { loading, error, data } = useQuery(
-    TODO_INFO_QUERY, { 
+    TodoQuery.GET_TODO_INFO, { 
       variables: {
         no: props.id
       },

@@ -7,7 +7,7 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 /* Components */
 import { makeStyles } from '@material-ui/core/styles';
-import { BaseButton } from '.';
+import BaseButton from './../Base';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const SaveCancelButton = ({ cancel, save })=>{
+const SubmitButton = ({ cancel, save })=>{
   const classes = useStyles();
   const elRef = useRef();
 
@@ -50,4 +50,4 @@ const SaveCancelButton = ({ cancel, save })=>{
   )
 }
 
-export default SaveCancelButton;
+export default SubmitButton;

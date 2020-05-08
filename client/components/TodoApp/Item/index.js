@@ -1,2 +1,2 @@
-export { default as TodoInfoItem } from './TodoInfoItem';
-export { default as TodoListItem } from './TodoListItem';
+export { default as TodoInfoItem } from './TodoInfo';
+export { default as TodoListItem } from './TodoList';

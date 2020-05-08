@@ -5,24 +5,23 @@ import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 /* Reducers */
-import { actions } from './../../../reducers/form/TodoInfoForm';
+import { actions } from './../../../../reducers/form/TodoInfo';
 
 /* GraphQL */
 import { useMutation } from '@apollo/react-hooks';
-import { 
-  CREATE_TODO_INFO_QUERY 
-} from './../../../graphql/queries/todos';
+import TodoMutation from './../../../../graphql/Mutation/Todo';
 
 /* Materialize */
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 
 /* Components */
-import { CommonCodeSelect } from './../Input/Select';
-import { SaveButton } from './../Input/Button';
-import { BaseText } from './../Input/Text';
-import { BaseTextarea } from './../Input/Textarea';
-import { DatePicker, TimePicker } from './../Input/Picker';
+import CommonCodeSelect from './../../Input/Select/CommonCode';
+import SubmitButton from './../../Input/Button/Submit';
+import BaseText from './../../Input/Text/Base';
+import BaseTextarea from './../../Input/Textarea/Base';
+import DatePicker from './../../Input/Picker/Date';
+import TimePicker from './../../Input/Picker/Time';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -43,7 +42,8 @@ const TodoInfoForm = ( props ) => {
       data: created, 
       loading: mutationLoading, 
     }
-  ] = useMutation( CREATE_TODO_INFO_QUERY, {
+  ] = useMutation(
+    TodoMutation.CREATE_TODO_INFO, {
     onError( error ){
       console.error( error );
     },
@@ -191,7 +191,7 @@ const TodoInfoForm = ( props ) => {
             ? null
             : <Grid container direction="row">
                 <Grid item xs={ 12 }>
-                  <SaveButton
+                  <SubmitButton
                     cancel={{
                       className: 'btn-save',
                       label: '취소',

@@ -5,11 +5,12 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 /* Reducers */
-import { actions } from './../../../reducers/modal/TodoInfoModal';
+import { actions } from './../../../../reducers/modal/TodoInfo';
 
 /* GraphQL */
 import { useQuery } from '@apollo/react-hooks';
-import { TODO_INFO_EDGES_QUERY } from './../../../graphql/queries/todos';
+// import { TODO_INFO_EDGES_QUERY } from './../../../../graphql/queries/todos';
+import TodoQuery from './../../../../graphql/Query/Edges/Todo';
 
 /* Materialize */
 import { makeStyles } from '@material-ui/core/styles';
@@ -20,12 +21,8 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 
 /* Components */
-import { TodoListItem } from './../Item';
-import { TodoInfoItem } from './../Item';
-import { BaseButton } from './../Input/Button';
-
-/* CSS */
-import './TodoInfoList.css';
+import { TodoInfoItem, TodoListItem } from './../../Item';
+import BaseButton from './../../Input/Button/Base';
 
 
 const useStyles = makeStyles((theme)=>({
@@ -47,15 +44,18 @@ const useStyles = makeStyles((theme)=>({
 }));
 
 
-const TodoInfoList = ( props )=>{
+const TodoList = ( props )=>{
   /* State */
   const classes = useStyles();
   const dispatch = useDispatch();
 
   const { open, mode, data } = useSelector(({ modal })=>( modal.todoInfo ));
-  const [ variables, setVariables ] = useState({ first: 5 });
+  const [ variables, setVariables ] = useState({
+    first: 5, 
+    orderBy: ["-no"]
+  });
   const { loading, error, data: list, refetch } = useQuery(
-    TODO_INFO_EDGES_QUERY, {
+    TodoQuery.GET_TODO_EDGES, {
       variables,
       onError(error){
         console.error( error );
@@ -159,4 +159,4 @@ const TodoInfoList = ( props )=>{
   )
 }
 
-export default TodoInfoList;
+export default TodoList;
