@@ -11,7 +11,6 @@ def connect_db(database, host, init=False, **kwargs):
 def init_db():
   import datetime
   from server.api.graphql.models import (
-    RankModel, RankModeModel,
     UserModel, CommonCodeModel,
     TodoInfoModel
   )
@@ -88,24 +87,3 @@ def init_db():
     reg_user=reg_user,
     reg_dttm=reg_dttm
   ).save()
-  
-
-  ### 랭킹 테스트 데이터
-  for idx in range(1, 5):
-    mode = f"{ idx }x{ idx }"
-
-    RankModeModel(
-      mode=mode,
-      reg_user=reg_user,
-      reg_dttm=reg_dttm
-    ).save()
-  
-    for idx in range(50):
-      RankModel(
-        name="heo",
-        mode=mode,
-        score=idx,
-        is_mobile=False, 
-        reg_user=reg_user,
-        reg_dttm=reg_dttm
-      ).save()

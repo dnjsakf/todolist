@@ -1,5 +1,5 @@
-import TodoInfoForm from './TodoInfoForm';
+import TodoForm from './TodoForm';
 
 export {
-    TodoInfoForm
+    TodoForm
 };

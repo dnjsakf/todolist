@@ -8,7 +8,3 @@ from .TodoModels import (
   TodoInfoModel,
   TodoCommentModel
 )
-from .TestModels import (
-  RankModeModel
-  , RankModel
-)

@@ -22,7 +22,7 @@ const CancelButton = ( props )=>{
       id={ props.id }
       name={ props.name }
       className={ classes.button }
-      onClick={ props.handleClick }
+      onClick={ props.handleCancel }
       variant="contained"
       color="primary"
       disabled={ !!props.disabled }

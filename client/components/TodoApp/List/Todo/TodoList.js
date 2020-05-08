@@ -5,7 +5,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 /* Reducers */
-import { actions } from './../../../../reducers/modal/TodoInfo';
+import { actions } from './../../../../reducers/modal/Todo';
 
 /* GraphQL */
 import { useQuery } from '@apollo/react-hooks';
@@ -21,7 +21,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 
 /* Components */
-import { TodoInfoItem, TodoListItem } from './../../Item';
+import { TodoViewItem, TodoListItem } from './../../Item/Todo';
 import BaseButton from './../../Input/Button/Base';
 
 
@@ -49,7 +49,7 @@ const TodoList = ( props )=>{
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { open, mode, data } = useSelector(({ modal })=>( modal.todoInfo ));
+  const { open, mode, data } = useSelector(({ modal })=>( modal.todo ));
   const [ variables, setVariables ] = useState({
     first: 5, 
     orderBy: ["-no"]
@@ -137,7 +137,7 @@ const TodoList = ( props )=>{
       >
         <Fade in={ open }>
           <div>
-            <TodoInfoItem
+            <TodoViewItem
               mode={ mode }
               id={ data && data.id }
               handleClose={ handleModalClose }

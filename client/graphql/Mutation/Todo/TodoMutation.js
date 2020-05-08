@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
-export const CREATE_TODO_INFO = gql(`
-mutation createTodoInfo(
+export const CREATE_TODO = gql(`
+mutation createTodo(
   $title: String!
   $status: JsonString!
   $category: JsonString!

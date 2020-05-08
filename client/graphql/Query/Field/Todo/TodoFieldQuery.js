@@ -21,6 +21,27 @@ query getTodoInfo(
     reg_dttm
     upd_user
     upd_dttm
+    status_codes {
+      id
+      code
+      code_name
+      sub_codes {
+        id
+        code
+        code_name
+      }
+    }
+    category_codes {
+      id
+      code
+      code_name
+      sub_codes {
+        id
+        code
+        code_name
+      }
+    }
+
   }
 }
 `);

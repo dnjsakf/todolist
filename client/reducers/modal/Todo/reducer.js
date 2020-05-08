@@ -8,10 +8,10 @@ const initState = {
 
 export default function todoInfoModalReducer( state=initState, action ){
   switch( action.type ){
-    case types.OPEN_MODAL:
-    case types.CLOSE_MODAL:
-    case types.DESTROY_MODAL:
-    case types.SET_MODAL_DATA:
+    case types.OPEN_TODO_MODAL:
+    case types.CLOSE_TODO_MODAL:
+    case types.DESTROY_TODO_MODAL:
+    case types.SET_TODO_MODAL_DATA:
       return Object.assign({}, state, action.payload);
     default:
       return state;

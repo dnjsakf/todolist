@@ -22,7 +22,7 @@ const CloseButton = ( props )=>{
       id={ props.id }
       name={ props.name }
       className={ classes.button }
-      onClick={ props.handleClick }
+      onClick={ props.handleClose }
       variant="contained"
       color="primary"
       disabled={ !!props.disabled }

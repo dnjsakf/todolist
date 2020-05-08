@@ -5,7 +5,7 @@ import React, { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 
 /* Reducers */
-import { actions } from './../../../../reducers/form/TodoInfo';
+import { actions } from './../../../../reducers/form/Todo';
 
 /* GraphQL */
 import { useQuery } from '@apollo/react-hooks';
@@ -17,7 +17,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 
 /* Components */
-import { TodoInfoForm } from './../../Form/Todo';
+import { TodoForm } from './../../Form/Todo';
 
 
 const useStyles = makeStyles((theme)=>({
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme)=>({
   }
 }));
 
-const TodoInfoItem = ( props )=>{
+const TodoViewItem = ( props )=>{
   /* State */
   const classes = useStyles();
   const elRef = useRef();
@@ -35,6 +35,7 @@ const TodoInfoItem = ( props )=>{
 
   const { loading, error, data } = useQuery(
     TodoQuery.GET_TODO_INFO, { 
+      skip: !props.id,
       variables: {
         no: props.id
       },
@@ -43,7 +44,7 @@ const TodoInfoItem = ( props )=>{
       },
       onCompleted( _data ){
         if( _data && _data.todo_info ){
-          dispatch(actions.setTodoInfo(
+          dispatch(actions.setTodoData(
             _data.todo_info
           ));
         }
@@ -54,8 +55,6 @@ const TodoInfoItem = ( props )=>{
   if( loading ) return <span>Now Loading....</span>;
   if( error ) return null;
 
-  const { todo_info } = data;
-
   return (
     <Paper 
       elevation={ 5 }
@@ -63,8 +62,8 @@ const TodoInfoItem = ( props )=>{
     >
       <Grid container>  
         <Grid item xs={ 12 }>
-          <TodoInfoForm
-            data={ todo_info }
+          <TodoForm
+            data={ data ? data.todo_info : null }
             { ...props }
           />
         </Grid> 
@@ -76,4 +75,4 @@ const TodoInfoItem = ( props )=>{
   )
 }
 
-export default TodoInfoItem;
+export default TodoViewItem;

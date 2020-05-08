@@ -6,7 +6,3 @@ from .CommonTypes import (
 from .TodoTypes import (
   TodoInfoType
 )
-from .TestTypes import (
-  RankType
-  , RankModeType
-)

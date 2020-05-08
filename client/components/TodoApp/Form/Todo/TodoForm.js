@@ -1,12 +1,6 @@
 /* React */
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 
-/* Redux */
-import { useDispatch, useSelector } from 'react-redux';
-
-/* Reducers */
-import { actions } from './../../../../reducers/form/TodoInfo';
-
 /* GraphQL */
 import { useMutation } from '@apollo/react-hooks';
 import TodoMutation from './../../../../graphql/Mutation/Todo';
@@ -31,11 +25,12 @@ const useStyles = makeStyles((theme) => ({
   todoForm: { }
 }));
 
-const TodoInfoForm = ( props ) => {
+const TodoForm = ( props ) => {
   /* State */
   const classes = useStyles();
   const elRef = useRef();
 
+  const [ todoInfo, setTodoInfo ] = useState( props.data );
   const [ 
     saveTodoInfo, 
     { 
@@ -43,7 +38,7 @@ const TodoInfoForm = ( props ) => {
       loading: mutationLoading, 
     }
   ] = useMutation(
-    TodoMutation.CREATE_TODO_INFO, {
+    TodoMutation.CREATE_TODO, {
     onError( error ){
       console.error( error );
     },
@@ -52,9 +47,6 @@ const TodoInfoForm = ( props ) => {
     }
   });
 
-  const { todoInfo } = useSelector(({ form })=>({
-    todoInfo: form.todoInfo
-  }))
 
   /* Handlers */
   /* Handler: Clear form-data */
@@ -75,7 +67,8 @@ const TodoInfoForm = ( props ) => {
   }, []);
   
   if( mutationLoading ) return <span>Now Loading....</span>;
-  if( !todoInfo || !todoInfo.no ) return null;
+
+  console.log( todoInfo );
 
   return (
     <Grid container spacing={ 0 }>
@@ -105,7 +98,6 @@ const TodoInfoForm = ( props ) => {
                 required={ true }
                 readOnly={ props.mode === "view" }
                 defaultValue={ todoInfo ? todoInfo.title : null }
-                action={ actions.setTitle }
               />
             </Grid>
           </Grid>
@@ -117,14 +109,25 @@ const TodoInfoForm = ( props ) => {
             className={ classes.gridContainer }
           >
             <Grid item xs={ 12 }>
-              <CommonCodeSelect
-                parent={ props.id }
-                name="status"
-                code={ todoInfo ? JSON.parse(todoInfo.status).p_code : null }
-                required={ true }
-                readOnly={ props.mode === "view" }
-                defaultValue={ todoInfo ? JSON.parse(todoInfo.status).code : null }
-              />
+            {
+              todoInfo
+              ? <CommonCodeSelect
+                  parent={ props.id }
+                  name="status"
+                  data={{
+                    common_code: todoInfo.status_codes
+                  }}
+                  required={ true }
+                  readOnly={ props.mode === "view" }
+                  defaultValue={ todoInfo.status.code }
+                />
+              : <CommonCodeSelect
+                  parent={ props.id }
+                  name="status"
+                  code="TODO_STATUS"
+                  required={ true }
+                />
+            }
             </Grid>
           </Grid>
           <Grid
@@ -135,14 +138,25 @@ const TodoInfoForm = ( props ) => {
             className={ classes.gridContainer }
           >
             <Grid item xs={ 12 }>
-              <CommonCodeSelect
-                parent={ props.id }
-                name="category"
-                code={ todoInfo ? JSON.parse(todoInfo.category).p_code : null }
-                required={ true }
-                readOnly={ props.mode === "view" }
-                defaultValue={ todoInfo ? JSON.parse(todoInfo.category).code : null }
-              />
+            {
+              todoInfo
+              ?<CommonCodeSelect
+                  parent={ props.id }
+                  name="category"
+                  data={{
+                    common_code: todoInfo.category_codes
+                  }}
+                  required={ true }
+                  readOnly={ props.mode === "view" }
+                  defaultValue={ todoInfo.category.code }
+                />
+              : <CommonCodeSelect
+                  parent={ props.id }
+                  name="category"
+                  code="TODO_CATE"
+                  required={ true }
+                />
+            }
             </Grid>
           </Grid>
           <Grid container direction="row" spacing={ 1 }>
@@ -211,4 +225,4 @@ const TodoInfoForm = ( props ) => {
   )
 }
 
-export default TodoInfoForm;
+export default TodoForm;

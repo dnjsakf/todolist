@@ -21,13 +21,13 @@ const SubmitButton = ({ cancel, save })=>{
   const elRef = useRef();
 
   return (
-    <Grid 
-      container
-      direction="row"
-      justify="center"
-      alignItems="center"
-      className={ classes.saveButton }
-    >
+    // <Grid 
+    //   container
+    //   direction="row"
+    //   justify="center"
+    //   alignItems="center"
+    //   className={ classes.saveButton }
+    // >
       <ButtonGroup >
         {
           cancel
@@ -46,7 +46,7 @@ const SubmitButton = ({ cancel, save })=>{
             handleClick={ save.onClick }
           />
       </ButtonGroup>
-    </Grid>
+    // </Grid>
   )
 }
 
