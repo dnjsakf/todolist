@@ -1,5 +1,6 @@
 /* React */
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 
 /* Materialize */
 import { makeStyles } from '@material-ui/core/styles';
@@ -19,30 +20,61 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const BaseSelect = ( props )=>{
-  /* State */
+  /* Initialize State */
   const classes = useStyles();
   const elRef = useRef();
 
-  const [ value, setValue ] = useState( props.defaultValue ? props.defaultValue : "" );
+  const [ options, setOptions ] = useState( props.options || [] );
+  const [ value, setValue ] = useState( props.defaultValue||"@@SELECT@@" );
   const [ error, setError ] = useState( false );
 
-  /* Handlers */
-  /* Handler: Reset value, error */
+
+  /* Handler: Handle when selectd option. */
   const handleSelect = useCallback((event)=>{
-    const selected = String(event.target.value || "");
+    let selected = String(elRef.current.value||"@@SELECT@@");
 
-    console.log({
-      selected,
-      value
-    }, selected !== value);
+    if( props.handleSelect && selected !== "@@SELECT@@" ){
+      props.handleSelect( event, selected, selected === "@@BACK@@" );
+    }
 
-    if( selected == 0 || selected !== value ){
-      if( props.handleSelect ){
-        props.handleSelect( event );
-      }
+    console.group("["+props.name.toUpperCase()+"][handleSelect]")
+    console.log("["+props.name.toUpperCase()+"][group]", props.group);
+    console.log("["+props.name.toUpperCase()+"][prev]", value);
+    console.log("["+props.name.toUpperCase()+"][current]", selected);
+    console.log("["+props.name.toUpperCase()+"][is_same]", value !== selected);
+    console.groupEnd("["+props.name.toUpperCase()+"][handleSelect]")
+
+    if( value !== selected ){
       setValue( selected );
     }
-  }, [ value ]);
+
+  }, [ value, props.handleSelect, props.group ]);
+
+
+  /* Reset State: options, value */
+  useEffect(()=>{
+    const is_same = JSON.stringify(props.options) === JSON.stringify(options);
+    
+    console.group("["+props.name.toUpperCase()+"][Effect][options]")
+    console.log("is_same:", is_same);
+    console.groupEnd("["+props.name.toUpperCase()+"][Effect][options]")
+
+    if( !is_same ){
+      setValue( "@@SELECT@@" );
+      setOptions( props.options );
+    }
+  }, [ props.options ]);
+
+
+  /* Logging State: value */
+  // useEffect(()=>{
+  //   console.log("["+props.name.toUpperCase()+"][value][current]", value);
+  //   return ()=>{
+  //     console.log("["+props.name.toUpperCase()+"][value][previous]", value);
+  //   }
+  // }, [ value ]);
+
+  /* Check Render */
 
   return (
     <FormControl
@@ -69,18 +101,33 @@ const BaseSelect = ( props )=>{
         inputProps={{
           readOnly: !!props.readOnly
         }}
+        autoFocus={ false }
       >
-        <MenuItem value={ "" }>
+        <MenuItem value={ "@@BACK@@" }>
+          <em>이전</em>
+        </MenuItem>
+        <MenuItem value={ "@@SELECT@@" }>
           <em>선택</em>
         </MenuItem>
         {
-          props.options.map(({ id, value, label })=>(
+          options.map(({ id, value, label })=>(
             <MenuItem key={ id } value={ value }>{ label }</MenuItem>
           ))
         }
       </Select>
     </FormControl>
   )
+}
+
+BaseSelect.propTypes = {
+  options: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    value: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]).isRequired,
+    label: PropTypes.string.isRequired
+  })),
 }
 
 export default BaseSelect;

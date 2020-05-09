@@ -114,9 +114,7 @@ const TodoForm = ( props ) => {
               ? <CommonCodeSelect
                   parent={ props.id }
                   name="status"
-                  data={{
-                    common_code: todoInfo.status_codes
-                  }}
+                  data={ todoInfo.status_codes }
                   required={ true }
                   readOnly={ props.mode === "view" }
                   defaultValue={ todoInfo.status.code }
@@ -143,9 +141,7 @@ const TodoForm = ( props ) => {
               ?<CommonCodeSelect
                   parent={ props.id }
                   name="category"
-                  data={{
-                    common_code: todoInfo.category_codes
-                  }}
+                  data={ todoInfo.category_codes }
                   required={ true }
                   readOnly={ props.mode === "view" }
                   defaultValue={ todoInfo.category.code }
