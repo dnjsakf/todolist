@@ -23,25 +23,32 @@ query getTodoInfo(
     upd_dttm
     status_codes {
       id
+      full_code
+      depth
       code
       code_name
       sub_codes {
         id
+        full_code
+        depth
         code
         code_name
       }
     }
     category_codes {
       id
+      full_code
+      depth
       code
       code_name
       sub_codes {
         id
+        full_code
+        depth
         code
         code_name
       }
     }
-
   }
 }
 `);

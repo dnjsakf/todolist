@@ -13,6 +13,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 /* Components */
 import BaseSelect from './../Base';
+import { common } from '@material-ui/core/colors';
 
 const useStyles = makeStyles(( theme ) => ({
   gridContainer: {
@@ -60,7 +61,7 @@ const CommonCodeSelect = ( props )=>{
   const classes = useStyles();
 
   const [ depth, setDeopth ] = useState( 1 );
-  const [ parentCode, setParentCode ] = useState( props.code );
+  const [ backCode, setBackCode ] = useState( props.code||"" );
   
   const [ commonCode, setCommonCode ] = useState( props.data||{
     code: null,
@@ -77,7 +78,7 @@ const CommonCodeSelect = ( props )=>{
         ]
       },
       onError: (error)=>{
-        console.group("["+props.name.toUpperCase()+"][error]");
+        console.groupCollapsed("["+props.name.toUpperCase()+"][error]");
         console.error(error);
         console.group("["+props.name.toUpperCase()+"][error]");
       },
@@ -89,25 +90,23 @@ const CommonCodeSelect = ( props )=>{
 
   /* Handler: Handle when selectd option. */
   const handleSelect = useCallback((event, code, is_back)=>{
-    const current_code = commonCode.code;
-    const last_parent_code = popCode(parentCode);
-    const new_depth = current_code !== last_parent_code;
+    const lask_full_code = removeLastCode(code, 1);
     
-    const parent_code = removeLastCode(code, 1);
-    
-    console.group("["+props.name.toUpperCase()+"][handleSelect]");
-    console.log("[code][prev]:", last_parent_code);
-    console.log("[code][crnt]:", current_code);
-    console.log("[code][new]:", code);
-    console.log("[parent_code][prev]:", parentCode);
-    console.log("[parent_code][crnt]:", parent_code);
+    console.groupCollapsed("["+props.name.toUpperCase()+"][onSelect]");
     console.log("[commonCode]:", commonCode);
-    console.log("[fetchMore]:", new_depth);
-    console.groupEnd("["+props.name.toUpperCase()+"][handleSelect]");
+    console.log("[last_code][prev]:", commonCode.full_code);
+    console.log("[last_code][crnt]:", code);
+    console.log("[lask_full_code][prev]:", backCode);
+    console.log("[lask_full_code][crnt]:", lask_full_code);
+    console.log("[depth][prev]:", commonCode.depth);
+    console.log("[depth][crnt]:", code.split(":").length);
+    console.log("[is_last][prev]:", commonCode.sub_codes.length === 0);
+    console.groupEnd("["+props.name.toUpperCase()+"][onSelect]");
     
-    setParentCode(parent_code);
-    
-    if( true || new_depth ){
+
+    setBackCode( lask_full_code );
+
+    if( true ){
       fetchMore({
         variables: {
           code: code
@@ -121,13 +120,12 @@ const CommonCodeSelect = ( props )=>{
         }
       });
     }
-
-  }, [ parentCode, commonCode ]);
+  }, [ backCode, commonCode ]);
 
   
   /* Reset State: commonCode */
   useEffect(()=>{
-    console.group("["+props.name.toUpperCase()+"][useEffect][data]");
+    console.groupCollapsed("["+props.name.toUpperCase()+"][useEffect][data]");
     if( data ){
       const do_update = JSON.stringify(data.common_code) !== JSON.stringify(commonCode);
       console.log("[commonCode][do_update]", do_update);
@@ -139,55 +137,50 @@ const CommonCodeSelect = ( props )=>{
     console.groupEnd("["+props.name.toUpperCase()+"][useEffect][data]");
   }, [ data ]);
   
-  useEffect(()=>{
-    console.group("["+props.name.toUpperCase()+"][useEffect][data]");
-    console.log("[loading]:", loading);
-    console.log("[error]:", error);
-    console.groupEnd("["+props.name.toUpperCase()+"][useEffect][data]");
-  }, [ loading, error ]);
-  
   
   /* Check Render */
   if( loading ) return <span>Data Loadding...</span>;
   if( error ) return null;
   if( !commonCode || !commonCode.code ) return <span>No Data...</span>;
-  
-  console.group("["+props.name.toUpperCase()+"][render][data]");
-  console.log( data );
-  console.groupEnd("["+props.name.toUpperCase()+"][render][data]");
+
 
   return (
     <BaseSelect 
-      label={ parentCode }
+      label={ commonCode.code_name }
       group={ commonCode.full_code }
+      handleSelect={ handleSelect }
+      defaultOptions={[
+        {
+          id: commonCode.id+"_back",
+          value: backCode,
+          label: `뒤로가기:${ backCode }`,
+        },
+        {
+          id: commonCode.id+"_default",
+          value: commonCode.full_code,
+          label: "선택",
+        }
+      ]}
       options={
         commonCode.sub_codes.map(( sub )=>({
           id: sub.id,
           value: sub.full_code,
-          label: sub.code_name
+          label: sub.code_name,
         }))
       }
-      handleSelect={ handleSelect }
       { ...props }
-    >
-      <MenuItem value={ commonCode.full_code }>
-        <em>{ "뒤로가기:"+commonCode.code }</em>
-      </MenuItem>
-      <MenuItem value={ "" }>
-        <em>선택</em>
-      </MenuItem>
-    </BaseSelect>
+    />
   )
 }
 
 CommonCodeSelect.propTypes = {
+  label: PropTypes.string,
   name: PropTypes.string.isRequired,
+  handleSelect: PropTypes.func,
   data: PropTypes.shape({
-    common_code: PropTypes.shape({
-      code: PropTypes.string,
-      code_name: PropTypes.string,
-      sub_codes: PropTypes.array
-    })
+    code: PropTypes.string,
+    code_name: PropTypes.string,
+    sub_codes: PropTypes.array,
   }),
 }
 

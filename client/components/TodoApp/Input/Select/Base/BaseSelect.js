@@ -24,8 +24,9 @@ const BaseSelect = ( props )=>{
   const classes = useStyles();
   const elRef = useRef();
 
-  const [ children, setChildren ] = useState( props.children );
   const [ group, setGroup ] = useState( props.group );
+  const [ depth, setDepth ] = useState( 1 );
+  const [ defaultOptions, setDefaultOptions ] = useState( props.defaultOptions||[] );
   const [ options, setOptions ] = useState( props.options||[] );
   const [ value, setValue ] = useState( props.defaultValue||"" );
   const [ error, setError ] = useState( false );
@@ -37,32 +38,78 @@ const BaseSelect = ( props )=>{
   /* Handler: Handle when selectd option. */
   const handleSelect = useCallback((event)=>{
     const selected = event.target.value;
-    const do_update = selected && selected !== value;
-    const is_back = selected === group;
 
-    console.group("["+props.name.toUpperCase()+"][handleSelect]")
-    console.log("[event]:", event);
-    console.log("[current]:", selected);
-    console.log("[group]:", group);
-    console.log("[prev]:", value);
-    console.log("[do_update]:", do_update);
-    console.log("[is_back]:", is_back);
+    if( selected === undefined || selected === 0 ) return false;
+
+    const selected_depth = selected.split(":").length;
+    const do_update = selected !== value;
+    const is_back = depth > selected_depth;
+
+    console.groupCollapsed("["+props.name.toUpperCase()+"][handleSelect]")
+    console.log("[event.target]:"   , event.target);
+    console.log("[current]:"        , selected);
+    console.log("[group]:"          , group);
+    console.log("[prev]:"           , value);
+    console.log("[do_update]:"      , do_update);
+    console.log("[is_back]:"        , is_back);
+    console.log("[depth][prev]:"    , depth);
+    console.log("[depth][crnt]:"    , selected_depth);
     console.groupEnd("["+props.name.toUpperCase()+"][handleSelect]")
-
+    
     if( props.handleSelect && do_update ){
       props.handleSelect( event, selected, is_back );
     }
     
     setValue( selected );
+    setDepth( selected_depth );
     
   }, [ value, group, props.handleSelect ]);
 
+  
+  /* Reset State: group */
+  useEffect(()=>{
+    const do_update = group !== props.group;
+    
+    console.groupCollapsed("["+props.name.toUpperCase()+"][Effect][group]");
+    console.log("[do_update]:", do_update);
+    console.groupEnd("["+props.name.toUpperCase()+"][Effect][group]");
+    
+    if( do_update ){
+      setGroup( props.group );
+    }
+  }, [ props.group ]);
+  
+  /* Reset State: depth */
+  useEffect(()=>{
+    const do_update = depth !== props.depth;
+    
+    console.groupCollapsed("["+props.name.toUpperCase()+"][Effect][depth]");
+    console.log("[do_update]:", do_update);
+    console.groupEnd("["+props.name.toUpperCase()+"][Effect][depth]");
+    
+    if( do_update ){
+      setDepth( props.depth );
+    }
+  }, [ props.depth ]);
+
+  /* Reset State: children */
+  useEffect(()=>{
+    const do_update = defaultOptions !== props.defaultOptions;
+    
+    console.groupCollapsed("["+props.name.toUpperCase()+"][Effect][defaultOptions]");
+    console.log("[do_update]:", do_update);
+    console.groupEnd("["+props.name.toUpperCase()+"][Effect][defaultOptions]");
+    
+    if( do_update ){
+      setDefaultOptions( props.defaultOptions );
+    }
+  }, [ props.defaultOptions ]);
 
   /* Reset State: value, options */
   useEffect(()=>{
     const do_update = JSON.stringify(props.options) !== JSON.stringify(options);
     
-    console.group("["+props.name.toUpperCase()+"][Effect][options]");
+    console.groupCollapsed("["+props.name.toUpperCase()+"][Effect][options]");
     console.log("[do_update]:", do_update);
     console.groupEnd("["+props.name.toUpperCase()+"][Effect][options]");
 
@@ -70,33 +117,7 @@ const BaseSelect = ( props )=>{
       setOptions( props.options );
     }
   }, [ props.options ]);
-  
-  /* Reset State: group */
-  useEffect(()=>{
-    const do_update = group !== props.group;
-    
-    console.group("["+props.name.toUpperCase()+"][Effect][group]");
-    console.log("[do_update]:", do_update);
-    console.groupEnd("["+props.name.toUpperCase()+"][Effect][group]");
-    
-    if( do_update ){
-      setValue( props.group );
-      setGroup( props.group );
-    }
-  }, [ props.group ]);
-  
-  /* Reset State: children */
-  useEffect(()=>{
-    const do_update = children !== props.children;
-    
-    console.group("["+props.name.toUpperCase()+"][Effect][children]");
-    console.log("[do_update]:", do_update);
-    console.groupEnd("["+props.name.toUpperCase()+"][Effect][children]");
-    
-    if( do_update ){
-      setChildren( props.children );
-    }
-  }, [ props.children ]);
+
 
   /* Check Render */
 
@@ -127,7 +148,11 @@ const BaseSelect = ( props )=>{
         }}
         autoFocus={ false }
       >
-        { children }
+        {
+          defaultOptions && defaultOptions.map(({ id, value, label })=>(
+            <MenuItem key={ id } value={ value }>{ label }</MenuItem>
+          ))
+        }
         {
           options.map(({ id, value, label })=>(
             <MenuItem key={ id } value={ value }>{ label }</MenuItem>
@@ -139,13 +164,9 @@ const BaseSelect = ( props )=>{
 }
 
 BaseSelect.propTypes = {
-  group: PropTypes.string.isRequired,
-  defaultOption: PropTypes.shape({
-    value: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired
-  }),
+  group: PropTypes.string,
   defaultValue: PropTypes.string,
-  options: PropTypes.arrayOf(PropTypes.shape({
+  defaultOptions: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
     value: PropTypes.oneOfType([
       PropTypes.string,
@@ -153,6 +174,14 @@ BaseSelect.propTypes = {
     ]).isRequired,
     label: PropTypes.string.isRequired
   })),
+  options: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    value: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]).isRequired,
+    label: PropTypes.string.isRequired
+  })).isRequired,
 }
 
 export default BaseSelect;
