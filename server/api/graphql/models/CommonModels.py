@@ -36,7 +36,10 @@ class CommonCodeModel(BaseDocument):
   }
   p_code = ReferenceField('self')
 
+  full_code = StringField(required=True)
+  depth = IntField(required=True)
   code = StringField(required=True, unique=True)
   code_name = StringField(required=True)
+  
 
   desc = StringField()

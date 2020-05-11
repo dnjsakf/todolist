@@ -39,4 +39,9 @@ class CommonCodeType(BaseType):
 
   # 공통 코드 목록 조회
   def resolve_sub_codes(parent, info, **input):
-    return CommonCodeModel.objects(p_code=parent).all()
+    codes = CommonCodeModel.objects(p_code=parent).all()
+  
+    for code in codes:
+      print( code.code, code.code_name )
+  
+    return codes

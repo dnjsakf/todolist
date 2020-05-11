@@ -10,10 +10,14 @@ query getCommonCodeList(
     order: $order
   ) {
     id
+    full_code
+    depth
     code
     code_name
     sub_codes {
       id
+      full_code
+      depth
       code
       code_name
     }

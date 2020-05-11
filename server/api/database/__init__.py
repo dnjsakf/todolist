@@ -24,31 +24,31 @@ def init_db():
   
 
   ### 공통코드 그룹 데이터
-  todo_status = CommonCodeModel(code="TODO_STATUS", code_name="상태코드", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  todo_cate = CommonCodeModel(code="TODO_CATE", code_name="카테고리", sort_order=2, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  todo_status = CommonCodeModel(full_code="TODO_STATUS", depth=1, code="TODO_STATUS", code_name="상태코드", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  todo_cate = CommonCodeModel(full_code="TODO_CATE", depth=1, code="TODO_CATE", code_name="카테고리", sort_order=2, reg_user=reg_user, reg_dttm=reg_dttm).save()
 
   ### 공통코드 데이터 'TODO 상태'
-  CommonCodeModel(p_code=todo_status, code="READY", code_name="대기", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  CommonCodeModel(p_code=todo_status, code="WORKING", code_name="진행중", sort_order=2, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  CommonCodeModel(p_code=todo_status, code="FINISH", code_name="완료", sort_order=3, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  CommonCodeModel(p_code=todo_status, code="GIVE_UP", code_name="포기", sort_order=4, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  CommonCodeModel(p_code=todo_status, code="CANCEL", code_name="취소", sort_order=5, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  CommonCodeModel(p_code=todo_status, code="DELETE", code_name="삭제", sort_order=6, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  CommonCodeModel(full_code="TODO_STATUS:READY", depth=2, p_code=todo_status, code="READY", code_name="대기", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  CommonCodeModel(full_code="TODO_STATUS:WORKING", depth=2, p_code=todo_status, code="WORKING", code_name="진행중", sort_order=2, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  CommonCodeModel(full_code="TODO_STATUS:FINISH", depth=2, p_code=todo_status, code="FINISH", code_name="완료", sort_order=3, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  CommonCodeModel(full_code="TODO_STATUS:GIVE_UP", depth=2, p_code=todo_status, code="GIVE_UP", code_name="포기", sort_order=4, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  CommonCodeModel(full_code="TODO_STATUS:CANCEL", depth=2, p_code=todo_status, code="CANCEL", code_name="취소", sort_order=5, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  CommonCodeModel(full_code="TODO_STATUS:DELETE", depth=2, p_code=todo_status, code="DELETE", code_name="삭제", sort_order=6, reg_user=reg_user, reg_dttm=reg_dttm).save()
 
   ### 공통코드 데이터 'TODO 카테고리'
-  todo_cate_develop = CommonCodeModel(p_code=todo_cate, code="LANGUAGE", code_name="개발언어", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  todo_cate_develop = CommonCodeModel(full_code="TODO_CATE:LANGUAGE", depth=2, p_code=todo_cate, code="LANGUAGE", code_name="개발언어", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
 
-  CommonCodeModel(p_code=todo_cate_develop, code="JAVA", code_name="Java", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  todo_cate_develop_python = CommonCodeModel(p_code=todo_cate_develop, code="PYTHON", code_name="Python", sort_order=2, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  todo_cate_develop_javascript = CommonCodeModel(p_code=todo_cate_develop, code="JAVASCRIPT", code_name="Javascript", sort_order=3, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  CommonCodeModel(full_code="TODO_CATE:LANGUAGE:JAVA", depth=3, p_code=todo_cate_develop, code="JAVA", code_name="Java", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  todo_cate_develop_python = CommonCodeModel(full_code="TODO_CATE:LANGUAGE:PYTHON", depth=3, p_code=todo_cate_develop, code="PYTHON", code_name="Python", sort_order=2, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  todo_cate_develop_javascript = CommonCodeModel(full_code="TODO_CATE:LANGUAGE:JAVASCRIPT", depth=3, p_code=todo_cate_develop, code="JAVASCRIPT", code_name="Javascript", sort_order=3, reg_user=reg_user, reg_dttm=reg_dttm).save()
 
   ### 3 Depth 데이터
-  todo_cate_develop_javascript_es6 = CommonCodeModel(p_code=todo_cate_develop_javascript, code="ES6", code_name="ES6", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  CommonCodeModel(p_code=todo_cate_develop_python, code="PYTHON2", code_name="Python2", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  CommonCodeModel(p_code=todo_cate_develop_python, code="PYTHON3", code_name="Python3", sort_order=2, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  todo_cate_develop_javascript_es6 = CommonCodeModel(full_code="TODO_CATE:LANGUAGE:JAVASCRIPT:ES6", depth=4, p_code=todo_cate_develop_javascript, code="ES6", code_name="ES6", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  CommonCodeModel(full_code="TODO_CATE:LANGUAGE:PYTHON:PYTHON2", depth=4, p_code=todo_cate_develop_python, code="PYTHON2", code_name="Python2", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  CommonCodeModel(full_code="TODO_CATE:LANGUAGE:PYTHON:PYTHON3", depth=4, p_code=todo_cate_develop_python, code="PYTHON3", code_name="Python3", sort_order=2, reg_user=reg_user, reg_dttm=reg_dttm).save()
 
   ### 4 Depth 데이터
-  CommonCodeModel(p_code=todo_cate_develop_javascript_es6, code="TEST", code_name="TEST", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  CommonCodeModel(full_code="TODO_CATE:LANGUAGE:JAVASCRIPT:ES6:TEST", depth=5, p_code=todo_cate_develop_javascript_es6, code="TEST", code_name="TEST", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
 
 
   ### Todo 샘플 데이터

@@ -8,9 +8,13 @@ query getCommonCode(
     code: $code
   ) {
     id
+    full_code
+    depth
     code
     code_name
     sub_codes {
+      full_code
+      depth
       id
       code
       code_name
