@@ -1,7 +1,8 @@
 /* React */
 import React from 'react';
 import { render as RouterDomRender } from 'react-dom';
-import { hot } from 'react-hot-loader/root';
+import { Router, Switch, Route, Redirect } from 'react-router-dom';
+import { createBrowserHistory } from "history";
 
 /* Redux */
 import { createStore } from 'redux'
@@ -13,10 +14,18 @@ import { ApolloProvider } from 'react-apollo';
 import client from './graphql/client';
 
 /* Components */
-import App from './components/App/App';
+import { App } from './components';
+
+/* Webpack */
+import { hot } from 'react-hot-loader/root';
+
 
 /* Set Middleware */
 const store = createStore( rootReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() );
+
+/* Set BrowserHistory */
+const browserHistory = createBrowserHistory();
+
 
 function render(Component){
   const root = document.getElementById('root');
@@ -26,7 +35,9 @@ function render(Component){
 	RouterDomRender(
     <ApolloProvider client={client}>
       <Provider store={ store }>
-        <Component/>
+        <Router history={ browserHistory }>
+          <Component/>
+        </Router>
       </Provider>
     </ApolloProvider>
     , root

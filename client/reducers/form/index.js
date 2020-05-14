@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
-import { reducer as todoFormReducer } from './Todo';
+import { reducer as todoListReducer } from './TodoList';
 
 export default combineReducers({
-  todo: todoFormReducer
+  todoList: todoListReducer
 });
