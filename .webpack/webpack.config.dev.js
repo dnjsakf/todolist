@@ -1,7 +1,7 @@
+const path = require("path");
 const merge = require('webpack-merge');
 const webpack = require('webpack');
 const config = require('./webpack.config.js');
-
 
 module.exports = merge(config, {
   mode: 'development',
@@ -12,6 +12,7 @@ module.exports = merge(config, {
     historyApiFallback: true,
     hot: true,
     contentBase: config.output.path,
+    //publicPath: config.output.publicPath,
     proxy: {
       '/graphql': {
         target: 'http://localhost:3000/graphql',

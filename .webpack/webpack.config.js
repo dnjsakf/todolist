@@ -4,8 +4,10 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin  = require('copy-webpack-plugin');
 
+const sourcePath = path.join(__dirname, '../client/src');
 const outputPath = path.join(__dirname, '../client/dist');
 const staticPath = path.join(__dirname, '../client/public');
+
 const publicPath = '/public/';
 
 module.exports = {
@@ -15,8 +17,8 @@ module.exports = {
   },
   entry: {
     index: [
-      './client/index.js',
-      './client/index.css',
+      path.join(sourcePath, 'index.js'),
+      path.join(sourcePath, 'index.css'),
     ],
     vendor: [
       'react', 'react-dom', 'apollo-client'
@@ -39,6 +41,9 @@ module.exports = {
   plugins:[
     new webpack.DefinePlugin({
       VERSION: JSON.stringify("v0.1"),
+    }),
+    new webpack.EnvironmentPlugin({
+      PUBLIC_URL: publicPath,
     }),
     new CopyWebpackPlugin(
       [
@@ -66,7 +71,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        exclude: path.join(__dirname, 'node_modules'),
+        exclude: path.join(__dirname, '../node_modules'),
         options: {
           presets: [
             [
@@ -106,8 +111,14 @@ module.exports = {
     ],
   },
   resolve: {
+    modules: [
+      sourcePath,
+      path.join(__dirname, '../node_modules'),
+    ],
     alias: {
-      Components: path.resolve( __dirname, 'client/components')
+      Components: path.resolve( sourcePath, 'components'),
+      GraphQL: path.resolve( sourcePath, 'graphql'),
+      Reducers: path.resolve( sourcePath, 'reducers'),
     }
   }
 };
