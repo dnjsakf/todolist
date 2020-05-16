@@ -119,6 +119,9 @@ module.exports = {
       Components: path.resolve( sourcePath, 'components'),
       GraphQL: path.resolve( sourcePath, 'graphql'),
       Reducers: path.resolve( sourcePath, 'reducers'),
+      Icons: path.resolve( sourcePath, 'icons'),
+      Layouts: path.resolve( sourcePath, 'layouts'),
+      Views: path.resolve( sourcePath, 'views'),
     }
   }
 };

@@ -87,3 +87,79 @@ def init_db():
     reg_user=reg_user,
     reg_dttm=reg_dttm
   ).save()
+
+  ### Todo 샘플 데이터
+  TodoInfoModel(
+    title="ToDo List 만들기3",
+    status={
+      "p_code": "TODO_STATUS",
+      "code": "READY"
+    },
+    category={
+      "p_code": "TODO_CATE:LANGUAGE:PYTHON",
+      "code": "PYTHON3"
+    },
+    due_date="20201231",
+    due_time="000000",
+    description="나의 첫번째 ToDo List 만들기.",
+    star=True,
+    reg_user=reg_user,
+    reg_dttm=reg_dttm
+  ).save()
+  
+    ### Todo 샘플 데이터
+  TodoInfoModel(
+    title="ToDo List 만들기4",
+    status={
+      "p_code": "TODO_STATUS",
+      "code": "READY"
+    },
+    category={
+      "p_code": "TODO_CATE:LANGUAGE:PYTHON",
+      "code": "PYTHON3"
+    },
+    due_date="20201231",
+    due_time="000000",
+    description="나의 첫번째 ToDo List 만들기.",
+    star=True,
+    reg_user=reg_user,
+    reg_dttm=reg_dttm
+  ).save()
+  
+    ### Todo 샘플 데이터
+  TodoInfoModel(
+    title="ToDo List 만들기5",
+    status={
+      "p_code": "TODO_STATUS",
+      "code": "READY"
+    },
+    category={
+      "p_code": "TODO_CATE:LANGUAGE:PYTHON",
+      "code": "PYTHON3"
+    },
+    due_date="20201231",
+    due_time="000000",
+    description="나의 첫번째 ToDo List 만들기.",
+    star=True,
+    reg_user=reg_user,
+    reg_dttm=reg_dttm
+  ).save()
+  
+    ### Todo 샘플 데이터
+  TodoInfoModel(
+    title="ToDo List 만들기6",
+    status={
+      "p_code": "TODO_STATUS",
+      "code": "READY"
+    },
+    category={
+      "p_code": "TODO_CATE:LANGUAGE:PYTHON",
+      "code": "PYTHON3"
+    },
+    due_date="20201231",
+    due_time="000000",
+    description="나의 첫번째 ToDo List 만들기.",
+    star=True,
+    reg_user=reg_user,
+    reg_dttm=reg_dttm
+  ).save()

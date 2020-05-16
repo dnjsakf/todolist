@@ -1,7 +1,7 @@
 /* React */
 import React from 'react';
 import { render as RouterDomRender } from 'react-dom';
-import { Router, Switch, Route, Redirect } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 import { createBrowserHistory } from "history";
 
 /* Redux */
@@ -14,7 +14,7 @@ import { ApolloProvider } from 'react-apollo';
 import client from './graphql/client';
 
 /* Components */
-import { App } from './components';
+import App from './App';
 
 /* Webpack */
 import { hot } from 'react-hot-loader/root';
