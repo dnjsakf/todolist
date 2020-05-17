@@ -1,5 +1,5 @@
 /* React */
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 /* Materialize */
@@ -9,7 +9,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
-
+/* Materialize Styles */
 const useStyles = makeStyles((theme) => ({
   formControl: {
     minWidth: 120,
@@ -20,9 +20,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const BaseSelect = ( props )=>{
-  /* Initialize State */
+  /* Props */
+  const { className, ...rest } = props;
+
+  /* State */
   const classes = useStyles();
-  const elRef = useRef();
 
   const [ group, setGroup ] = useState( props.group );
   const [ depth, setDepth ] = useState( 1 );

@@ -1,5 +1,5 @@
 /* React */
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 
 /* Materialize */
@@ -8,7 +8,6 @@ import Button from '@material-ui/core/Button';
 
 /* Another Modueles */
 import clsx from 'clsx';
-
 
 /* Materialize Styles */
 const useStyles = makeStyles(( theme ) => ({

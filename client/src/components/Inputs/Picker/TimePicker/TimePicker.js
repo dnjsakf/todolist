@@ -1,8 +1,6 @@
 /* React */
-import React, { useRef, useEffect, useState, useCallback } from 'react';
-
-/* Redux */
-import { useDispatch } from 'react-redux';
+import React, { useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 
 /* Materialize */
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,7 +13,7 @@ import {
 /* Other Modules */
 import moment from 'moment';;
 import MomentUtils from '@date-io/moment';
-
+import clsx from 'clsx';
 
 /* Materialize Styles */
 const useStyles = makeStyles(( theme )=>{
@@ -24,57 +22,45 @@ const useStyles = makeStyles(( theme )=>{
 
 /* Component */
 const TimePicker = ( props )=>{
+  /* Props */
+  const { className, ...rest } = props;
+
   /* State */
   const classes = useStyles();
-  const elRef = useRef();
-
-  const dispatch = useDispatch();
-
   const [ value, setValue ] = useState(()=>(
     props.defaultValue ? moment( props.defaultValue, "HHmmss" ) : moment().second(0)
   ), [ props.defaultValue ]);
-  const [ error,  setError ] = useState( false );
 
   /* Handlers */
-  /* Handler: Reset value, error */
   const handleDateChange = useCallback(( date )=>{
-
-    /* Validation */
-    if( props.required ){
-      if( !date ){
-        setError( true );
-      } else {
-        setError( false );
-      }
-    }
-
-    if( props.action ){
-      dispatch( props.action( value ) );
-    }
-
     setValue( date );
-
-  }, [ value, error ]);
+  }, [ value ]);
 
   return (
     <MuiPickersUtilsProvider utils={ MomentUtils }>
       <Grid container justify="space-around">
         <KeyboardTimePicker
+          { ...rest }
           margin="normal"
-          inputRef={ elRef }
-          id={ props.id }
-          label={ props.label }
           format={ props.format || "HH:mm:ss" }
           value={ value }
           onChange={ handleDateChange }
           KeyboardButtonProps={{
             'aria-label': 'change time',
           }}
-          readOnly={ props.readOnly }
         />
       </Grid>
     </MuiPickersUtilsProvider>
   );
+}
+
+TimePicker.proptypes = {
+  className: PropTypes.string,
+  inputRef: PropTypes.any,
+  id: PropTypes.string,
+  name: PropTypes.string,
+  format: PropTypes.string,
+  error: PropTypes.bool,
 }
 
 export default TimePicker;

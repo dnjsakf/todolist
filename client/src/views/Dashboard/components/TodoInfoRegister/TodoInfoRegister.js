@@ -2,11 +2,10 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
+import { useForm } from 'react-hook-form';
+
 /* Redux */
 import { useDispatch } from 'react-redux';
-
-/* Reducers */
-import { actions } from 'Reducers/form/TodoList';
 
 /* GraphQL */
 import { useMutation } from '@apollo/react-hooks';
@@ -61,6 +60,8 @@ const TodoInfoRegister = ( props )=>{
   const elRef = useRef();
   const dispatch = useDispatch();
 
+  const { register, handleSubmit, watch, errors } = useForm();
+
   const [ 
     saveTodoData, 
     { 
@@ -90,13 +91,14 @@ const TodoInfoRegister = ( props )=>{
   }, []);
 
   /* Handler: Save form-data */
-  const handleSave = useCallback((event)=>{
+  const handleSave = useCallback(( formData )=>{
     event.preventDefault();
 
     // saveTodoData(save_data);
     console.log( 'save' );
+    console.log( formData );
 
-  }, []);
+  }, [ register ]);
   
   if( mutationLoading ) return <span>Now Loading....</span>;
 
@@ -119,6 +121,7 @@ const TodoInfoRegister = ( props )=>{
           className={ classes.form }
           noValidate
           autoComplete="off"
+          onSubmit={handleSubmit(handleSave)}
           >
           <Grid
             container
@@ -129,13 +132,15 @@ const TodoInfoRegister = ( props )=>{
           >
             <Grid item xs={ 12 }>
               <BaseText
+                inputRef={ register({ required: true }) }
                 parent={ props.id }
                 id="title" 
                 name="title"
                 label="제목"
                 placeholder="제목을 입력해주세요."
-                maxlength={ 30 }
+                maxLength={ 30 }
                 required={ true }
+                error={ !!(errors && errors.title) }
               />
             </Grid>
           </Grid>
@@ -148,6 +153,7 @@ const TodoInfoRegister = ( props )=>{
           >
             <Grid item xs={ 12 }>
               <StatusSelect
+                inputRef={ register({ required: true }) }
                 parent={ props.id }
                 name="status"
                 code="TODO_STATUS"
@@ -173,35 +179,41 @@ const TodoInfoRegister = ( props )=>{
           </Grid>
           <Grid container direction="row" spacing={ 1 }>
             <Grid item xs={ 6 }>
-              <DatePicker 
+              <DatePicker
+                inputRef={ register({ required: true }) }
                 parent={ props.id }
                 id="date-picker-dialog"
                 label="마감일"
                 name="due_date"
                 format="YYYY-MM-DD"
-                valueFormat="YYYYMMDD"
+                // valueFormat="YYYYMMDD"
                 required={ true }
+                error={ !!( errors && errors.due_date ) }
               />
             </Grid>
             <Grid item xs={ 6 }>
-              <TimePicker 
+              <TimePicker
+                inputRef={ register({ required: true }) }
                 parent={ props.id }
                 id="time-picker-dialog"
                 label="마감시간"
                 name="due_time"
                 format="HH:mm:ss"
-                valueFormat="HHmmss"
+                // valueFormat="HHmmss"
                 required={ true }
+                error={ !!( errors && errors.due_time ) }
               />
             </Grid>
           </Grid>
           <Grid container direction="row" spacing={ 2 }>
             <Grid item xs={ 12 }>
               <BaseTextarea
+                ref={ register }
                 parent={ props.id }
                 name="description"
                 rows={ 5 }
-                maxlength={ 100 }
+                rowsMax={ 5 }
+                maxLength={ 100 }
                 placeholder="Description"
               />
             </Grid>
@@ -224,7 +236,7 @@ const TodoInfoRegister = ( props )=>{
                 label="저장"
                 color="primary"
                 size="sm"
-                onClick={ handleSave }
+                type="submit"
               />
             </ButtonGroup>
           </Grid>

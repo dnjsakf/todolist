@@ -17,7 +17,8 @@ import { BaseModal } from 'Components/Modals';
 import {
   TodoInfoCard,
   TodoInfoRegister,
-  TodoInfoDetail
+  TodoInfoDetail,
+  TodoInfoModal
 } from './components';
 
 
@@ -65,15 +66,16 @@ const Dashboard = ( props )=>{
     setMode("detail");
     setOpen(true);
     setId(no);
-  }, [ open ]);
+  }, [ mode, open, id ]);
 
-  const handleOpenRegister = useCallback((event)=>{
+  const handleOpenCreate = useCallback((event)=>{
     setMode("create");
-    setOpen(true)
-  }, [ open ]);
+    setOpen(true);
+    setId(null);
+  }, [ mode, open, id ]);
 
-  const handleCloseModal = useCallback((event)=>{
-    setOpen(false)
+  const handleClose = useCallback((event)=>{
+    setOpen(false);
   }, [ open ]);
 
   if( loading ) return <span>Data loading....</span>;
@@ -90,7 +92,7 @@ const Dashboard = ( props )=>{
             label="추가"
             size="sm"
             color="primary"
-            onClick={ handleOpenRegister }
+            onClick={ handleOpenCreate }
           />
         </Grid>
         <Grid item xs={ 12 }>
@@ -107,11 +109,13 @@ const Dashboard = ( props )=>{
           }
           </GridList>
         </Grid>
-        <BaseModal
+        <TodoInfoModal
           open={ open }
-          handleClose={ handleCloseModal }
-          id={ id }
-          component={ mode === "detail" ? TodoInfoDetail : TodoInfoRegister }
+          mode={ mode }
+          data={{
+            id: id
+          }}
+          handleClose={ handleClose }
         />
         <Grid item xs={ 12 }>
           <BaseButton

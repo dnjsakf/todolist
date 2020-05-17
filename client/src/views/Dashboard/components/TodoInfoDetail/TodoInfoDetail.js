@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme)=>({
 /* Component */
 const TodoInfoDetail = ( props )=>{
   /* Props */
-  const { className, ...rest } = props;
+  const { data: { id: todo_info_id }, className, ...rest } = props;
 
   /* State */
   const classes = useStyles();
@@ -41,9 +41,9 @@ const TodoInfoDetail = ( props )=>{
   /* Get Data */
   const { loading, error, data } = useQuery(
     Query.GET_TODO_INFO, { 
-      skip: !props.id,
+      skip: !todo_info_id,
       variables: {
-        no: props.id
+        no: todo_info_id
       },
       onError(error){
         console.error( error );
@@ -98,7 +98,9 @@ const TodoInfoDetail = ( props )=>{
 }
 
 TodoInfoDetail.proptypes = {
-  id: PropTypes.string.isRequired,
+  data: PropTypes.shape({
+    id: PropTypes.string.isRequired
+  }).isRequired,
   className: PropTypes.string,
 }
 

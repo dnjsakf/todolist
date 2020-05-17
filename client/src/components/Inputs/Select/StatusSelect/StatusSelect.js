@@ -59,7 +59,7 @@ const useStyles = makeStyles(( theme ) => ({
 
 /* Component */
 const StatusSelect = ( props )=>{
-  /* Initialize State */
+  /* State */
   const classes = useStyles();
 
   const [ depth, setDeopth ] = useState( 1 );
