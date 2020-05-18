@@ -1,5 +1,5 @@
 /* React */
-import React, { useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
 /* Materialize */
@@ -14,44 +14,50 @@ const useStyles = makeStyles(( theme ) => ({
   
 }));
 
-const BaseText = ( props )=>{
+const BaseText = forwardRef(( props, ref )=>{
   /* Props */
   const { className, ...rest } = props;
 
   /* State */
   const classes = useStyles();
-  const [ value, setValue ] = useState( props.defaultValue || undefined );
-
+  
   return (
-    <TextField
-      { ...rest }
-      type="search"
-      className={ clsx(classes.text, className) }
-      label={ props.label }
+    <>
+      <TextField
+        { ...rest }
+        type="search"
+        variant="outlined"
+        size="small"
+        fullWidth
 
-      variant="outlined"
-      fullWidth
-      size="small"
+        inputRef={ ref }
+        id={ props.id }
+        name={ props.name }
+        className={ clsx(classes.text, className) }
 
-      defaultValue={ value }
-      placeholder={ props.placeholder }
+        label={ props.label }
 
-      inputProps={{
-        readOnly: !!props.readOnly,
-        maxLength: props.maxLength
-      }}
+        defaultValue={ props.defaultValue }
+        placeholder={ props.placeholder }
 
-      required={ props.required && !props.readOnly }
-      autoFocus={ !props.readOnly }
-    />
+        inputProps={{
+          readOnly: !!props.readOnly,
+          maxLength: props.maxLength
+        }}
+
+        required={ props.required && !props.readOnly }
+        autoFocus={ !props.readOnly }
+      />
+    </>
   )
-}
+});
 
 BaseText.proptypes = {
   ref: PropTypes.any,
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   className: PropTypes.string,
+  label: PropTypes.string,
   maxLength: PropTypes.number,
   readOnly: PropTypes.bool,
   required: PropTypes.bool,

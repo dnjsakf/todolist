@@ -9,6 +9,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
+/* Another Modules */
+import clsx from 'clsx';
+
 /* Materialize Styles */
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -21,7 +24,15 @@ const useStyles = makeStyles((theme) => ({
 
 const BaseSelect = ( props )=>{
   /* Props */
-  const { className, ...rest } = props;
+  const {
+    parent,
+    className, 
+    handleSelect, 
+    defaultOptions: _defaultOptions, 
+    options: _options, 
+    defaultValue: _deafultValue, 
+    ...rest
+  } = props;
 
   /* State */
   const classes = useStyles();
@@ -32,13 +43,9 @@ const BaseSelect = ( props )=>{
   const [ options, setOptions ] = useState( props.options||[] );
   const [ value, setValue ] = useState( props.defaultValue||"" );
   const [ error, setError ] = useState( false );
-  
-  const callbackRef = useCallback(( element )=>{
-    console.log("Element", element);
-  }, []);
 
   /* Handler: Handle when selectd option. */
-  const handleSelect = useCallback((event)=>{
+  const onSelect = useCallback((event)=>{
     const selected = event.target.value;
 
     if( selected === undefined || selected === 0 ) return false;
@@ -58,14 +65,14 @@ const BaseSelect = ( props )=>{
     console.log("[depth][crnt]:"    , selected_depth);
     console.groupEnd("["+props.name.toUpperCase()+"][handleSelect]")
     
-    if( props.handleSelect && do_update ){
-      props.handleSelect( event, selected, is_back );
+    if( handleSelect && do_update ){
+      handleSelect( event, selected, is_back );
     }
     
     setValue( selected );
     setDepth( selected_depth );
     
-  }, [ value, group, props.handleSelect ]);
+  }, [ value, group, handleSelect ]);
 
   
   /* Reset State: group */
@@ -127,23 +134,19 @@ const BaseSelect = ( props )=>{
     <FormControl
       component="fieldset"
       variant="outlined"
-      className={ classes.formControl }
+      className={ clsx(classes.formControl, className) }
       fullWidth 
       size="small"
     >
       <InputLabel id={ `${props.id}-label` }>{ props.label }</InputLabel>
       <Select
-        inputRef={ callbackRef }
+        { ...rest }
         labelId={ `${props.id}-label` }
-        id={ props.id }
         className={ classes.selectBox }
-        name={ props.name }
-        label={ props.label }
         
         value={ value }
-        onClick={ handleSelect }
+        onClick={ onSelect }
         
-        error={ error }
         required={ props.required && !props.readOnly }
         inputProps={{
           readOnly: !!props.readOnly
@@ -166,6 +169,9 @@ const BaseSelect = ( props )=>{
 }
 
 BaseSelect.propTypes = {
+  id: PropTypes.string,
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string,
   group: PropTypes.string,
   defaultValue: PropTypes.string,
   defaultOptions: PropTypes.arrayOf(PropTypes.shape({
@@ -184,6 +190,7 @@ BaseSelect.propTypes = {
     ]).isRequired,
     label: PropTypes.string.isRequired
   })).isRequired,
+  error: PropTypes.bool,
 }
 
 export default BaseSelect;

@@ -19,8 +19,8 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 /* Components */
 import { 
-  StatusSelect,
-  CategorySelect
+  CommonCodeSelect,
+  HierarchySelect
 } from 'Components/Inputs/Select';
 import { BaseButton } from 'Components/Inputs/Button';
 import { BaseText } from 'Components/Inputs/Text';
@@ -60,7 +60,7 @@ const TodoInfoRegister = ( props )=>{
   const elRef = useRef();
   const dispatch = useDispatch();
 
-  const { register, handleSubmit, watch, errors } = useForm();
+  const { register, errors, handleSubmit, control } = useForm();
 
   const [ 
     saveTodoData, 
@@ -93,12 +93,15 @@ const TodoInfoRegister = ( props )=>{
   /* Handler: Save form-data */
   const handleSave = useCallback(( formData )=>{
     event.preventDefault();
+    
+    //const formData = getValues();
 
     // saveTodoData(save_data);
     console.log( 'save' );
     console.log( formData );
+    console.log( errors );    
 
-  }, [ register ]);
+  }, [ errors ]);
   
   if( mutationLoading ) return <span>Now Loading....</span>;
 
@@ -109,7 +112,7 @@ const TodoInfoRegister = ( props )=>{
         {
           [classes.root]: true,
           [classes.paper]: true
-        }, 
+        },
         className
       )}
     >
@@ -132,15 +135,14 @@ const TodoInfoRegister = ( props )=>{
           >
             <Grid item xs={ 12 }>
               <BaseText
-                inputRef={ register({ required: true }) }
-                parent={ props.id }
                 id="title" 
                 name="title"
                 label="제목"
                 placeholder="제목을 입력해주세요."
                 maxLength={ 30 }
                 required={ true }
-                error={ !!(errors && errors.title) }
+                ref={ register({ required: true }) }
+                error={ !!( errors && errors.title ) }
               />
             </Grid>
           </Grid>
@@ -152,12 +154,13 @@ const TodoInfoRegister = ( props )=>{
             className={ classes.gridContainer }
           >
             <Grid item xs={ 12 }>
-              <StatusSelect
-                inputRef={ register({ required: true }) }
-                parent={ props.id }
+              <CommonCodeSelect
+                control={ control }
+                id="status"
                 name="status"
                 code="TODO_STATUS"
                 required={ true }
+                error={ !!( errors && errors.status ) }
               />
             </Grid>
           </Grid>
@@ -169,38 +172,54 @@ const TodoInfoRegister = ( props )=>{
             className={ classes.gridContainer }
           >
             <Grid item xs={ 12 }>
-              <CategorySelect
-                parent={ props.id }
+              <CommonCodeSelect
+                control={ control }
+                id="category"
                 name="category"
                 code="TODO_CATE"
                 required={ true }
+                error={ !!( errors && errors.category ) }
+              />
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            direction="row"
+            justify="center"
+            alignItems="center"
+            className={ classes.gridContainer }
+          >
+            <Grid item xs={ 12 }>
+              <HierarchySelect
+                control={ control }
+                id="hierarchy"
+                name="hierarchy"
+                code="TODO_CATE"
               />
             </Grid>
           </Grid>
           <Grid container direction="row" spacing={ 1 }>
             <Grid item xs={ 6 }>
               <DatePicker
-                inputRef={ register({ required: true }) }
-                parent={ props.id }
                 id="date-picker-dialog"
-                label="마감일"
                 name="due_date"
+                label="마감일"
                 format="YYYY-MM-DD"
                 // valueFormat="YYYYMMDD"
                 required={ true }
+                inputRef={ register({ required: true }) }
                 error={ !!( errors && errors.due_date ) }
               />
             </Grid>
             <Grid item xs={ 6 }>
               <TimePicker
-                inputRef={ register({ required: true }) }
-                parent={ props.id }
                 id="time-picker-dialog"
-                label="마감시간"
                 name="due_time"
+                label="마감시간"
                 format="HH:mm:ss"
                 // valueFormat="HHmmss"
                 required={ true }
+                inputRef={ register({ required: true }) }
                 error={ !!( errors && errors.due_time ) }
               />
             </Grid>
@@ -208,13 +227,13 @@ const TodoInfoRegister = ( props )=>{
           <Grid container direction="row" spacing={ 2 }>
             <Grid item xs={ 12 }>
               <BaseTextarea
-                ref={ register }
-                parent={ props.id }
+                id="description"
                 name="description"
                 rows={ 5 }
                 rowsMax={ 5 }
                 maxLength={ 100 }
                 placeholder="Description"
+                ref={ register }
               />
             </Grid>
           </Grid>
@@ -237,6 +256,7 @@ const TodoInfoRegister = ( props )=>{
                 color="primary"
                 size="sm"
                 type="submit"
+                //onClick={ handleSave }
               />
             </ButtonGroup>
           </Grid>

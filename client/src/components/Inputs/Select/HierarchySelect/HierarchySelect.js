@@ -13,6 +13,10 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import Grid from '@material-ui/core/Grid';
+
+/* Components */
+import CommonCodeSelect from './../CommonCodeSelect';
 
 /* Another Modules */
 import clsx from 'clsx';
@@ -28,25 +32,20 @@ const useStyles = makeStyles(( theme ) => ({
 }));
 
 /* Component */
-const StatusSelect = ( props )=>{
+const HierarchySelect = ( props )=>{
   /* Props */
   const { className, ...rest } = props;
 
   /* State */
   const classes = useStyles();
 
-  /* Handler: Handle when selectd option. */
-  const handleChange = useCallback(([event, info])=>{
-    return event;
-  }, []);
-
-  const { loading, error, data } = useQuery(
-    CommonCodeQuery.GET_COMMON_CODE, {
+  const { loading, error, data, fetchMore } = useQuery(
+    CommonCodeQuery.GET_COMMON_CODE_LIST, {
       skip: !props.code,
       variables: {
         code: props.code,
         order: [
-          "sort_order"
+          "depth"
         ]
       },
       onError: (error)=>{
@@ -59,60 +58,61 @@ const StatusSelect = ( props )=>{
       }
     }
   );
+
+  /* Handler: Handle when selectd option. */
+  const handleChange = useCallback((event, depth)=>{
+    const selected = event.target.value;
+    console.log( selected, depth );
+    
+    /*
+    fetchMore({
+      variables: {
+        code: selected,
+        order: [
+          "depth"
+        ]
+      },
+      updateQuery: ({ prev, fetchMoreResult: { common_code_list } })=>{
+        return Object.assign({}, prev, {
+          common_code_list: [
+            ...prev.common_code_list,
+            ...common_code_list
+          ]
+        })
+      }
+    });
+    */
+
+    return event;
+  }, [ fetchMore ]);
   
   /* Check Render */
   if( loading ) return <span>Data Loadding...</span>;
   if( error ) return null;
   if( !data ) return <span>No Data</span>;
 
-  const { code, code_name, sub_codes } = data.common_code;
+  const { common_code_list } = data;
 
   return (
-    <FormControl
-      component="fieldset"
-      variant="outlined"
-      className={ clsx(classes.formControl, className) }
-      fullWidth 
-      size="small"
-    >
-      <InputLabel id={ `${props.name}-${code}-select-label` }>{ props.label||code_name }</InputLabel>
-      <Controller
-        as={
-          <Select>
-            <MenuItem value="">
-              <em>선택</em>
-            </MenuItem>
-            {
-              sub_codes.map(({ id: key, code: value, code_name: label })=>(
-                <MenuItem key={ key } value={ value }>{ label }</MenuItem>
-              ))
-            }
-          </Select>
-        }
-        control={ props.control }
-        rules={{
-          required: props.required
-        }}
-
-        id={ props.id }
-        name={ props.name }
-        label={ props.label||code_name }
-        className={ classes.selectBox }
-
-        labelId={ `${props.name}-${code}-select-label` }
-        defaultValue={ props.defafultValue||"" }
-        onChange={ handleChange }
-
-        required={ props.required && !props.readOnly }
-        inputProps={{
-          readOnly: !!props.readOnly,
-        }}
-      />
-    </FormControl>
+    <Grid container>
+    {
+      common_code_list && common_code_list.map(( common_code )=>(
+        <CommonCodeSelect
+          key={ common_code.id }
+          control={ props.control }
+          id={ `${ props.id }_${ common_code.code.toLowerCase() }` }
+          name={ common_code.code }
+          label={ common_code.code_name }
+          data={ common_code }
+          handleChange={ (event)=>(handleChange(event, common_code.depth)) }
+        />
+      ))
+    }
+    </Grid>
   )
 }
 
-StatusSelect.propTypes = {
+HierarchySelect.propTypes = {
   control: PropTypes.any,
   id: PropTypes.string,
   name: PropTypes.string.isRequired,
@@ -130,4 +130,4 @@ StatusSelect.propTypes = {
   }),
 }
 
-export default StatusSelect;
+export default HierarchySelect;

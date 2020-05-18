@@ -1,5 +1,5 @@
 /* React */
-import React, { useState, useCallback, forwardRef } from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
 /* Materialize */
@@ -23,14 +23,6 @@ const BaseTextarea = forwardRef(( props, ref )=>{
 
   /* State */
   const classes = useStyles();
-  const [ value, setValue ] = useState( props.defaultValue || "" );
-
-  /* Handlers */
-  const handleBlur = useCallback(( event )=>{
-    const value = event.target.value;
-
-    setValue( value );
-  }, [ value ]);
 
   return (
     <FormControl 
@@ -41,9 +33,19 @@ const BaseTextarea = forwardRef(( props, ref )=>{
       <TextareaAutosize
         { ...rest }
         ref={ ref }
+        id={ props.id }
+        name={ props.name }
         className={ clsx(classes.textarea, className) }
+        
+        label={ props.label }
+        defaultValue={ props.defaultValue }
+
+        rows={ props.rows }
+        rowsMax={ props.rowsMax }
+
+        readOnly={ props.readOnly }
+
         aria-label="maximum height"
-        onBlur= { handleBlur }
       />
     </FormControl>
   )
@@ -55,9 +57,10 @@ BaseTextarea.proptypes = {
   id: PropTypes.string,
   name: PropTypes.string,
   label: PropTypes.string,
+
   defaultValue: PropTypes.string,
   placeholder: PropTypes.string,
-  readOnly: PropTypes.string,
+  readOnly: PropTypes.bool,
   maxLength: PropTypes.number,
   rows: PropTypes.number,
   rowsMax: PropTypes.number,
