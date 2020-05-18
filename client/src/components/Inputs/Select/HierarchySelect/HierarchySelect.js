@@ -1,7 +1,6 @@
 /* React */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Controller } from 'react-hook-form';
 
 /* GraphQL */
 import { useQuery } from '@apollo/react-hooks';
@@ -10,10 +9,16 @@ import CommonCodeQuery from 'GraphQL/Query/Common/CommonCode';
 /* Materialize */
 import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import Grid from '@material-ui/core/Grid';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Collapse from '@material-ui/core/Collapse';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import StarBorder from '@material-ui/icons/StarBorder';
 
 /* Components */
 import CommonCodeSelect from './../CommonCodeSelect';
@@ -23,13 +28,63 @@ import clsx from 'clsx';
 
 /* Materialize Styles */
 const useStyles = makeStyles(( theme ) => ({
-  formControl: {
-    minWidth: 120,
+  root: {
+    width: '100%',
+    maxWidth: 360,
+    backgroundColor: theme.palette.background.paper,
+    outlineStyle: "auto"
   },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
+  nested: {
+    paddingLeft: theme.spacing(4),
   },
 }));
+
+const NestedItem = ( props )=>{
+  /* Props */
+  const { className, ...rest } = props;
+
+  /* State */
+  const classes = useStyles();
+
+  return (
+    <ListItem button className={ classes.nested }>
+      <ListItemIcon>
+        <StarBorder />
+      </ListItemIcon>
+      <ListItemText primary={ props.label } />
+    </ListItem>
+  )
+}
+
+const HierarchyItem = ( props )=>{
+  /* Props */
+  const { children, className, ...rest } = props;
+
+  /* State */
+  const classes = useStyles();
+  const [open, setOpen] = useState( false );
+
+  const handleClick = useCallback((event)=>{
+    setOpen(!open);
+  }, [ open ]);
+
+  return (
+    <>
+      <ListItem button onClick={ handleClick }>
+        <ListItemIcon>
+          <InboxIcon />
+        </ListItemIcon>
+        <ListItemText primary={ props.label } />
+        { open ? <ExpandLess /> : <ExpandMore /> }
+      </ListItem>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          { children }
+        </List>
+      </Collapse>
+    </>
+  )
+}
 
 /* Component */
 const HierarchySelect = ( props )=>{
@@ -64,7 +119,6 @@ const HierarchySelect = ( props )=>{
     const selected = event.target.value;
     console.log( selected, depth );
     
-    /*
     fetchMore({
       variables: {
         code: selected,
@@ -72,7 +126,8 @@ const HierarchySelect = ( props )=>{
           "depth"
         ]
       },
-      updateQuery: ({ prev, fetchMoreResult: { common_code_list } })=>{
+      updateQuery: ( prev, { fetchMoreResult: { common_code_list } })=>{
+        if( common_code_list && common_code_list.length === 0 || common_code_list[0].sub_codes.length === 0 ) return prev;
         return Object.assign({}, prev, {
           common_code_list: [
             ...prev.common_code_list,
@@ -81,7 +136,6 @@ const HierarchySelect = ( props )=>{
         })
       }
     });
-    */
 
     return event;
   }, [ fetchMore ]);
@@ -91,24 +145,32 @@ const HierarchySelect = ( props )=>{
   if( error ) return null;
   if( !data ) return <span>No Data</span>;
 
-  const { common_code_list } = data;
+  const { common_code_list: codes } = data;
 
   return (
-    <Grid container>
+    <List
+      component="nav"
+      aria-labelledby="nested-list-subheader"
+      className={ classes.root }
+    >
     {
-      common_code_list && common_code_list.map(( common_code )=>(
-        <CommonCodeSelect
-          key={ common_code.id }
-          control={ props.control }
-          id={ `${ props.id }_${ common_code.code.toLowerCase() }` }
-          name={ common_code.code }
-          label={ common_code.code_name }
-          data={ common_code }
-          handleChange={ (event)=>(handleChange(event, common_code.depth)) }
-        />
+      codes && codes.map(( code )=>(
+        <HierarchyItem 
+          key={ code.id }
+          label={ code.code_name }
+        >
+        {
+          code.sub_codes.map(( sub_code )=>(
+            <NestedItem
+              key={ sub_code.id } 
+              label={ sub_code.code_name }
+            />
+          ))
+        }
+        </HierarchyItem>
       ))
     }
-    </Grid>
+    </List>
   )
 }
 

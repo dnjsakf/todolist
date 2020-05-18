@@ -11,14 +11,14 @@ from server.api.graphql.utils.decorators import session_user
 class CreateTodoInfo(graphene.Mutation):  
   class Arguments:
     title = graphene.String(required=True)
-    main_cate = graphene.String(required=True)
-    sub_cate = graphene.String()
-
-    status = graphene.String()
-    desc = graphene.String()
+    status = graphene.JSONString(required=True)
+    category = graphene.JSONString(required=True)
 
     due_date = graphene.String()
     due_time = graphene.String()
+
+    description = graphene.String()
+    star = graphene.Boolean()
 
   # 반환 Field 정의
   todo_info = graphene.Field(TodoInfoType)
@@ -28,12 +28,12 @@ class CreateTodoInfo(graphene.Mutation):
   def mutate(root, info, user, **input):
     model = TodoInfoModel(
       title=input.get("title"),
-      main_cate=input.get("title"),
-      sub_cate=input.get("sub_cate"),
       status=input.get("status"),
-      desc=input.get("desc"),
+      category=input.get("category"),
+      description=input.get("description"),
       due_date=input.get("due_date"),
       due_time=input.get("due_time"),
+      star=input.get("start"),
       reg_user=user.name,
       reg_dttm=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     ).save()

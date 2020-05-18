@@ -4,9 +4,6 @@ import PropTypes from 'prop-types';
 
 import { useForm } from 'react-hook-form';
 
-/* Redux */
-import { useDispatch } from 'react-redux';
-
 /* GraphQL */
 import { useMutation } from '@apollo/react-hooks';
 import { TodoListMutation } from 'GraphQL/Mutation';
@@ -29,7 +26,7 @@ import { DatePicker, TimePicker } from 'Components/Inputs/Picker';
 
 /* Another Modules */
 import clsx from 'clsx';
-
+import moment from 'moment';;
 
 /* Materialize Styles */
 const useStyles = makeStyles((theme)=>({
@@ -58,7 +55,6 @@ const TodoInfoRegister = ( props )=>{
   /* State */
   const classes = useStyles();
   const elRef = useRef();
-  const dispatch = useDispatch();
 
   const { register, errors, handleSubmit, control } = useForm();
 
@@ -94,19 +90,42 @@ const TodoInfoRegister = ( props )=>{
   const handleSave = useCallback(( formData )=>{
     event.preventDefault();
     
-    //const formData = getValues();
-
-    // saveTodoData(save_data);
     console.log( 'save' );
-    console.log( formData );
-    console.log( errors );    
+    console.log({
+      ...formData,
+      due_date: moment(formData.due_date, "YYYYMMDD").format("YYYYMMDD"),
+      due_time: moment(formData.due_time, "HHmmss").format("HHmmss"),
+      status: JSON.stringify({
+        p_code: "TODO_STATUS",
+        code: formData.status
+      }),
+      category: JSON.stringify({
+        p_code: "TODO_CATE",
+        code: formData.category
+      })
+    });
 
+    saveTodoData({
+      variables: {
+        ...formData,
+        due_date: moment(formData.due_date, "YYYYMMDD").format("YYYYMMDD"),
+        due_time: moment(formData.due_time, "HHmmss").format("HHmmss"),
+        status: JSON.stringify({
+          p_code: "TODO_STATUS",
+          code: formData.status
+        }),
+        category: JSON.stringify({
+          p_code: "TODO_CATE",
+          code: formData.category
+        })
+      }
+    });
   }, [ errors ]);
   
   if( mutationLoading ) return <span>Now Loading....</span>;
 
   return (
-    <Paper 
+    <Paper
       elevation={ 5 }
       className={ clsx(
         {
@@ -116,7 +135,11 @@ const TodoInfoRegister = ( props )=>{
         className
       )}
     >
-      <Grid container>
+      <Grid 
+        container
+        alignItems="center"
+        justify="space-between"
+      >
         <form 
           ref={ elRef }
           id={ props.id }
@@ -182,22 +205,12 @@ const TodoInfoRegister = ( props )=>{
               />
             </Grid>
           </Grid>
-          <Grid
-            container
-            direction="row"
-            justify="center"
-            alignItems="center"
-            className={ classes.gridContainer }
-          >
-            <Grid item xs={ 12 }>
-              <HierarchySelect
-                control={ control }
-                id="hierarchy"
-                name="hierarchy"
-                code="TODO_CATE"
-              />
-            </Grid>
-          </Grid>
+          <HierarchySelect
+            control={ control }
+            id="hierarchy"
+            name="hierarchy"
+            code="TODO_CATE"
+          />
           <Grid container direction="row" spacing={ 1 }>
             <Grid item xs={ 6 }>
               <DatePicker

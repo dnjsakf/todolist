@@ -37,11 +37,7 @@ class CommonCodeType(BaseType):
 
   sub_codes = graphene.List(CommonCodeSubType)
 
-  # 공통 코드 목록 조회
+  # # 공통 코드 목록 조회
   def resolve_sub_codes(parent, info, **input):
-    codes = CommonCodeModel.objects(p_code=parent).all()
-  
-    for code in codes:
-      print( code.code, code.code_name )
-  
-    return codes
+    return CommonCodeModel.objects(p_code=parent).all()
+

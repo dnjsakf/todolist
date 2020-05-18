@@ -40,7 +40,10 @@ const BaseModal = ( props )=>{
     >
       <Fade in={ open }>
         <div>
-          <Component { ...rest } />
+          <Component 
+            { ...rest } 
+            handleClose={ handleClose }
+          />
         </div>
       </Fade>
     </Modal>

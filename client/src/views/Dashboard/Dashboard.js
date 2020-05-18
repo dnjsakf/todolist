@@ -52,7 +52,7 @@ const Dashboard = ( props )=>{
   const [ mode, setMode ] = useState( "create" );
   const [ id, setId ] = useState( null );
 
-  const { loading, error, data: list, fetchMore } = useQuery(
+  const { loading, error, data: list, fetchMore, refetch } = useQuery(
     TodoListQuery.GET_TODO_EDGES, {
       variables,
       onError(error){
@@ -76,6 +76,7 @@ const Dashboard = ( props )=>{
 
   const handleClose = useCallback((event)=>{
     setOpen(false);
+    refetch();
   }, [ open ]);
 
   if( loading ) return <span>Data loading....</span>;

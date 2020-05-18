@@ -3,8 +3,8 @@ import gql from 'graphql-tag';
 export const CREATE_TODO = gql(`
 mutation createTodo(
   $title: String!
-  $status: JsonString!
-  $category: JsonString!
+  $status: JSONString!
+  $category: JSONString!
   $due_date: String
   $due_time: String
   $description: String
