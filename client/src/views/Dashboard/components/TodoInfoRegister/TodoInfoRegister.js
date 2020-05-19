@@ -17,7 +17,8 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 /* Components */
 import { 
   CommonCodeSelect,
-  HierarchySelect
+  HierarchySelect,
+  HashTagSelect
 } from 'Components/Inputs/Select';
 import { BaseButton } from 'Components/Inputs/Button';
 import { BaseText } from 'Components/Inputs/Text';
@@ -31,10 +32,7 @@ import moment from 'moment';;
 /* Materialize Styles */
 const useStyles = makeStyles((theme)=>({
   root: {
-    width: 350
-  },
-  form: {
-
+    minWidth: 350
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
@@ -45,12 +43,32 @@ const useStyles = makeStyles((theme)=>({
   gridContainer: {
     height: 50
   },
+  small: {
+    width: 400
+  },
+  middle: {
+    width: 500
+  },
+  large: {
+    width: 600
+  },
+  fullWidth: {
+    width: "100%"
+  },
 }));
 
 /* Component */
 const TodoInfoRegister = ( props )=>{
   /* Props */
-  const { className, handleClose, ...rest } = props;
+  const {
+    className,
+    handleClose,
+    small,
+    middle,
+    large,
+    fullWidth,
+    ...rest
+    } = props;
 
   /* State */
   const classes = useStyles();
@@ -87,22 +105,24 @@ const TodoInfoRegister = ( props )=>{
   }, []);
 
   /* Handler: Save form-data */
-  const handleSave = useCallback(( formData )=>{
+  const handleSave = useCallback(( formData, event )=>{
     event.preventDefault();
     
     console.log( 'save' );
     console.log({
-      ...formData,
-      due_date: moment(formData.due_date, "YYYYMMDD").format("YYYYMMDD"),
-      due_time: moment(formData.due_time, "HHmmss").format("HHmmss"),
-      status: JSON.stringify({
-        p_code: "TODO_STATUS",
-        code: formData.status
-      }),
-      category: JSON.stringify({
-        p_code: "TODO_CATE",
-        code: formData.category
-      })
+      variables: {
+        ...formData,
+        due_date: moment(formData.due_date, "YYYYMMDD").format("YYYYMMDD"),
+        due_time: moment(formData.due_time, "HHmmss").format("HHmmss"),
+        status: JSON.stringify({
+          p_code: "TODO_STATUS",
+          code: formData.status
+        }),
+        category: JSON.stringify({
+          p_code: "TODO_CATE",
+          code: formData.category
+        })
+      }
     });
 
     saveTodoData({
@@ -130,151 +150,138 @@ const TodoInfoRegister = ( props )=>{
       className={ clsx(
         {
           [classes.root]: true,
-          [classes.paper]: true
+          [classes.paper]: true,
+          [classes.small]: small,
+          [classes.middle]: middle,
+          [classes.large]: large,
+          [classes.fullWidth]: fullWidth,
         },
         className
       )}
     >
-      <Grid 
-        container
-        alignItems="center"
-        justify="space-between"
+      <form
+        ref={ elRef }
+        id={ props.id }
+        name={ props.name }
+        noValidate
+        autoComplete="off"
+        onSubmit={handleSubmit(handleSave)}
       >
-        <form 
-          ref={ elRef }
-          id={ props.id }
-          name={ props.name }
-          className={ classes.form }
-          noValidate
-          autoComplete="off"
-          onSubmit={handleSubmit(handleSave)}
-          >
-          <Grid
-            container
-            direction="row"
-            justify="center"
-            alignItems="center"
-            className={ classes.gridContainer }
-          >
-            <Grid item xs={ 12 }>
-              <BaseText
-                id="title" 
-                name="title"
-                label="제목"
-                placeholder="제목을 입력해주세요."
-                maxLength={ 30 }
-                required={ true }
-                ref={ register({ required: true }) }
-                error={ !!( errors && errors.title ) }
-              />
+        <Grid 
+          container
+          direction="row"
+          alignItems="center"
+          justify="space-between"
+          spacing={ 1 }
+        >
+          <Grid item xs={ 12 }>
+            <BaseText
+              id="title" 
+              name="title"
+              label="제목"
+              placeholder="제목을 입력해주세요."
+              maxLength={ 30 }
+              required={ true }
+              ref={ register({ required: true }) }
+              error={ !!( errors && errors.title ) }
+            />
+          </Grid>
+          <Grid item xs={ 12 }>
+            <CommonCodeSelect
+              control={ control }
+              id="status"
+              name="status"
+              code="TODO_STATUS"
+              required={ true }
+              error={ !!( errors && errors.status ) }
+            />
+          </Grid>
+          <Grid item xs={ 12 }>
+            <CommonCodeSelect
+              control={ control }
+              id="category"
+              name="category"
+              code="TODO_CATE"
+              required={ true }
+              error={ !!( errors && errors.category ) }
+            />
+          </Grid>
+          <Grid item xs={ 12 }>
+            <HashTagSelect
+              control={ control }
+              id="category"
+              name="category"
+              code="TODO_CATE"
+              required={ true }
+              error={ !!( errors && errors.category ) }
+            />
+          </Grid>
+          <Grid item xs={ 12 }>
+            <Grid container direction="row" spacing={ 1 }>
+              <Grid item xs={ 6 }>
+                <DatePicker
+                  id="date-picker-dialog"
+                  name="due_date"
+                  label="마감일"
+                  format="YYYY-MM-DD"
+                  // valueFormat="YYYYMMDD"
+                  required={ true }
+                  inputRef={ register({ required: true }) }
+                  error={ !!( errors && errors.due_date ) }
+                />
+              </Grid>
+              <Grid item xs={ 6 }>
+                <TimePicker
+                  id="time-picker-dialog"
+                  name="due_time"
+                  label="마감시간"
+                  format="HH:mm:ss"
+                  // valueFormat="HHmmss"
+                  required={ true }
+                  inputRef={ register({ required: true }) }
+                  error={ !!( errors && errors.due_time ) }
+                />
+              </Grid>
             </Grid>
           </Grid>
-          <Grid
-            container
-            direction="row"
-            justify="center"
-            alignItems="center"
-            className={ classes.gridContainer }
-          >
-            <Grid item xs={ 12 }>
-              <CommonCodeSelect
-                control={ control }
-                id="status"
-                name="status"
-                code="TODO_STATUS"
-                required={ true }
-                error={ !!( errors && errors.status ) }
-              />
+          <Grid item xs={ 12 }>
+            <BaseTextarea
+              id="description"
+              name="description"
+              rows={ 5 }
+              rowsMax={ 5 }
+              maxLength={ 100 }
+              placeholder="Description"
+              ref={ register }
+            />
+          </Grid>
+          <Grid item xs={ 12 }>
+            <Grid
+              container 
+              direction="row" 
+              justify="center"
+              alignItems="center"
+            >
+              <ButtonGroup>
+                <BaseButton
+                  id="btn-cancel"
+                  label="취소"
+                  color="primary"
+                  size="sm"
+                  onClick={ handleCancel }
+                />
+                <BaseButton
+                  id="btn-save"
+                  label="저장"
+                  color="primary"
+                  size="sm"
+                  type="submit"
+                />
+              </ButtonGroup>
             </Grid>
           </Grid>
-          <Grid
-            container
-            direction="row"
-            justify="center"
-            alignItems="center"
-            className={ classes.gridContainer }
-          >
-            <Grid item xs={ 12 }>
-              <CommonCodeSelect
-                control={ control }
-                id="category"
-                name="category"
-                code="TODO_CATE"
-                required={ true }
-                error={ !!( errors && errors.category ) }
-              />
-            </Grid>
-          </Grid>
-          <HierarchySelect
-            control={ control }
-            id="hierarchy"
-            name="hierarchy"
-            code="TODO_CATE"
-          />
-          <Grid container direction="row" spacing={ 1 }>
-            <Grid item xs={ 6 }>
-              <DatePicker
-                id="date-picker-dialog"
-                name="due_date"
-                label="마감일"
-                format="YYYY-MM-DD"
-                // valueFormat="YYYYMMDD"
-                required={ true }
-                inputRef={ register({ required: true }) }
-                error={ !!( errors && errors.due_date ) }
-              />
-            </Grid>
-            <Grid item xs={ 6 }>
-              <TimePicker
-                id="time-picker-dialog"
-                name="due_time"
-                label="마감시간"
-                format="HH:mm:ss"
-                // valueFormat="HHmmss"
-                required={ true }
-                inputRef={ register({ required: true }) }
-                error={ !!( errors && errors.due_time ) }
-              />
-            </Grid>
-          </Grid>
-          <Grid container direction="row" spacing={ 2 }>
-            <Grid item xs={ 12 }>
-              <BaseTextarea
-                id="description"
-                name="description"
-                rows={ 5 }
-                rowsMax={ 5 }
-                maxLength={ 100 }
-                placeholder="Description"
-                ref={ register }
-              />
-            </Grid>
-          </Grid>
-          <Grid container 
-            direction="row" 
-            justify="center"
-            alignItems="center"
-          >
-            <ButtonGroup>
-              <BaseButton
-                id="btn-cancel"
-                label="취소"
-                color="primary"
-                size="sm"
-                onClick={ handleCancel }
-              />
-              <BaseButton
-                id="btn-save"
-                label="저장"
-                color="primary"
-                size="sm"
-                type="submit"
-                //onClick={ handleSave }
-              />
-            </ButtonGroup>
-          </Grid>
-        </form>
-      </Grid>
+        </Grid>
+      </form>
     </Paper>
   )
 }

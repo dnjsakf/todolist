@@ -17,11 +17,17 @@ const useStyles = makeStyles((theme)=>({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-  }
+  },
 }));
 
 const BaseModal = ( props )=>{
-  const { component: Component, open, className, handleClose, ...rest } = props;
+  const {
+    component: Component,
+    open,
+    className,
+    handleClose,
+    ...rest
+  } = props;
 
   const classes = useStyles();
 

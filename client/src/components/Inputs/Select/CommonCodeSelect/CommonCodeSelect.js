@@ -40,7 +40,7 @@ const CommonCodeSelect = ( props )=>{
     if( props.handleChange ){
       props.handleChange(event);
     }
-    return event;
+    return event.target.value;
   }, [ props.handleChange ]);
 
   const { loading, error, data } = useQuery(

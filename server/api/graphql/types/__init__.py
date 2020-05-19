@@ -2,6 +2,7 @@
 from .CommonTypes import (
   BaseType
   , CommonCodeType
+  , CommonCodeSubType
 )
 from .TodoTypes import (
   TodoInfoType

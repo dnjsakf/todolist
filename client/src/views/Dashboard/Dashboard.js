@@ -48,7 +48,7 @@ const Dashboard = ( props )=>{
   /* State */
   const classes = useStyles();
 
-  const [ open, setOpen ] = useState( false );
+  const [ open, setOpen ] = useState( true );
   const [ mode, setMode ] = useState( "create" );
   const [ id, setId ] = useState( null );
 
@@ -110,14 +110,6 @@ const Dashboard = ( props )=>{
           }
           </GridList>
         </Grid>
-        <TodoInfoModal
-          open={ open }
-          mode={ mode }
-          data={{
-            id: id
-          }}
-          handleClose={ handleClose }
-        />
         <Grid item xs={ 12 }>
           <BaseButton
             id="btn-load-todolist"
@@ -148,6 +140,15 @@ const Dashboard = ( props )=>{
           />
         </Grid>
       </Grid>
+      <TodoInfoModal
+        open={ open }
+        mode={ mode }
+        data={{
+          id: id
+        }}
+        large
+        handleClose={ handleClose }
+      />
     </Suspense>
   )
 }

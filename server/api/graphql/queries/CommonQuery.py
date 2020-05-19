@@ -21,7 +21,7 @@ class CommonCodeQuery(graphene.ObjectType):
     CommonCodeType,
     code=graphene.String(required=True)
   )
-
+  
   # 공통 코드 목록 조회
   def resolve_common_code_list(parent, info, code, order=list()):
 
