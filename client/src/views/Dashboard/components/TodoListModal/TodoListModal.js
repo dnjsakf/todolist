@@ -7,8 +7,8 @@ import {
   BaseModal  
 } from 'Components/Modals';
 
-import TodoInfoRegister from '../TodoInfoRegister';
-import TodoInfoDetail from '../TodoInfoDetail';
+import TodoListRegister from '../TodoListRegister';
+import TodoListDetail from '../TodoListDetail';
 
 import clsx from 'clsx';
 
@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme)=>({
   }
 }));
 
-const TodoInfoModal = ( props )=>{
+const TodoListModal = ( props )=>{
   /* Props */
   const { mode, className, ...rest } = props;
   
@@ -31,14 +31,14 @@ const TodoInfoModal = ( props )=>{
       className={ clsx(classes.root, className) }
       component={
         mode === "detail"
-        ? TodoInfoDetail
-        : TodoInfoRegister
+        ? TodoListDetail
+        : TodoListRegister
       }
     />
   )
 }
 
-TodoInfoModal.proptypes = {
+TodoListModal.proptypes = {
   mode: PropTypes.oneOf([
     "detail",
     "create",
@@ -49,5 +49,5 @@ TodoInfoModal.proptypes = {
   handleClode: PropTypes.func.isRequired,
 }
 
-export default TodoInfoModal;
+export default TodoListModal;
 

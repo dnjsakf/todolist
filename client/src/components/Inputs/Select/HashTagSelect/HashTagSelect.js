@@ -86,18 +86,8 @@ const useStyles = makeStyles(( theme ) => ({
   },
 }));
 
-const InnerInput = forwardRef(( props, ref )=>{
-  const { className, ...rest } = props;
-
-  return (
-    <Input 
-      { ...rest }
-    />
-  )
-});
-
 /* Component */
-const HashTagSelect = ( props )=>{
+const HashTagSelect = forwardRef(( props, ref )=>{
   /* Props */
   const { className, ...rest } = props;
   
@@ -106,7 +96,6 @@ const HashTagSelect = ( props )=>{
   const inputRef = useRef();
   const [ inputValue, setInputValue ] = useState("");
   const [ value, setValue ] = useState([]);
-  const [ chips, setChips ] = useState([]);
   
   const handleChange = useCallback(( event )=>{
     setInputValue( event.target.value );
@@ -140,7 +129,7 @@ const HashTagSelect = ( props )=>{
     }
   }, [ value, inputValue ]);
   
-  const handleDelete = useCallback((event, del_id)=>{
+  const handleDelete = (event, del_id)=>{
     const del_value = value.filter(({ id })=>( id !== del_id ));
 
     if( del_value.length !== value.length ){
@@ -148,7 +137,7 @@ const HashTagSelect = ( props )=>{
     }
 
     inputRef.current.focus();
-  }, [ value ]);
+  };
 
   const handleClear = useCallback((event)=>{
     setInputValue("");
@@ -163,6 +152,7 @@ const HashTagSelect = ( props )=>{
         fullWidth
       >
         <Input
+          ref={ ref }
           inputRef={ inputRef }
           className={clsx({
             [classes.inputRoot]: true,
@@ -207,10 +197,11 @@ const HashTagSelect = ( props )=>{
       </FormControl>
     </div>
   )
-}
+});
 
 
 HashTagSelect.propTypes = {
+  ref: PropTypes.any,
   
 }
 

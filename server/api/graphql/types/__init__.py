@@ -4,6 +4,9 @@ from .CommonTypes import (
   , CommonCodeType
   , CommonCodeSubType
 )
-from .TodoTypes import (
-  TodoInfoType
+from .TodoListTypes import (
+  TodoListType
+)
+from .HashTagTypes import (
+  HashTagType
 )

@@ -5,7 +5,8 @@ from graphene.types import Scalar
 from graphene_mongo import MongoengineObjectType
 
 from .CommonTypes import BaseType, CommonCodeType
-from ..models import TodoInfoModel, CommonCodeModel
+from .HashTagTypes import HashTagType
+from ..models import TodoListModel, TodoListHashTagModel, CommonCodeModel
 
 
 class StringToJson(Scalar):
@@ -13,9 +14,9 @@ class StringToJson(Scalar):
   def serialize( value ):
     return value
 
-class TodoInfoType(BaseType):
+class TodoListType(BaseType):
   class Meta:
-    model = TodoInfoModel
+    model = TodoListModel
     interfaces = (Node, )
 
   category = graphene.Field(StringToJson)
@@ -23,6 +24,8 @@ class TodoInfoType(BaseType):
 
   category_codes = graphene.Field(CommonCodeType)
   status_codes = graphene.Field(CommonCodeType)
+  
+  hash_tag = graphene.List(HashTagType)
 
   def resolve_category_codes(parent, info, **input):
     codes = parent.category.get("p_code").split(":")
@@ -63,3 +66,6 @@ class TodoInfoType(BaseType):
       "code": code
     }
     return CommonCodeModel.objects(**cond).first()
+    
+  def resolve_hash_tag(parent, info, **input):
+    return TodoListHashTagModel.objects(todo_list=parent).values_list('hash_tag').all()

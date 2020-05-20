@@ -1,11 +1,13 @@
 # api/query.pyf
 from graphene.relay import Node
 from .CommonQuery import CommonCodeQuery
-from .TodoQuery import TodoInfoQuery
+from .TodoListQuery import TodoListQuery
+from .HashTagQuery import HashTagQuery
 
 Inherits = [
-  TodoInfoQuery,
   CommonCodeQuery,
+  HashTagQuery,
+  TodoListQuery,
 ]
 
 class Query(*Inherits):

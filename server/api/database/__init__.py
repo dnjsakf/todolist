@@ -11,8 +11,11 @@ def connect_db(database, host, init=False, **kwargs):
 def init_db():
   import datetime
   from server.api.graphql.models import (
-    UserModel, CommonCodeModel,
-    TodoInfoModel
+    UserModel,
+    CommonCodeModel,
+    TodoListModel,
+    HashTagModel,
+    TodoListHashTagModel
   )
 
   reg_user = "admin"
@@ -50,9 +53,17 @@ def init_db():
   ### 4 Depth 데이터
   CommonCodeModel(full_code="TODO_CATE:LANGUAGE:JAVASCRIPT:ES6:TEST", depth=5, p_code=todo_cate_develop_javascript_es6, code="TEST", code_name="TEST", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
 
+  
+  ### HashTag 데이터
+  hash_1 = HashTagModel(tag="개발", tag_name="개발", reg_user=reg_user, reg_dttm=reg_dttm).save()
+  hash_2 = HashTagModel(tag="투두리스트", tag_name="투두리스트", reg_user=reg_user, reg_dttm=reg_dttm).save()
+  hash_3 = HashTagModel(tag="파이썬", tag_name="파이썬", reg_user=reg_user, reg_dttm=reg_dttm).save()
+  hash_4 = HashTagModel(tag="graphQL", tag_name="graphQL", reg_user=reg_user, reg_dttm=reg_dttm).save()
+  hash_5 = HashTagModel(tag="몽고DB", tag_name="몽고DB", reg_user=reg_user, reg_dttm=reg_dttm).save()
+  
 
   ### Todo 샘플 데이터
-  TodoInfoModel(
+  todo_list_1 = TodoListModel(
     title="ToDo List 만들기",
     status={
       "p_code": "TODO_STATUS",
@@ -65,12 +76,13 @@ def init_db():
     due_date="20201231",
     due_time="000000",
     description="나의 첫번째 ToDo List 만들기.",
+    
     reg_user=reg_user,
     reg_dttm=reg_dttm
   ).save()
 
   ### Todo 샘플 데이터
-  TodoInfoModel(
+  todo_list_2 = TodoListModel(
     title="ToDo List 만들기2",
     status={
       "p_code": "TODO_STATUS",
@@ -84,12 +96,13 @@ def init_db():
     due_time="000000",
     description="나의 첫번째 ToDo List 만들기.",
     star=True,
+    
     reg_user=reg_user,
     reg_dttm=reg_dttm
   ).save()
 
   ### Todo 샘플 데이터
-  TodoInfoModel(
+  todo_list_3 = TodoListModel(
     title="ToDo List 만들기3",
     status={
       "p_code": "TODO_STATUS",
@@ -103,12 +116,13 @@ def init_db():
     due_time="000000",
     description="나의 첫번째 ToDo List 만들기.",
     star=True,
+    
     reg_user=reg_user,
     reg_dttm=reg_dttm
   ).save()
   
     ### Todo 샘플 데이터
-  TodoInfoModel(
+  todo_list_4 = TodoListModel(
     title="ToDo List 만들기4",
     status={
       "p_code": "TODO_STATUS",
@@ -122,12 +136,13 @@ def init_db():
     due_time="000000",
     description="나의 첫번째 ToDo List 만들기.",
     star=True,
+    
     reg_user=reg_user,
     reg_dttm=reg_dttm
   ).save()
   
     ### Todo 샘플 데이터
-  TodoInfoModel(
+  todo_list_5 = TodoListModel(
     title="ToDo List 만들기5",
     status={
       "p_code": "TODO_STATUS",
@@ -141,12 +156,13 @@ def init_db():
     due_time="000000",
     description="나의 첫번째 ToDo List 만들기.",
     star=True,
+    
     reg_user=reg_user,
     reg_dttm=reg_dttm
   ).save()
   
     ### Todo 샘플 데이터
-  TodoInfoModel(
+  todo_list_6 = TodoListModel(
     title="ToDo List 만들기6",
     status={
       "p_code": "TODO_STATUS",
@@ -160,6 +176,27 @@ def init_db():
     due_time="000000",
     description="나의 첫번째 ToDo List 만들기.",
     star=True,
+    
     reg_user=reg_user,
     reg_dttm=reg_dttm
   ).save()
+  
+  
+  TodoListHashTagModel(todo_list=todo_list_1, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  TodoListHashTagModel(todo_list=todo_list_1, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  
+  TodoListHashTagModel(todo_list=todo_list_2, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  TodoListHashTagModel(todo_list=todo_list_2, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  
+  TodoListHashTagModel(todo_list=todo_list_3, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  TodoListHashTagModel(todo_list=todo_list_3, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  
+  TodoListHashTagModel(todo_list=todo_list_4, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  TodoListHashTagModel(todo_list=todo_list_4, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  
+  TodoListHashTagModel(todo_list=todo_list_5, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  TodoListHashTagModel(todo_list=todo_list_5, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  
+  TodoListHashTagModel(todo_list=todo_list_6, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  TodoListHashTagModel(todo_list=todo_list_6, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  

@@ -15,10 +15,10 @@ import Grid from '@material-ui/core/Grid';
 import { BaseButton } from 'Components/Inputs/Button';
 import { BaseModal } from 'Components/Modals';
 import {
-  TodoInfoCard,
-  TodoInfoRegister,
-  TodoInfoDetail,
-  TodoInfoModal
+  TodoListCard,
+  TodoListRegister,
+  TodoListDetail,
+  TodoListModal
 } from './components';
 
 
@@ -53,7 +53,7 @@ const Dashboard = ( props )=>{
   const [ id, setId ] = useState( null );
 
   const { loading, error, data: list, fetchMore, refetch } = useQuery(
-    TodoListQuery.GET_TODO_EDGES, {
+    TodoListQuery.GET_TODO_LIST_EDGES, {
       variables,
       onError(error){
         console.error( error );
@@ -82,7 +82,7 @@ const Dashboard = ( props )=>{
   if( loading ) return <span>Data loading....</span>;
   if( error ) return null;
   
-  const { edges, pageInfo } = list.todo_info_edges;
+  const { edges, pageInfo } = list.todo_list_edges;
 
   return (
     <Suspense fallback={<div>Todo List Loading...</div>}>
@@ -101,7 +101,7 @@ const Dashboard = ( props )=>{
           {
             edges.map((edge)=>(
               <Grid item key={ edge.cursor }>
-                <TodoInfoCard
+                <TodoListCard
                   data={ edge.node }
                   handleClick={ (event)=>( handleOpenDetail(event, edge.node.no) ) }
                 />
@@ -122,12 +122,12 @@ const Dashboard = ( props )=>{
                 variables: Object.assign({}, variables, {
                   after: pageInfo.endCursor
                 }),
-                updateQuery: ( prev, { fetchMoreResult: { todo_info_edges : crnt } })=>{
+                updateQuery: ( prev, { fetchMoreResult: { todo_list_edges : crnt } })=>{
                   const updated = Object.assign({}, prev, {
-                    todo_info_edges: {
-                      ...prev.todo_info_edges,
+                    todo_list_edges: {
+                      ...prev.todo_list_edges,
                       edges: [
-                        ...prev.todo_info_edges.edges,
+                        ...prev.todo_list_edges.edges,
                         ...crnt.edges
                       ],
                       pageInfo: crnt.pageInfo,
@@ -140,7 +140,7 @@ const Dashboard = ( props )=>{
           />
         </Grid>
       </Grid>
-      <TodoInfoModal
+      <TodoListModal
         open={ open }
         mode={ mode }
         data={{

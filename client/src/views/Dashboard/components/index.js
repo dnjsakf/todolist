@@ -1,4 +1,4 @@
-export { default as TodoInfoCard } from './TodoInfoCard';
-export { default as TodoInfoRegister } from './TodoInfoRegister';
-export { default as TodoInfoDetail } from './TodoInfoDetail';
-export { default as TodoInfoModal } from './TodoInfoModal';
+export { default as TodoListCard } from './TodoListCard';
+export { default as TodoListRegister } from './TodoListRegister';
+export { default as TodoListDetail } from './TodoListDetail';
+export { default as TodoListModal } from './TodoListModal';

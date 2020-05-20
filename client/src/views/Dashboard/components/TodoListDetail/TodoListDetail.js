@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme)=>({
 }));
 
 /* Component */
-const TodoInfoDetail = ( props )=>{
+const TodoListDetail = ( props )=>{
   /* Props */
   const { data: { id: todo_info_id }, className, ...rest } = props;
 
@@ -40,7 +40,7 @@ const TodoInfoDetail = ( props )=>{
 
   /* Get Data */
   const { loading, error, data } = useQuery(
-    Query.GET_TODO_INFO, { 
+    Query.GET_TODO_LIST_FIELD, { 
       skip: !todo_info_id,
       variables: {
         no: todo_info_id
@@ -97,11 +97,11 @@ const TodoInfoDetail = ( props )=>{
   )
 }
 
-TodoInfoDetail.proptypes = {
+TodoListDetail.proptypes = {
   data: PropTypes.shape({
     id: PropTypes.string.isRequired
   }).isRequired,
   className: PropTypes.string,
 }
 
-export default TodoInfoDetail;
+export default TodoListDetail;

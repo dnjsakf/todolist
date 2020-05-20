@@ -2,11 +2,11 @@ import gql from 'graphql-tag';
 
 
 export default {
-  GET_TODO_INFO: gql(`
-  query getTodoInfo(
+  GET_TODO_LIST_FIELD: gql(`
+  query getTodoListField(
     $no: Int!
   ){
-    todo_info(
+    todo_list_field(
       no: $no
     ){
       id
@@ -18,6 +18,11 @@ export default {
       due_time
       description
       star
+      hash_tag {
+        id
+        tag
+        tag_name
+      }
       sort_order
       reg_user
       reg_dttm

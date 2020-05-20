@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const TodoInfoCard = props => {
+const TodoListCard = props => {
   const { className, data, handleClick, ...rest } = props;
 
   const classes = useStyles();
@@ -85,7 +85,7 @@ const TodoInfoCard = props => {
   );
 };
 
-TodoInfoCard.propTypes = {
+TodoListCard.propTypes = {
   className: PropTypes.string,
   data: PropTypes.shape({
     title: PropTypes.string.isRequired,
@@ -97,4 +97,4 @@ TodoInfoCard.propTypes = {
   })
 };
 
-export default TodoInfoCard;
+export default TodoListCard;

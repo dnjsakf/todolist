@@ -5,7 +5,8 @@ from server.api.graphql.queries import Query
 from server.api.graphql.mutations import Mutation
 from server.api.graphql.types import (
   CommonCodeType, 
-  TodoInfoType
+  TodoListType,
+  HashTagType
 )
 
 # Schema 생성
@@ -14,7 +15,8 @@ schema = graphene.Schema(
   mutation=Mutation,
   types=[
     CommonCodeType,
-    TodoInfoType
+    TodoListType,
+    HashTagType
   ],
   auto_camelcase=False
 )

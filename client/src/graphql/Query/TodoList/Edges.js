@@ -1,15 +1,15 @@
 import gql from 'graphql-tag';
 
 export default {
-  GET_TODO_EDGES: gql(`
-  query getTodoEdges(
+  GET_TODO_LIST_EDGES: gql(`
+  query getTodoListEdges(
     $first: Int
     $last: Int
     $before: String
     $after: String
     $orderBy: [String]
   ) {
-    todo_info_edges(
+    todo_list_edges(
       first: $first
       last: $last
       before: $before
@@ -33,6 +33,11 @@ export default {
           due_date
           due_time
           star
+          hash_tag {
+            id
+            tag
+            tag_name
+          }
           sort_order
           reg_user
           reg_dttm

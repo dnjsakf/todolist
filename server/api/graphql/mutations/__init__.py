@@ -1,11 +1,11 @@
 # api/mutation.py
 import graphene
 
-from .TodoMutation import (
-  CreateTodoInfo
+from .TodoListMutation import (
+  CreateTodoList
 )
 
 # Mutation Field 정의
 class Mutation(graphene.ObjectType):
-  create_todo_info = CreateTodoInfo.Field()
+  create_todo_list = CreateTodoList.Field()
   
