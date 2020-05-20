@@ -10,7 +10,7 @@ mutation createTodo(
   $description: String
   $star: Boolean
 ){
-  create_todo_info(
+  create_todo_list(
     title: $title
     status: $status
     category: $category
@@ -20,7 +20,7 @@ mutation createTodo(
     star: $star
   ){
     success
-    todo_info {
+    todo_list_field {
       no
      	title
       status

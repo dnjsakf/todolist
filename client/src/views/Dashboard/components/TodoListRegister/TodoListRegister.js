@@ -9,10 +9,10 @@ import { useMutation } from '@apollo/react-hooks';
 import { TodoListMutation } from 'GraphQL/Mutation';
 
 /* Material */
-import { makeStyles } from '@TodoList-ui/core/styles';
-import Grid from '@TodoList-ui/core/Grid';
-import Paper from '@TodoList-ui/core/Paper';
-import ButtonGroup from '@TodoList-ui/core/ButtonGroup';
+import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 /* Components */
 import { 

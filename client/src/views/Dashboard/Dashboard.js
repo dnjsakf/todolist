@@ -78,6 +78,27 @@ const Dashboard = ( props )=>{
     setOpen(false);
     refetch();
   }, [ open ]);
+  
+  const handleFetchMore = (event)=>{
+    fetchMore({
+      variables: Object.assign({}, variables, {
+        after: pageInfo.endCursor
+      }),
+      updateQuery: ( prev, { fetchMoreResult: { todo_list_edges : crnt } })=>{
+        const updated = Object.assign({}, prev, {
+          todo_list_edges: {
+            ...prev.todo_list_edges,
+            edges: [
+              ...prev.todo_list_edges.edges,
+              ...crnt.edges
+            ],
+            pageInfo: crnt.pageInfo,
+          }
+        });
+        return updated;
+      }
+    });
+  }
 
   if( loading ) return <span>Data loading....</span>;
   if( error ) return null;
@@ -117,26 +138,7 @@ const Dashboard = ( props )=>{
             color="primary"
             size="sm"
             disabled={ pageInfo && !pageInfo.hasNextPage }
-            onClick={()=>{
-              fetchMore({
-                variables: Object.assign({}, variables, {
-                  after: pageInfo.endCursor
-                }),
-                updateQuery: ( prev, { fetchMoreResult: { todo_list_edges : crnt } })=>{
-                  const updated = Object.assign({}, prev, {
-                    todo_list_edges: {
-                      ...prev.todo_list_edges,
-                      edges: [
-                        ...prev.todo_list_edges.edges,
-                        ...crnt.edges
-                      ],
-                      pageInfo: crnt.pageInfo,
-                    }
-                  });
-                  return updated;
-                }
-              })
-            }}
+            onClick={ handleFetchMore }
           />
         </Grid>
       </Grid>

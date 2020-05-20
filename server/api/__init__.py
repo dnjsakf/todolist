@@ -10,7 +10,7 @@ def set_api_graphql(app):
   MONGO_HOST=app.config.get("API_MONGO_URL")
   MONGO_DATABASE=app.config.get("API_MONGO_DATABASE")
 
-  connect_db(MONGO_DATABASE, MONGO_HOST, init=True)
+  connect_db(MONGO_DATABASE, MONGO_HOST, mockup=True)
   
   # /graphql EndPoint 설정
   app.add_url_rule(

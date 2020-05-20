@@ -2,13 +2,14 @@
 from mongoengine import connect
 
 # Database Connection 함수
-def connect_db(database, host, init=False, **kwargs):
+def connect_db(database, host, mockup=False, **kwargs):
   connect(database, host=host, alias="default")
 
-  if init == True: init_db()
+  if mockup == True: 
+    init_mockup()
 
 # 기초 데이터 Insert 함수
-def init_db():
+def init_mockup():
   import datetime
   from server.api.graphql.models import (
     UserModel,
@@ -55,13 +56,15 @@ def init_db():
 
   
   ### HashTag 데이터
-  hash_1 = HashTagModel(tag="개발", tag_name="개발", reg_user=reg_user, reg_dttm=reg_dttm).save()
-  hash_2 = HashTagModel(tag="투두리스트", tag_name="투두리스트", reg_user=reg_user, reg_dttm=reg_dttm).save()
-  hash_3 = HashTagModel(tag="파이썬", tag_name="파이썬", reg_user=reg_user, reg_dttm=reg_dttm).save()
-  hash_4 = HashTagModel(tag="graphQL", tag_name="graphQL", reg_user=reg_user, reg_dttm=reg_dttm).save()
-  hash_5 = HashTagModel(tag="몽고DB", tag_name="몽고DB", reg_user=reg_user, reg_dttm=reg_dttm).save()
+  hash_1 = HashTagModel(tag="개발", tag_name="개발", reg_user=reg_user, reg_dttm=reg_dttm)
+  hash_2 = HashTagModel(tag="투두리스트", tag_name="투두리스트", reg_user=reg_user, reg_dttm=reg_dttm)
+  hash_3 = HashTagModel(tag="파이썬", tag_name="파이썬", reg_user=reg_user, reg_dttm=reg_dttm)
+  hash_4 = HashTagModel(tag="graphQL", tag_name="graphQL", reg_user=reg_user, reg_dttm=reg_dttm)
+  hash_5 = HashTagModel(tag="몽고DB", tag_name="몽고DB", reg_user=reg_user, reg_dttm=reg_dttm)
+  hash_6 = HashTagModel(tag="React", tag_name="React", reg_user=reg_user, reg_dttm=reg_dttm)
   
-
+  HashTagModel.objects.insert([ hash_1, hash_2, hash_3, hash_4, hash_5, hash_6 ])
+  
   ### Todo 샘플 데이터
   todo_list_1 = TodoListModel(
     title="ToDo List 만들기",
@@ -181,22 +184,20 @@ def init_db():
     reg_dttm=reg_dttm
   ).save()
   
-  
-  TodoListHashTagModel(todo_list=todo_list_1, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  TodoListHashTagModel(todo_list=todo_list_1, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  
-  TodoListHashTagModel(todo_list=todo_list_2, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  TodoListHashTagModel(todo_list=todo_list_2, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  
-  TodoListHashTagModel(todo_list=todo_list_3, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  TodoListHashTagModel(todo_list=todo_list_3, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  
-  TodoListHashTagModel(todo_list=todo_list_4, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  TodoListHashTagModel(todo_list=todo_list_4, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  
-  TodoListHashTagModel(todo_list=todo_list_5, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  TodoListHashTagModel(todo_list=todo_list_5, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  
-  TodoListHashTagModel(todo_list=todo_list_6, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm).save()
-  TodoListHashTagModel(todo_list=todo_list_6, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm).save()
+  TodoListHashTagModel.objects.insert(
+    [
+      TodoListHashTagModel(todo_list=todo_list_1, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm),
+      TodoListHashTagModel(todo_list=todo_list_1, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm),  
+      TodoListHashTagModel(todo_list=todo_list_2, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm),
+      TodoListHashTagModel(todo_list=todo_list_2, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm),  
+      TodoListHashTagModel(todo_list=todo_list_3, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm),
+      TodoListHashTagModel(todo_list=todo_list_3, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm),  
+      TodoListHashTagModel(todo_list=todo_list_4, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm),
+      TodoListHashTagModel(todo_list=todo_list_4, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm),  
+      TodoListHashTagModel(todo_list=todo_list_5, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm),
+      TodoListHashTagModel(todo_list=todo_list_5, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm),  
+      TodoListHashTagModel(todo_list=todo_list_6, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm),
+      TodoListHashTagModel(todo_list=todo_list_6, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm)
+    ]
+  )
   
