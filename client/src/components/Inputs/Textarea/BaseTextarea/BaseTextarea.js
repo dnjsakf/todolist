@@ -1,5 +1,5 @@
 /* React */
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 /* Materialize */
@@ -19,10 +19,18 @@ const useStyles = makeStyles(( theme ) => ({
 
 const BaseTextarea = forwardRef(( props, ref )=>{
   /* Props */
-  const { className, ...rest } = props;
+  const { 
+    className,
+    handleChange,
+    ...rest
+  } = props;
 
   /* State */
   const classes = useStyles();
+
+  const handleBlur = useCallback(( event )=>{
+    handleChange( props.name, event.target.value );
+  }, []);
 
   return (
     <FormControl 
@@ -33,19 +41,9 @@ const BaseTextarea = forwardRef(( props, ref )=>{
       <TextareaAutosize
         { ...rest }
         ref={ ref }
-        id={ props.id }
-        name={ props.name }
         className={ clsx(classes.textarea, className) }
-        
-        label={ props.label }
-        defaultValue={ props.defaultValue }
-
-        rows={ props.rows }
-        rowsMax={ props.rowsMax }
-
-        readOnly={ props.readOnly }
-
         aria-label="maximum height"
+        onBlur={ handleBlur }
       />
     </FormControl>
   )

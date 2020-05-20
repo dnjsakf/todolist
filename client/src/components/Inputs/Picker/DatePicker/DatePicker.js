@@ -1,5 +1,5 @@
 /* React */
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 /* Materialize */
@@ -23,17 +23,28 @@ const useStyles = makeStyles(( theme ) => ({
 /* Component */
 const DatePicker = ( props )=>{
   /* Props */
-  const { className, ...rest } = props;
+  const { 
+    className,
+    handleChange,
+    valueFormat,
+    format,
+    defaultValue,
+    ...rest
+  } = props;
 
   /* State */
   const classes = useStyles();
   const [ value, setValue ] = useState(()=>{
-    return props.defaultValue ? moment( props.defaultValue, "YYYYMMDD" ) : moment()
+    return defaultValue ? moment( defaultValue, valueFormat ) : moment()
   });
 
   /* Handlers */
   const handleDateChange = useCallback(( date )=>{
     setValue( date );
+  }, [ value ]);
+
+  useEffect(()=>{
+    handleChange( props.name, moment(value, valueFormat).format(valueFormat) );
   }, [ value ]);
 
   return (
@@ -42,7 +53,7 @@ const DatePicker = ( props )=>{
         <KeyboardDatePicker
           { ...rest }
           margin="normal"
-          format={ props.format || "YYYY-MM-DD" }
+          format={ format || "YYYY-MM-DD" }
           value={ value }
           minDate={ moment() }
           onChange={ handleDateChange }
@@ -62,6 +73,7 @@ DatePicker.proptypes = {
   name: PropTypes.string,
   format: PropTypes.string,
   error: PropTypes.bool,
+  handleChange: PropTypes.func,
 }
 
 export default DatePicker;

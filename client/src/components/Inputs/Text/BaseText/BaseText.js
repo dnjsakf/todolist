@@ -1,5 +1,5 @@
 /* React */
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
 /* Materialize */
@@ -11,12 +11,18 @@ import clsx from 'clsx';
 
 /* Materialize Styles */
 const useStyles = makeStyles(( theme ) => ({
-  
+  root: {
+
+  }
 }));
 
 const BaseText = forwardRef(( props, ref )=>{
   /* Props */
-  const { className, ...rest } = props;
+  const { 
+    className,
+    handleChange,
+    ...rest
+  } = props;
 
   /* State */
   const classes = useStyles();
@@ -33,7 +39,7 @@ const BaseText = forwardRef(( props, ref )=>{
         inputRef={ ref }
         id={ props.id }
         name={ props.name }
-        className={ clsx(classes.text, className) }
+        className={ clsx(classes.root, className) }
 
         label={ props.label }
 
@@ -47,6 +53,8 @@ const BaseText = forwardRef(( props, ref )=>{
 
         required={ props.required && !props.readOnly }
         autoFocus={ !props.readOnly }
+
+        onChange={ ( event )=>handleChange( props.name, event.target.value ) }
       />
     </>
   )
@@ -62,6 +70,7 @@ BaseText.proptypes = {
   readOnly: PropTypes.bool,
   required: PropTypes.bool,
   placeholder: PropTypes.string,
+  handleChange: PropTypes.func,
 }
 
 export default BaseText;

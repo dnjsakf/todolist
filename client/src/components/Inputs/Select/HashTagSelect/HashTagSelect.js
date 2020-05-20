@@ -1,5 +1,5 @@
 /* React */
-import React, { useRef, useState, useCallback, forwardRef } from 'react';
+import React, { forwardRef, useRef, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 /* Materialize */
@@ -39,14 +39,6 @@ const useStyles = makeStyles(( theme ) => ({
         padding: '6px 0',
       },
     },
-    '&[class*="MuiInput-root"][class*="MuiInput-marginDense"]': {
-      '& $input': {
-        padding: '4px 4px 5px',
-      },
-      '& $input:first-child': {
-        padding: '3px 0 6px',
-      },
-    },
     '&[class*="MuiOutlinedInput-root"]': {
       padding: 9,
       '& $input': {
@@ -56,23 +48,11 @@ const useStyles = makeStyles(( theme ) => ({
         paddingLeft: 6,
       },
     },
-    '&[class*="MuiOutlinedInput-root"][class*="MuiOutlinedInput-marginDense"]': {
-      padding: 6,
-      '& $input': {
-        padding: '4.5px 4px',
-      },
-    },
     '&[class*="MuiFilledInput-root"]': {
       paddingTop: 19,
       paddingLeft: 8,
       '& $input': {
         padding: '9px 4px',
-      },
-    },
-    '&[class*="MuiFilledInput-root"][class*="MuiFilledInput-marginDense"]': {
-      paddingBottom: 1,
-      '& $input': {
-        padding: '4.5px 4px',
       },
     },
   },
@@ -89,15 +69,19 @@ const useStyles = makeStyles(( theme ) => ({
 /* Component */
 const HashTagSelect = forwardRef(( props, ref )=>{
   /* Props */
-  const { className, ...rest } = props;
+  const { 
+    className,
+    handleChange,
+    ...rest
+  } = props;
   
   /* State */
   const classes = useStyles();
   const inputRef = useRef();
   const [ inputValue, setInputValue ] = useState("");
   const [ value, setValue ] = useState([]);
-  
-  const handleChange = useCallback(( event )=>{
+
+  const handleChangeValue = useCallback(( event )=>{
     setInputValue( event.target.value );
   }, [ inputValue ]); 
   
@@ -105,6 +89,7 @@ const HashTagSelect = forwardRef(( props, ref )=>{
     const inputKey = event.key;
 
     if( inputValue ){
+      // Todo: 한글&특수문자 처리
       if( ["Enter", "Tab"].indexOf(inputKey) > -1 ){
         setValue([
           ...value,
@@ -135,7 +120,6 @@ const HashTagSelect = forwardRef(( props, ref )=>{
     if( del_value.length !== value.length ){
       setValue(del_value);
     }
-
     inputRef.current.focus();
   };
 
@@ -146,25 +130,27 @@ const HashTagSelect = forwardRef(( props, ref )=>{
     inputRef.current.focus();
   }, [ value ]);
 
+  useEffect(()=>{
+    handleChange(props.name, value.map(({ label })=>({ tag: label, tag_name: label })));
+  }, [ value ]);
+
   return (
     <div className={ classes.root }>
       <FormControl
         fullWidth
       >
         <Input
-          ref={ ref }
-          inputRef={ inputRef }
+          { ...rest }
           className={clsx({
             [classes.inputRoot]: true,
           })}
           inputProps={{
+            ref: inputRef,
             className: clsx({
               [classes.input]: true,
               [classes.inputFocused]: true
-            })
+            }),
           }}
-          onChange={ handleChange }
-          onKeyDown={ handleKeyDown }
           value={ inputValue }
           startAdornment={
             value.map(({ id, label })=>(
@@ -193,6 +179,8 @@ const HashTagSelect = forwardRef(( props, ref )=>{
               <CloseIcon fontSize="small"/>
             </IconButton>
           }
+          onChange={ handleChangeValue }
+          onKeyDown={ handleKeyDown }
         />
       </FormControl>
     </div>
@@ -201,8 +189,7 @@ const HashTagSelect = forwardRef(( props, ref )=>{
 
 
 HashTagSelect.propTypes = {
-  ref: PropTypes.any,
-  
+  handleChange: PropTypes.func
 }
 
 export default HashTagSelect;

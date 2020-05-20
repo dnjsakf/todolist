@@ -1,5 +1,5 @@
 /* React */
-import React, { useRef, useState, useCallback, useEffect } from 'react';
+import React, { useRef, useState, useCallback, createRef } from 'react';
 import PropTypes from 'prop-types';
 
 import { useForm } from 'react-hook-form';
@@ -17,7 +17,6 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 /* Components */
 import { 
   CommonCodeSelect,
-  HierarchySelect,
   HashTagSelect
 } from 'Components/Inputs/Select';
 import { BaseButton } from 'Components/Inputs/Button';
@@ -73,8 +72,9 @@ const TodoInfoRegister = ( props )=>{
   /* State */
   const classes = useStyles();
   const elRef = useRef();
+  const [ formData, setFormData ] = useState({});
 
-  const { register, errors, handleSubmit, control } = useForm();
+  // const { register, errors, handleSubmit, control } = useForm();
 
   const [ 
     saveTodoData, 
@@ -87,7 +87,7 @@ const TodoInfoRegister = ( props )=>{
     onError( error ){
       console.error( error );
     },
-    onCompleted({ create_todo_info: { todo_info: { no } } }) {
+    onCompleted({ create_todo_info: { todo_list_field: { no } } }) {
       if( handleClose ){
         handleClose();
       }
@@ -95,6 +95,14 @@ const TodoInfoRegister = ( props )=>{
   });
 
   /* Handlers */
+  /* Handler: Set form-data */
+  const handleFormData = useCallback((name, value)=>{
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  }, [ formData ]);
+
   /* Handler: Clear form-data */
   const handleCancel = useCallback((event)=>{
     event.preventDefault();
@@ -105,42 +113,18 @@ const TodoInfoRegister = ( props )=>{
   }, []);
 
   /* Handler: Save form-data */
-  const handleSave = useCallback(( formData, event )=>{
+  const handleSave = useCallback(( event )=>{
     event.preventDefault();
     
     console.log( 'save' );
-    console.log({
-      variables: {
-        ...formData,
-        due_date: moment(formData.due_date, "YYYYMMDD").format("YYYYMMDD"),
-        due_time: moment(formData.due_time, "HHmmss").format("HHmmss"),
-        status: JSON.stringify({
-          p_code: "TODO_STATUS",
-          code: formData.status
-        }),
-        category: JSON.stringify({
-          p_code: "TODO_CATE",
-          code: formData.category
-        })
-      }
-    });
+    console.log( formData );
 
     saveTodoData({
       variables: {
         ...formData,
-        due_date: moment(formData.due_date, "YYYYMMDD").format("YYYYMMDD"),
-        due_time: moment(formData.due_time, "HHmmss").format("HHmmss"),
-        status: JSON.stringify({
-          p_code: "TODO_STATUS",
-          code: formData.status
-        }),
-        category: JSON.stringify({
-          p_code: "TODO_CATE",
-          code: formData.category
-        })
       }
     });
-  }, [ errors ]);
+  }, [ formData ]);
   
   if( mutationLoading ) return <span>Now Loading....</span>;
 
@@ -165,7 +149,7 @@ const TodoInfoRegister = ( props )=>{
         name={ props.name }
         noValidate
         autoComplete="off"
-        onSubmit={handleSubmit(handleSave)}
+        //onSubmit={handleSubmit(handleSave)}
       >
         <Grid 
           container
@@ -182,38 +166,38 @@ const TodoInfoRegister = ( props )=>{
               placeholder="제목을 입력해주세요."
               maxLength={ 30 }
               required={ true }
-              ref={ register({ required: true }) }
-              error={ !!( errors && errors.title ) }
+              handleChange={ handleFormData }
+              // ref={ register({ required: true }) }
+              // error={ !!( errors && errors.title ) }
             />
           </Grid>
           <Grid item xs={ 12 }>
             <CommonCodeSelect
-              control={ control }
+              // control={ control }
               id="status"
               name="status"
               code="TODO_STATUS"
               required={ true }
-              error={ !!( errors && errors.status ) }
+              handleChange={ handleFormData }
+              // error={ !!( errors && errors.status ) }
             />
           </Grid>
           <Grid item xs={ 12 }>
             <CommonCodeSelect
-              control={ control }
+              // control={ control }
               id="category"
               name="category"
               code="TODO_CATE"
               required={ true }
-              error={ !!( errors && errors.category ) }
+              handleChange={ handleFormData }
+              // error={ !!( errors && errors.category ) }
             />
           </Grid>
           <Grid item xs={ 12 }>
             <HashTagSelect
-              control={ control }
-              id="category"
-              name="category"
-              code="TODO_CATE"
-              required={ true }
-              error={ !!( errors && errors.category ) }
+              id="hash_tag"
+              name="hash_tag"
+              handleChange={ handleFormData }
             />
           </Grid>
           <Grid item xs={ 12 }>
@@ -224,10 +208,11 @@ const TodoInfoRegister = ( props )=>{
                   name="due_date"
                   label="마감일"
                   format="YYYY-MM-DD"
-                  // valueFormat="YYYYMMDD"
+                  valueFormat="YYYYMMDD"
                   required={ true }
-                  inputRef={ register({ required: true }) }
-                  error={ !!( errors && errors.due_date ) }
+                  // inputRef={ register({ required: true }) }
+                  // error={ !!( errors && errors.due_date ) }
+                  handleChange={ handleFormData }
                 />
               </Grid>
               <Grid item xs={ 6 }>
@@ -236,10 +221,11 @@ const TodoInfoRegister = ( props )=>{
                   name="due_time"
                   label="마감시간"
                   format="HH:mm:ss"
-                  // valueFormat="HHmmss"
+                  valueFormat="HHmmss"
                   required={ true }
-                  inputRef={ register({ required: true }) }
-                  error={ !!( errors && errors.due_time ) }
+                  // inputRef={ register({ required: true }) }
+                  // error={ !!( errors && errors.due_time ) }
+                  handleChange={ handleFormData }
                 />
               </Grid>
             </Grid>
@@ -252,7 +238,8 @@ const TodoInfoRegister = ( props )=>{
               rowsMax={ 5 }
               maxLength={ 100 }
               placeholder="Description"
-              ref={ register }
+              // ref={ register }
+              handleChange={ handleFormData }
             />
           </Grid>
           <Grid item xs={ 12 }>
@@ -275,7 +262,8 @@ const TodoInfoRegister = ( props )=>{
                   label="저장"
                   color="primary"
                   size="sm"
-                  type="submit"
+                  // type="submit"
+                  onClick={ handleSave }
                 />
               </ButtonGroup>
             </Grid>

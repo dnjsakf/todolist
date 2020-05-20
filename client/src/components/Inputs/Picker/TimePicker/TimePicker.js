@@ -1,5 +1,5 @@
 /* React */
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 /* Materialize */
@@ -23,17 +23,27 @@ const useStyles = makeStyles(( theme )=>{
 /* Component */
 const TimePicker = ( props )=>{
   /* Props */
-  const { className, ...rest } = props;
+  const { 
+    className,
+    handleChange,
+    defaultValue,
+    valueFormat,
+    ...rest 
+  } = props;
 
   /* State */
   const classes = useStyles();
   const [ value, setValue ] = useState(()=>(
-    props.defaultValue ? moment( props.defaultValue, "HHmmss" ) : moment().second(0)
-  ), [ props.defaultValue ]);
+    defaultValue ? moment( defaultValue, valueFormat ) : moment().second(0)
+  ), [ defaultValue ]);
 
   /* Handlers */
   const handleDateChange = useCallback(( date )=>{
     setValue( date );
+  }, [ value ]);
+
+  useEffect(()=>{
+    handleChange( props.name, moment(value, valueFormat).format(valueFormat))
   }, [ value ]);
 
   return (

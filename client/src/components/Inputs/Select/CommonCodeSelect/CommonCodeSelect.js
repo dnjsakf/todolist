@@ -1,5 +1,5 @@
 /* React */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Controller } from 'react-hook-form';
 
@@ -35,14 +35,6 @@ const CommonCodeSelect = ( props )=>{
   /* State */
   const classes = useStyles();
 
-  /* Handler: Handle when selectd option. */
-  const handleChange = useCallback(([event, info])=>{
-    if( props.handleChange ){
-      props.handleChange(event);
-    }
-    return event.target.value;
-  }, [ props.handleChange ]);
-
   const { loading, error, data } = useQuery(
     CommonCodeQuery.GET_COMMON_CODE, {
       skip: !props.code,
@@ -62,6 +54,14 @@ const CommonCodeSelect = ( props )=>{
       }
     }
   );
+
+  /* Handler: Handle when selectd option. */
+  const handleChange = useCallback(( event )=>{
+    props.handleChange(props.name, {
+      p_code: props.code||data.common_code.code,
+      code: event.target.value
+    });
+  }, [ data, props.handleChange ]);
   
   /* Check Render */
   if( loading ) return <span>Data Loadding...</span>;
@@ -79,24 +79,7 @@ const CommonCodeSelect = ( props )=>{
       fullWidth 
     >
       <InputLabel id={ `${props.name}-${code}-select-label` }>{ props.label||code_name }</InputLabel>
-      <Controller
-        as={
-          <Select>
-            <MenuItem value="">
-              <em>선택</em>
-            </MenuItem>
-            {
-              sub_codes.map(({ id: key, code: value, code_name: label })=>(
-                <MenuItem key={ key } value={ value }>{ label }</MenuItem>
-              ))
-            }
-          </Select>
-        }
-        control={ props.control }
-        rules={{
-          required: props.required
-        }}
-
+      <Select
         id={ props.id }
         name={ props.name }
         label={ props.label||code_name }
@@ -110,13 +93,22 @@ const CommonCodeSelect = ( props )=>{
         inputProps={{
           readOnly: !!props.readOnly,
         }}
-      />
+      >
+        <MenuItem value="">
+          <em>선택</em>
+        </MenuItem>
+        {
+          sub_codes.map(({ id: key, code: value, code_name: label })=>(
+            <MenuItem key={ key } value={ value }>{ label }</MenuItem>
+          ))
+        }
+      </Select>
     </FormControl>
   )
 }
 
 CommonCodeSelect.propTypes = {
-  control: PropTypes.any,
+  // control: PropTypes.any,
   id: PropTypes.string,
   name: PropTypes.string.isRequired,
   className: PropTypes.string,
