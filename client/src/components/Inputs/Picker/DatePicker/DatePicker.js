@@ -23,40 +23,40 @@ const useStyles = makeStyles(( theme ) => ({
 /* Component */
 const DatePicker = ( props )=>{
   /* Props */
+  const classes = useStyles();
   const { 
     className,
-    handleChange,
-    valueFormat,
     format,
+    valueFormat,
     defaultValue,
+    inputRef, 
     ...rest
   } = props;
 
   /* State */
-  const classes = useStyles();
   const [ value, setValue ] = useState(()=>{
     return defaultValue ? moment( defaultValue, valueFormat ) : moment()
   });
 
   /* Handlers */
-  const handleDateChange = useCallback(( date )=>{
-    setValue( date );
-  }, [ value ]);
-
-  useEffect(()=>{
-    handleChange( props.name, moment(value, valueFormat).format(valueFormat) );
-  }, [ value ]);
+  const handleChange = ( date )=>( setValue( date ) );
 
   return (
     <MuiPickersUtilsProvider utils={ MomentUtils }>
       <Grid container justify="space-around">
         <KeyboardDatePicker
           { ...rest }
-          margin="normal"
-          format={ format || "YYYY-MM-DD" }
+          inputRef={
+            inputRef({
+              type: "date",
+              format: valueFormat
+            })
+          }
           value={ value }
+          format={ format||"YYYY-MM-DD" }
           minDate={ moment() }
-          onChange={ handleDateChange }
+          margin="normal"
+          onChange={ handleChange }
           KeyboardButtonProps={{
             'aria-label': 'change date',
           }}
@@ -67,8 +67,8 @@ const DatePicker = ( props )=>{
 }
 
 DatePicker.proptypes = {
-  className: PropTypes.string,
   inputRef: PropTypes.any,
+  className: PropTypes.string,
   id: PropTypes.string,
   name: PropTypes.string,
   format: PropTypes.string,

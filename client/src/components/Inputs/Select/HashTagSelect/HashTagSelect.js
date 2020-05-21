@@ -69,18 +69,18 @@ const useStyles = makeStyles(( theme ) => ({
 /* Component */
 const HashTagSelect = forwardRef(( props, ref )=>{
   /* Props */
+  const classes = useStyles();
+  const inputRef = useRef();
   const { 
     className,
-    handleChange,
     ...rest
   } = props;
   
   /* State */
-  const classes = useStyles();
-  const inputRef = useRef();
   const [ inputValue, setInputValue ] = useState("");
   const [ value, setValue ] = useState([]);
 
+  /* Handler */
   const handleChangeValue = useCallback(( event )=>{
     setInputValue( event.target.value );
   }, [ inputValue ]); 
@@ -120,6 +120,7 @@ const HashTagSelect = forwardRef(( props, ref )=>{
     if( del_value.length !== value.length ){
       setValue(del_value);
     }
+    
     inputRef.current.focus();
   };
 
@@ -128,10 +129,6 @@ const HashTagSelect = forwardRef(( props, ref )=>{
     setValue([]);
 
     inputRef.current.focus();
-  }, [ value ]);
-
-  useEffect(()=>{
-    handleChange(props.name, value.map(({ label })=>({ tag: label, tag_name: label })));
   }, [ value ]);
 
   return (
@@ -145,7 +142,11 @@ const HashTagSelect = forwardRef(( props, ref )=>{
             [classes.inputRoot]: true,
           })}
           inputProps={{
-            ref: inputRef,
+            ref: ref({
+              type: "array",
+              value: value.map((v)=>({ tag: v.label, tag_name: v.label })),
+              inputRef
+            }),
             className: clsx({
               [classes.input]: true,
               [classes.inputFocused]: true
@@ -189,7 +190,7 @@ const HashTagSelect = forwardRef(( props, ref )=>{
 
 
 HashTagSelect.propTypes = {
-  handleChange: PropTypes.func
+  
 }
 
 export default HashTagSelect;

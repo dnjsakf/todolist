@@ -145,6 +145,8 @@ const Dashboard = ( props )=>{
       <TodoListModal
         open={ open }
         mode={ mode }
+        id="todo_list_modal"
+        name="todo_list_modal"
         data={{
           id: id
         }}

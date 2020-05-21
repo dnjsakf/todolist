@@ -1,5 +1,5 @@
 /* React */
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
 /* Materialize */
@@ -16,16 +16,21 @@ const useStyles = makeStyles(( theme ) => ({
   }
 }));
 
+/* Component */
 const BaseText = forwardRef(( props, ref )=>{
   /* Props */
-  const { 
+  const classes = useStyles();
+  const {
     className,
-    handleChange,
+    defaulValue,
     ...rest
   } = props;
 
   /* State */
-  const classes = useStyles();
+  const [ value, setValue ] = useState(defaulValue||"");
+  
+  /* Handler */
+  const handleChange = (event)=>( setValue(event.target.value) );
   
   return (
     <>
@@ -36,7 +41,6 @@ const BaseText = forwardRef(( props, ref )=>{
         size="small"
         fullWidth
 
-        inputRef={ ref }
         id={ props.id }
         name={ props.name }
         className={ clsx(classes.root, className) }
@@ -46,6 +50,7 @@ const BaseText = forwardRef(( props, ref )=>{
         defaultValue={ props.defaultValue }
         placeholder={ props.placeholder }
 
+        inputRef={ ref() }
         inputProps={{
           readOnly: !!props.readOnly,
           maxLength: props.maxLength
@@ -53,8 +58,10 @@ const BaseText = forwardRef(( props, ref )=>{
 
         required={ props.required && !props.readOnly }
         autoFocus={ !props.readOnly }
+        
+        value={ value }
 
-        onChange={ ( event )=>handleChange( props.name, event.target.value ) }
+        onChange={ handleChange }
       />
     </>
   )
@@ -70,7 +77,6 @@ BaseText.proptypes = {
   readOnly: PropTypes.bool,
   required: PropTypes.bool,
   placeholder: PropTypes.string,
-  handleChange: PropTypes.func,
 }
 
 export default BaseText;

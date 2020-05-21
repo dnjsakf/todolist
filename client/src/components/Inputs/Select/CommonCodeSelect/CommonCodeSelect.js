@@ -1,5 +1,5 @@
 /* React */
-import React, { useCallback } from 'react';
+import React, { forwardRef, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Controller } from 'react-hook-form';
 
@@ -28,13 +28,17 @@ const useStyles = makeStyles(( theme ) => ({
 }));
 
 /* Component */
-const CommonCodeSelect = ( props )=>{
+const CommonCodeSelect = forwardRef(( props, ref )=>{
   /* Props */
-  const { className, ...rest } = props;
+  const classes = useStyles();
+  const {
+    className,
+    defaultValue,
+    ...rest
+  } = props;
 
   /* State */
-  const classes = useStyles();
-
+  const [ value, setValue ] = useState( defaultValue||"" );
   const { loading, error, data } = useQuery(
     CommonCodeQuery.GET_COMMON_CODE, {
       skip: !props.code,
@@ -56,12 +60,7 @@ const CommonCodeSelect = ( props )=>{
   );
 
   /* Handler: Handle when selectd option. */
-  const handleChange = useCallback(( event )=>{
-    props.handleChange(props.name, {
-      p_code: props.code||data.common_code.code,
-      code: event.target.value
-    });
-  }, [ data, props.handleChange ]);
+  const handleChange = ( event )=>( setValue( event.target.value ) );
   
   /* Check Render */
   if( loading ) return <span>Data Loadding...</span>;
@@ -69,7 +68,7 @@ const CommonCodeSelect = ( props )=>{
   if( !data && !props.data ) return <span>No Data</span>;
 
   const { code, code_name, sub_codes } = data ? data.common_code : props.data;
-
+  
   return (
     <FormControl
       component="fieldset"
@@ -86,10 +85,19 @@ const CommonCodeSelect = ( props )=>{
         className={ classes.selectBox }
 
         labelId={ `${props.name}-${code}-select-label` }
-        defaultValue={ props.defafultValue||"" }
+        defaultValue={ defaultValue||"" }
         onChange={ handleChange }
 
         required={ props.required && !props.readOnly }
+        inputRef={
+          ref({
+            type: "json",
+            name: "code",
+            extra: { 
+              p_code: props.code
+            }
+          })
+        }
         inputProps={{
           readOnly: !!props.readOnly,
         }}
@@ -105,10 +113,10 @@ const CommonCodeSelect = ( props )=>{
       </Select>
     </FormControl>
   )
-}
+});
 
 CommonCodeSelect.propTypes = {
-  // control: PropTypes.any,
+  //ref: PropTypes.any,
   id: PropTypes.string,
   name: PropTypes.string.isRequired,
   className: PropTypes.string,

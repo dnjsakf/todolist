@@ -1,5 +1,5 @@
 /* React */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { forwardRef, useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 /* Materialize */
@@ -23,41 +23,42 @@ const useStyles = makeStyles(( theme )=>{
 /* Component */
 const TimePicker = ( props )=>{
   /* Props */
-  const { 
+  const classes = useStyles();
+  const {
+    inputRef,
     className,
-    handleChange,
+    format,
     defaultValue,
     valueFormat,
     ...rest 
   } = props;
 
   /* State */
-  const classes = useStyles();
   const [ value, setValue ] = useState(()=>(
     defaultValue ? moment( defaultValue, valueFormat ) : moment().second(0)
   ), [ defaultValue ]);
 
   /* Handlers */
-  const handleDateChange = useCallback(( date )=>{
-    setValue( date );
-  }, [ value ]);
-
-  useEffect(()=>{
-    handleChange( props.name, moment(value, valueFormat).format(valueFormat))
-  }, [ value ]);
+  const handleChange = ( date )=>( setValue( date ) );
 
   return (
     <MuiPickersUtilsProvider utils={ MomentUtils }>
       <Grid container justify="space-around">
         <KeyboardTimePicker
           { ...rest }
-          margin="normal"
-          format={ props.format || "HH:mm:ss" }
+          inputRef={
+            inputRef({
+              type: "date",
+              format: valueFormat
+            })
+          }
           value={ value }
-          onChange={ handleDateChange }
+          format={ format||"HH:mm:ss" }
+          margin="normal"
           KeyboardButtonProps={{
             'aria-label': 'change time',
           }}
+          onChange={ handleChange }
         />
       </Grid>
     </MuiPickersUtilsProvider>
@@ -65,8 +66,8 @@ const TimePicker = ( props )=>{
 }
 
 TimePicker.proptypes = {
-  className: PropTypes.string,
   inputRef: PropTypes.any,
+  className: PropTypes.string,
   id: PropTypes.string,
   name: PropTypes.string,
   format: PropTypes.string,

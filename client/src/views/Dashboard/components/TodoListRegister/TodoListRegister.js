@@ -1,5 +1,5 @@
 /* React */
-import React, { useRef, useState, useCallback, createRef } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { useForm } from 'react-hook-form';
@@ -56,9 +56,198 @@ const useStyles = makeStyles((theme)=>({
   },
 }));
 
+const model = [
+  {
+    type: BaseText,
+    id: "title",
+    name: "title",
+    label: "제목",
+    placeholder: "제목",
+    validation: {
+      maxLength: 30,
+      required: true,
+    },
+    handler: {
+      handleChange: null,
+    }
+  },
+  {
+    type: CommonCodeSelect,
+    id: "status",
+    name: "상태",
+    label: "상태",
+    placeholder: "상태",
+    code: "TODO_STATUS",
+    validation: {
+      required: true,
+    },
+    handler: {
+      handleChange: null,
+    },
+  },
+  {
+    type: CommonCodeSelect,
+    id: "category",
+    name: "category",
+    label: "카테고리",
+    placeholder: "카테고리",
+    code: "TODO_CATE",
+    validation: {
+      required: true,
+    },
+    handler: {
+      handleChange: null,
+    },
+  },
+  {
+    type: HashTagSelect,
+    id: "hash_tag",
+    name: "hash_tag",
+    handler: {
+      handleChange: null
+    },  
+  },
+  {
+    grid: "container",
+    items: [
+      {
+        type: DatePicker,
+        id: "due_date",
+        name: "due_date",
+        label: "마감일",
+        format: "YYYY-MM-DD",
+        valueFormat: "YYYYMMDD",
+        validation: {
+          required: true,
+        },
+        handler: {
+          handleChange: null,
+        }
+      },
+      {
+        type: TimePicker,
+        id: "due_time",
+        name: "due_time",
+        label: "마감시간",
+        format: "HH:mm:ss",
+        valueFormat: "HHmmss",
+        validation: {
+          required: true,
+        },
+        handler: {
+          handleChange: null,
+        }
+      },
+    ]
+  },
+  {
+    type: BaseTextarea,
+    id: "description",
+    name: "description",
+    label: "상세내용",
+    placeholder: "상세내용",
+    rows: 5,
+    rowsMax: 5,
+    validation: {
+      maxLength: 100,
+    },
+    handler: {
+      handleChange: null
+    }
+  },
+  {
+    type: "container",
+    group: ButtonGroup,
+    items: [
+      {
+        type: BaseButton,
+        id: "btn-cancel",
+        label: "취소",
+        color: "primary",
+        size: "sm",
+        handler: {
+          handleCancel: null
+        }
+      },
+      {
+        type: BaseButton,
+        id: "btn-save",
+        label: "저장",
+        color: "primary",
+        size: "sm",
+        handler: {
+          handleSave: null
+        }
+      }
+    ]
+  }
+];
+
+function useFormRef(){
+  const refs = {}
+  
+  function setRef( options ){
+    return function( element ){
+      if( !element ) return;
+      
+      /* Set Variables */
+      const name = ( element.node ? element.node.name : element.name );
+      
+      if( !options ) {
+        Object.assign(refs, {
+          [name]: element.value
+        });
+      } else {
+        const value = ( options.value||element.value );
+      
+        /* Other Refs */
+        if( options.inputRef ){
+          options.inputRef.current = element;
+        }
+        
+        /* Set Ref data */
+        switch ( options.type ){
+          case "time":
+          case "date":
+          case "datetime":
+            Object.assign(refs, {
+              [name]: moment(value, options.format).format(options.format)
+            });
+            break;
+          case "json":
+            Object.assign(refs, {
+              [name]: {
+                ...options.extra,
+                [options.name]: value
+              }
+            });
+            break;
+          case "array":
+            Object.assign(refs, {
+              [name]: options.value
+            });
+            break;
+          default:
+            Object.assign(refs, {
+              [name]: value
+            });
+        }
+      }
+    }
+  }
+  
+  return {
+    refs: setRef,
+    getValues: ()=>{
+      return refs;
+    }
+  }
+}
+
 /* Component */
 const TodoInfoRegister = ( props )=>{
   /* Props */
+  const classes = useStyles();
   const {
     className,
     handleClose,
@@ -67,14 +256,11 @@ const TodoInfoRegister = ( props )=>{
     large,
     fullWidth,
     ...rest
-    } = props;
+  } = props;
 
   /* State */
-  const classes = useStyles();
-  const elRef = useRef();
-  const [ formData, setFormData ] = useState({});
-
-  // const { register, errors, handleSubmit, control } = useForm();
+  const formRef = useRef();
+  const { refs, getValues } = useFormRef();
 
   const [ 
     saveTodoData, 
@@ -87,7 +273,7 @@ const TodoInfoRegister = ( props )=>{
     onError( error ){
       console.error( error );
     },
-    onCompleted({ create_todo_info: { todo_list_field: { no } } }) {
+    onCompleted({ create_todo_list: { todo_list_field: { no } } }) {
       if( handleClose ){
         handleClose();
       }
@@ -95,15 +281,7 @@ const TodoInfoRegister = ( props )=>{
   });
 
   /* Handlers */
-  /* Handler: Set form-data */
-  const handleFormData = useCallback((name, value)=>{
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  }, [ formData ]);
-
-  /* Handler: Clear form-data */
+  /* Handler: Cancel form-data */
   const handleCancel = useCallback((event)=>{
     event.preventDefault();
 
@@ -116,15 +294,15 @@ const TodoInfoRegister = ( props )=>{
   const handleSave = useCallback(( event )=>{
     event.preventDefault();
     
+    const variables = getValues();
+    
     console.log( 'save' );
-    console.log( formData );
+    console.log( variables );
 
     saveTodoData({
-      variables: {
-        ...formData,
-      }
+      variables
     });
-  }, [ formData ]);
+  }, []);
   
   if( mutationLoading ) return <span>Now Loading....</span>;
 
@@ -144,12 +322,11 @@ const TodoInfoRegister = ( props )=>{
       )}
     >
       <form
-        ref={ elRef }
+        ref={ formRef }
         id={ props.id }
         name={ props.name }
         noValidate
         autoComplete="off"
-        //onSubmit={handleSubmit(handleSave)}
       >
         <Grid 
           container
@@ -160,50 +337,48 @@ const TodoInfoRegister = ( props )=>{
         >
           <Grid item xs={ 12 }>
             <BaseText
+              ref={ refs }
               id="title" 
               name="title"
               label="제목"
               placeholder="제목을 입력해주세요."
               maxLength={ 30 }
               required={ true }
-              handleChange={ handleFormData }
-              // ref={ register({ required: true }) }
               // error={ !!( errors && errors.title ) }
             />
           </Grid>
           <Grid item xs={ 12 }>
             <CommonCodeSelect
-              // control={ control }
+              ref={ refs }
               id="status"
               name="status"
               code="TODO_STATUS"
               required={ true }
-              handleChange={ handleFormData }
               // error={ !!( errors && errors.status ) }
             />
           </Grid>
           <Grid item xs={ 12 }>
             <CommonCodeSelect
-              // control={ control }
+              ref={ refs }
               id="category"
               name="category"
               code="TODO_CATE"
               required={ true }
-              handleChange={ handleFormData }
               // error={ !!( errors && errors.category ) }
             />
           </Grid>
           <Grid item xs={ 12 }>
             <HashTagSelect
+              ref={ refs }
               id="hash_tag"
               name="hash_tag"
-              handleChange={ handleFormData }
             />
           </Grid>
           <Grid item xs={ 12 }>
             <Grid container direction="row" spacing={ 1 }>
               <Grid item xs={ 6 }>
                 <DatePicker
+                  inputRef={ refs }
                   id="date-picker-dialog"
                   name="due_date"
                   label="마감일"
@@ -212,11 +387,11 @@ const TodoInfoRegister = ( props )=>{
                   required={ true }
                   // inputRef={ register({ required: true }) }
                   // error={ !!( errors && errors.due_date ) }
-                  handleChange={ handleFormData }
                 />
               </Grid>
               <Grid item xs={ 6 }>
                 <TimePicker
+                  inputRef={ refs }
                   id="time-picker-dialog"
                   name="due_time"
                   label="마감시간"
@@ -225,21 +400,19 @@ const TodoInfoRegister = ( props )=>{
                   required={ true }
                   // inputRef={ register({ required: true }) }
                   // error={ !!( errors && errors.due_time ) }
-                  handleChange={ handleFormData }
                 />
               </Grid>
             </Grid>
           </Grid>
           <Grid item xs={ 12 }>
             <BaseTextarea
+              ref={ refs }
               id="description"
               name="description"
               rows={ 5 }
               rowsMax={ 5 }
               maxLength={ 100 }
               placeholder="Description"
-              // ref={ register }
-              handleChange={ handleFormData }
             />
           </Grid>
           <Grid item xs={ 12 }>
@@ -262,7 +435,6 @@ const TodoInfoRegister = ( props )=>{
                   label="저장"
                   color="primary"
                   size="sm"
-                  // type="submit"
                   onClick={ handleSave }
                 />
               </ButtonGroup>
