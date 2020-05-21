@@ -45,6 +45,8 @@ const BaseTextarea = forwardRef(( props, ref )=>{
         className={ clsx(classes.textarea, className) }
         aria-label="maximum height"
         onChange={ handleChange }
+
+        value={ value }
       />
     </FormControl>
   )

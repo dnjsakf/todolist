@@ -1,5 +1,5 @@
 /* React */
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
 /* Materialize */
@@ -22,16 +22,16 @@ const BaseText = forwardRef(( props, ref )=>{
   const classes = useStyles();
   const {
     className,
-    defaulValue,
+    defaultValue,
     ...rest
   } = props;
 
   /* State */
-  const [ value, setValue ] = useState(defaulValue||"");
+  const [ value, setValue ] = useState(defaultValue||"");
   
   /* Handler */
   const handleChange = (event)=>( setValue(event.target.value) );
-  
+
   return (
     <>
       <TextField
@@ -47,7 +47,6 @@ const BaseText = forwardRef(( props, ref )=>{
 
         label={ props.label }
 
-        defaultValue={ props.defaultValue }
         placeholder={ props.placeholder }
 
         inputRef={ ref() }
@@ -77,6 +76,7 @@ BaseText.proptypes = {
   readOnly: PropTypes.bool,
   required: PropTypes.bool,
   placeholder: PropTypes.string,
+  defaultValue: PropTypes.string,
 }
 
 export default BaseText;

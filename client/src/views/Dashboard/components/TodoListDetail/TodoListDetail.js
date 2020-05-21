@@ -54,7 +54,7 @@ const TodoListDetail = ( props )=>{
   if( loading ) return <span>Now Loading....</span>;
   if( error ) return null;
 
-  const { todo_info } = data;
+  const { todo_list_field } = data;
 
   return (
     <Paper 
@@ -69,25 +69,25 @@ const TodoListDetail = ( props )=>{
     >
       <Grid container>
         <Grid item xs={ 12 }>
-          <span>{ todo_info.title }</span>
+          <span>{ todo_list_field.title }</span>
         </Grid>
         <Grid item xs={ 8 }>
-          <span>{ todo_info.status.p_code }</span>
+          <span>{ todo_list_field.status.p_code }</span>
         </Grid>
         <Grid item xs={ 4 }>
-          <span>{ todo_info.status.code }</span>
+          <span>{ todo_list_field.status.code }</span>
         </Grid>
         <Grid item xs={ 8 }>
-          <span>{ todo_info.category.p_code }</span>
+          <span>{ todo_list_field.category.p_code }</span>
         </Grid>
         <Grid item xs={ 4 }>
-          <span>{ todo_info.category.code }</span>
+          <span>{ todo_list_field.category.code }</span>
         </Grid>
         <Grid item xs={ 6 }>
-          <span>{ todo_info.due_date }</span>
+          <span>{ todo_list_field.due_date }</span>
         </Grid>
         <Grid item xs={ 6 }>
-          <span>{ todo_info.due_time }</span>
+          <span>{ todo_list_field.due_time }</span>
         </Grid>
         <Grid item xs={ 12 }>
           <label>{ 'Comments' }</label>

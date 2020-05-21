@@ -73,12 +73,13 @@ const HashTagSelect = forwardRef(( props, ref )=>{
   const inputRef = useRef();
   const { 
     className,
+    defaultValue,
     ...rest
   } = props;
   
   /* State */
   const [ inputValue, setInputValue ] = useState("");
-  const [ value, setValue ] = useState([]);
+  const [ value, setValue ] = useState( defaultValue||[] );
 
   /* Handler */
   const handleChangeValue = useCallback(( event )=>{
@@ -95,7 +96,8 @@ const HashTagSelect = forwardRef(( props, ref )=>{
           ...value,
           {
             id: uuid(),
-            label: inputValue
+            tag: inputValue,
+            tag_name: inputValue,
           }
         ]);
         setInputValue("");
@@ -104,7 +106,6 @@ const HashTagSelect = forwardRef(( props, ref )=>{
     } else {
       if( inputKey === "Backspace" ){
         if( value.length > 0 ){
-          console.log( value.slice(0, value.length-1) )
           setValue(value.slice(0, value.length-1));
         }
         event.preventDefault();
@@ -144,7 +145,7 @@ const HashTagSelect = forwardRef(( props, ref )=>{
           inputProps={{
             ref: ref({
               type: "array",
-              value: value.map((v)=>({ tag: v.label, tag_name: v.label })),
+              value: value.map(({ tag, tag_name })=>({ tag, tag_name })),
               inputRef
             }),
             className: clsx({
@@ -154,16 +155,16 @@ const HashTagSelect = forwardRef(( props, ref )=>{
           }}
           value={ inputValue }
           startAdornment={
-            value.map(({ id, label })=>(
+            value.map(({ id, tag, tag_name })=>(
               <InputAdornment 
                 key={ id }
                 position="start"
               >
                 <Chip
-                  label={ label }
+                  label={ tag_name }
                   clickable
                   deleteIcon={ <DeleteIcon /> }
-                  onDelete={ (event)=>(handleDelete(event, id)) }
+                  onDelete={ (event)=>( handleDelete(event, id) ) }
                   size="small"
                   color="primary"
                   variant="outlined"
@@ -190,7 +191,11 @@ const HashTagSelect = forwardRef(( props, ref )=>{
 
 
 HashTagSelect.propTypes = {
-  
+  defaultValue: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    tag: PropTypes.string.isRequired,
+    tag_name: PropTypes.string.isRequired,
+  })),
 }
 
 export default HashTagSelect;

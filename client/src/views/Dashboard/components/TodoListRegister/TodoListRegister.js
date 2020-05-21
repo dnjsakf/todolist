@@ -254,6 +254,8 @@ const TodoInfoRegister = ( props )=>{
               placeholder="제목을 입력해주세요."
               maxLength={ 30 }
               required={ true }
+
+              defaultValue="초기값 테스트입니다"
               // error={ !!( errors && errors.title ) }
             />
           </Grid>
@@ -264,6 +266,8 @@ const TodoInfoRegister = ( props )=>{
               name="status"
               code="TODO_STATUS"
               required={ true }
+
+              defaultValue="READY"
               // error={ !!( errors && errors.status ) }
             />
           </Grid>
@@ -274,6 +278,8 @@ const TodoInfoRegister = ( props )=>{
               name="category"
               code="TODO_CATE"
               required={ true }
+
+              defaultValue="LANGUAGE"
               // error={ !!( errors && errors.category ) }
             />
           </Grid>
@@ -282,6 +288,19 @@ const TodoInfoRegister = ( props )=>{
               ref={ refs }
               id="hash_tag"
               name="hash_tag"
+
+              defaultValue={[
+                {
+                  id: "hi",
+                  tag: "hi",
+                  tag_name: "hi"
+                },
+                {
+                  id: "hello",
+                  tag: "hello",
+                  tag_name: "hello"
+                }
+              ]}
             />
           </Grid>
           <Grid item xs={ 12 }>
@@ -295,6 +314,8 @@ const TodoInfoRegister = ( props )=>{
                   format="YYYY-MM-DD"
                   valueFormat="YYYYMMDD"
                   required={ true }
+
+                  defaultValue="20201231"
                   // error={ !!( errors && errors.due_date ) }
                 />
               </Grid>
@@ -307,6 +328,8 @@ const TodoInfoRegister = ( props )=>{
                   format="HH:mm:ss"
                   valueFormat="HHmmss"
                   required={ true }
+
+                  defaultValue="123456"
                   // error={ !!( errors && errors.due_time ) }
                 />
               </Grid>
@@ -321,6 +344,8 @@ const TodoInfoRegister = ( props )=>{
               rowsMax={ 5 }
               maxLength={ 100 }
               placeholder="Description"
+
+              defaultValue="초기값을 입력해봅니다"
             />
           </Grid>
           <Grid item xs={ 12 }>
