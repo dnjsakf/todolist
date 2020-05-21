@@ -2,8 +2,6 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { useForm } from 'react-hook-form';
-
 /* GraphQL */
 import { useMutation } from '@apollo/react-hooks';
 import { TodoListMutation } from 'GraphQL/Mutation';
@@ -56,137 +54,46 @@ const useStyles = makeStyles((theme)=>({
   },
 }));
 
-const model = [
-  {
-    type: BaseText,
-    id: "title",
-    name: "title",
-    label: "제목",
-    placeholder: "제목",
-    validation: {
-      maxLength: 30,
-      required: true,
-    },
-    handler: {
-      handleChange: null,
-    }
-  },
-  {
-    type: CommonCodeSelect,
-    id: "status",
-    name: "상태",
-    label: "상태",
-    placeholder: "상태",
-    code: "TODO_STATUS",
-    validation: {
-      required: true,
-    },
-    handler: {
-      handleChange: null,
-    },
-  },
-  {
-    type: CommonCodeSelect,
-    id: "category",
-    name: "category",
-    label: "카테고리",
-    placeholder: "카테고리",
-    code: "TODO_CATE",
-    validation: {
-      required: true,
-    },
-    handler: {
-      handleChange: null,
-    },
-  },
-  {
-    type: HashTagSelect,
-    id: "hash_tag",
-    name: "hash_tag",
-    handler: {
-      handleChange: null
-    },  
-  },
-  {
-    grid: "container",
-    items: [
-      {
-        type: DatePicker,
-        id: "due_date",
-        name: "due_date",
-        label: "마감일",
-        format: "YYYY-MM-DD",
-        valueFormat: "YYYYMMDD",
-        validation: {
-          required: true,
-        },
-        handler: {
-          handleChange: null,
-        }
-      },
-      {
-        type: TimePicker,
-        id: "due_time",
-        name: "due_time",
-        label: "마감시간",
-        format: "HH:mm:ss",
-        valueFormat: "HHmmss",
-        validation: {
-          required: true,
-        },
-        handler: {
-          handleChange: null,
-        }
-      },
-    ]
-  },
-  {
-    type: BaseTextarea,
-    id: "description",
-    name: "description",
-    label: "상세내용",
-    placeholder: "상세내용",
-    rows: 5,
-    rowsMax: 5,
-    validation: {
-      maxLength: 100,
-    },
-    handler: {
-      handleChange: null
-    }
-  },
-  {
-    type: "container",
-    group: ButtonGroup,
-    items: [
-      {
-        type: BaseButton,
-        id: "btn-cancel",
-        label: "취소",
-        color: "primary",
-        size: "sm",
-        handler: {
-          handleCancel: null
-        }
-      },
-      {
-        type: BaseButton,
-        id: "btn-save",
-        label: "저장",
-        color: "primary",
-        size: "sm",
-        handler: {
-          handleSave: null
-        }
-      }
-    ]
-  }
-];
-
 function useFormRef(){
-  const refs = {}
+  let refs = {};
+    
+  function options_validate( options ){
+    try {
+      if( options ){
+        switch( options.type ){
+          case "date":
+          case "time":
+          case "datetime":
+            if( !options.format ) return [ false, "'format' is undefined." ];
+            return [ true, null ];
+            
+          case "json":
+            if( !options.extra ) return [ false, "'extra' is undefined." ];
+            return [ true, null ];
+            
+          case "array":
+            if( !options.value ) return [ false, "'value' is undefined." ];
+            return [ true, null ];
+            
+          default:
+            return [ true, null ];
+        }
+      } else {
+        return [ true, null ];
+      }
+    } catch( error ) {
+      return [ false, error ];
+    }
+  }
   
   function setRef( options ){
+    const [ isValid, message ] = options_validate( options );
+    
+    if( !isValid ){
+      console.error( message );
+      return null;
+    }
+    
     return function( element ){
       if( !element ) return;
       
@@ -194,7 +101,7 @@ function useFormRef(){
       const name = ( element.node ? element.node.name : element.name );
       
       if( !options ) {
-        Object.assign(refs, {
+        refs = Object.assign({}, refs, {
           [name]: element.value
         });
       } else {
@@ -207,15 +114,15 @@ function useFormRef(){
         
         /* Set Ref data */
         switch ( options.type ){
-          case "time":
           case "date":
+          case "time":
           case "datetime":
-            Object.assign(refs, {
+            refs = Object.assign({}, refs, {
               [name]: moment(value, options.format).format(options.format)
             });
             break;
           case "json":
-            Object.assign(refs, {
+            refs = Object.assign({}, refs, {
               [name]: {
                 ...options.extra,
                 [options.name]: value
@@ -223,12 +130,12 @@ function useFormRef(){
             });
             break;
           case "array":
-            Object.assign(refs, {
-              [name]: options.value
+            refs = Object.assign({}, refs, {
+              [name]: value
             });
             break;
           default:
-            Object.assign(refs, {
+            refs = Object.assign({}, refs, {
               [name]: value
             });
         }
@@ -240,6 +147,9 @@ function useFormRef(){
     refs: setRef,
     getValues: ()=>{
       return refs;
+    },
+    clear: ()=>{
+      refs = {}
     }
   }
 }
@@ -284,11 +194,11 @@ const TodoInfoRegister = ( props )=>{
   /* Handler: Cancel form-data */
   const handleCancel = useCallback((event)=>{
     event.preventDefault();
-
+    
     if( handleClose ){
       handleClose();
     }
-  }, []);
+  }, [ handleClose ]);
 
   /* Handler: Save form-data */
   const handleSave = useCallback(( event )=>{
@@ -302,7 +212,7 @@ const TodoInfoRegister = ( props )=>{
     saveTodoData({
       variables
     });
-  }, []);
+  }, [ getValues ]);
   
   if( mutationLoading ) return <span>Now Loading....</span>;
 
@@ -385,7 +295,6 @@ const TodoInfoRegister = ( props )=>{
                   format="YYYY-MM-DD"
                   valueFormat="YYYYMMDD"
                   required={ true }
-                  // inputRef={ register({ required: true }) }
                   // error={ !!( errors && errors.due_date ) }
                 />
               </Grid>
@@ -398,7 +307,6 @@ const TodoInfoRegister = ( props )=>{
                   format="HH:mm:ss"
                   valueFormat="HHmmss"
                   required={ true }
-                  // inputRef={ register({ required: true }) }
                   // error={ !!( errors && errors.due_time ) }
                 />
               </Grid>
