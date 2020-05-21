@@ -256,6 +256,7 @@ const TodoInfoRegister = ( props )=>{
               required={ true }
 
               defaultValue="초기값 테스트입니다"
+              readOnly={ true }
               // error={ !!( errors && errors.title ) }
             />
           </Grid>
@@ -268,6 +269,7 @@ const TodoInfoRegister = ( props )=>{
               required={ true }
 
               defaultValue="READY"
+              readOnly={ true }
               // error={ !!( errors && errors.status ) }
             />
           </Grid>
@@ -280,6 +282,7 @@ const TodoInfoRegister = ( props )=>{
               required={ true }
 
               defaultValue="LANGUAGE"
+              readOnly={ true }
               // error={ !!( errors && errors.category ) }
             />
           </Grid>
@@ -301,6 +304,7 @@ const TodoInfoRegister = ( props )=>{
                   tag_name: "hello"
                 }
               ]}
+              readOnly={ true }
             />
           </Grid>
           <Grid item xs={ 12 }>
@@ -313,9 +317,11 @@ const TodoInfoRegister = ( props )=>{
                   label="마감일"
                   format="YYYY-MM-DD"
                   valueFormat="YYYYMMDD"
-                  required={ true }
 
                   defaultValue="20201231"
+                  readOnly={ true }
+                  // disabled={ true }
+                  // required={ true }
                   // error={ !!( errors && errors.due_date ) }
                 />
               </Grid>
@@ -327,9 +333,11 @@ const TodoInfoRegister = ( props )=>{
                   label="마감시간"
                   format="HH:mm:ss"
                   valueFormat="HHmmss"
-                  required={ true }
 
                   defaultValue="123456"
+                  readOnly={ true }
+                  // disabled={ true }
+                  // required={ true }
                   // error={ !!( errors && errors.due_time ) }
                 />
               </Grid>
@@ -346,6 +354,7 @@ const TodoInfoRegister = ( props )=>{
               placeholder="Description"
 
               defaultValue="초기값을 입력해봅니다"
+              readOnly={ true }
             />
           </Grid>
           <Grid item xs={ 12 }>

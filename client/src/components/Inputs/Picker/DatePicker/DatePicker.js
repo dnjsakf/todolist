@@ -25,12 +25,13 @@ const DatePicker = ( props )=>{
   /* Props */
   const classes = useStyles();
   const { 
+    inputRef,
     className,
     format,
     valueFormat,
     defaultValue,
-    inputRef, 
-    ...rest
+    readOnly,
+    ...rest 
   } = props;
 
   /* State */
@@ -46,20 +47,23 @@ const DatePicker = ( props )=>{
       <Grid container justify="space-around">
         <KeyboardDatePicker
           { ...rest }
+          value={ value }
+          format={ format||"YYYY-MM-DD" }
+          minDate={ moment() }
+          margin="normal"
+          KeyboardButtonProps={{
+            'aria-label': 'change date',
+          }}
           inputRef={
             inputRef({
               type: "date",
               format: valueFormat
             })
           }
-          value={ value }
-          format={ format||"YYYY-MM-DD" }
-          minDate={ moment() }
-          margin="normal"
-          onChange={ handleChange }
-          KeyboardButtonProps={{
-            'aria-label': 'change date',
+          inputProps={{
+            readOnly: !!readOnly,
           }}
+          onChange={ handleChange }
         />
       </Grid>
     </MuiPickersUtilsProvider>

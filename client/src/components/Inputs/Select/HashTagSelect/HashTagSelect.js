@@ -11,6 +11,7 @@ import Chip from '@material-ui/core/Chip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
+import Avatar from '@material-ui/core/Avatar';
 
 /* Another Modules */
 import clsx from 'clsx';
@@ -74,6 +75,8 @@ const HashTagSelect = forwardRef(( props, ref )=>{
   const { 
     className,
     defaultValue,
+    readOnly,
+    disabled,
     ...rest
   } = props;
   
@@ -139,6 +142,7 @@ const HashTagSelect = forwardRef(( props, ref )=>{
       >
         <Input
           { ...rest }
+          disableUnderline={ !!readOnly }
           className={clsx({
             [classes.inputRoot]: true,
           })}
@@ -162,33 +166,43 @@ const HashTagSelect = forwardRef(( props, ref )=>{
               >
                 <Chip
                   label={ tag_name }
-                  clickable
-                  deleteIcon={ <DeleteIcon /> }
-                  onDelete={ (event)=>( handleDelete(event, id) ) }
                   size="small"
-                  color="primary"
-                  variant="outlined"
+                  color="secondary"
+                  variant="default"
+                  avatar={<Avatar>#</Avatar>}
+                  { 
+                    ...Object.assign({}, 
+                      !readOnly && {
+                        clickable: true,
+                        onDelete: (event)=>( handleDelete(event, id) ),
+                        deleteIcon: <DeleteIcon />
+                      }
+                    ) 
+                  }
                 />
               </InputAdornment>
             ))
           }
           endAdornment={
-            <IconButton
+            !readOnly && (
+              <IconButton
               aria-label={ "삭제" }
               title={ "삭제" }
               onClick={ handleClear }
             >
               <CloseIcon fontSize="small"/>
             </IconButton>
+            )
           }
           onChange={ handleChangeValue }
           onKeyDown={ handleKeyDown }
+
+          readOnly={ !!readOnly }
         />
       </FormControl>
     </div>
   )
 });
-
 
 HashTagSelect.propTypes = {
   defaultValue: PropTypes.arrayOf(PropTypes.shape({
@@ -196,6 +210,7 @@ HashTagSelect.propTypes = {
     tag: PropTypes.string.isRequired,
     tag_name: PropTypes.string.isRequired,
   })),
+  readOnly: PropTypes.bool,
 }
 
 export default HashTagSelect;

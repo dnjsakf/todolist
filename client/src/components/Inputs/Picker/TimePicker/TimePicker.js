@@ -28,8 +28,9 @@ const TimePicker = ( props )=>{
     inputRef,
     className,
     format,
-    defaultValue,
     valueFormat,
+    defaultValue,
+    readOnly,
     ...rest 
   } = props;
 
@@ -46,17 +47,20 @@ const TimePicker = ( props )=>{
       <Grid container justify="space-around">
         <KeyboardTimePicker
           { ...rest }
+          value={ value }
+          format={ format||"HH:mm:ss" }
+          margin="normal"
+          KeyboardButtonProps={{
+            'aria-label': 'change time',
+          }}
           inputRef={
             inputRef({
               type: "date",
               format: valueFormat
             })
           }
-          value={ value }
-          format={ format||"HH:mm:ss" }
-          margin="normal"
-          KeyboardButtonProps={{
-            'aria-label': 'change time',
+          inputProps={{
+            readOnly: !!readOnly,
           }}
           onChange={ handleChange }
         />
@@ -72,6 +76,10 @@ TimePicker.proptypes = {
   name: PropTypes.string,
   format: PropTypes.string,
   error: PropTypes.bool,
+  required: PropTypes.bool,
+
+  // inputProps
+  readOnly: PropTypes.bool,
 }
 
 export default TimePicker;
