@@ -21,6 +21,7 @@ import { BaseButton } from 'Components/Inputs/Button';
 import { BaseText } from 'Components/Inputs/Text';
 import { BaseTextarea } from 'Components/Inputs/Textarea';
 import { DatePicker, TimePicker } from 'Components/Inputs/Picker';
+import { BasePopover } from 'Components/Popover';
 
 /* Another Modules */
 import clsx from 'clsx';
@@ -171,6 +172,7 @@ const TodoInfoRegister = ( props )=>{
   /* State */
   const formRef = useRef();
   const { refs, getValues } = useFormRef();
+  const [ readMode, setReadMode ] = useState( true ); // 쓰기: false, 읽기: true
 
   const [ 
     saveTodoData, 
@@ -184,16 +186,17 @@ const TodoInfoRegister = ( props )=>{
       console.error( error );
     },
     onCompleted({ create_todo_list: { todo_list_field: { no } } }) {
-      if( handleClose ){
-        handleClose();
-      }
+      setReadMode( true );
     }
   });
 
   /* Handlers */
-  /* Handler: Cancel form-data */
+  /* Handler: Change Mode */
+  const handleReadMode = ( mode )=>( event )=>( setReadMode( mode ) );
+  
+  /* Handler: Change Mode for Read */
   const handleCancel = useCallback((event)=>{
-    event.preventDefault();
+    setReadMode( true );
     
     if( handleClose ){
       handleClose();
@@ -202,8 +205,6 @@ const TodoInfoRegister = ( props )=>{
 
   /* Handler: Save form-data */
   const handleSave = useCallback(( event )=>{
-    event.preventDefault();
-    
     const variables = getValues();
     
     console.log( 'save' );
@@ -212,9 +213,8 @@ const TodoInfoRegister = ( props )=>{
     saveTodoData({
       variables
     });
+    
   }, [ getValues ]);
-  
-  if( mutationLoading ) return <span>Now Loading....</span>;
 
   return (
     <Paper
@@ -255,8 +255,8 @@ const TodoInfoRegister = ( props )=>{
               maxLength={ 30 }
               required={ true }
 
-              defaultValue="초기값 테스트입니다"
-              readOnly={ true }
+              defaultValue={ "초기값 테스트입니다" }
+              readOnly={ readMode }
               // error={ !!( errors && errors.title ) }
             />
           </Grid>
@@ -269,7 +269,7 @@ const TodoInfoRegister = ( props )=>{
               required={ true }
 
               defaultValue="READY"
-              readOnly={ true }
+              readOnly={ readMode }
               // error={ !!( errors && errors.status ) }
             />
           </Grid>
@@ -281,8 +281,8 @@ const TodoInfoRegister = ( props )=>{
               code="TODO_CATE"
               required={ true }
 
-              defaultValue="LANGUAGE"
-              readOnly={ true }
+              defaultValue={ "LANGUAGE" }
+              readOnly={ readMode }
               // error={ !!( errors && errors.category ) }
             />
           </Grid>
@@ -304,7 +304,7 @@ const TodoInfoRegister = ( props )=>{
                   tag_name: "hello"
                 }
               ]}
-              readOnly={ true }
+              readOnly={ readMode }
             />
           </Grid>
           <Grid item xs={ 12 }>
@@ -318,8 +318,8 @@ const TodoInfoRegister = ( props )=>{
                   format="YYYY-MM-DD"
                   valueFormat="YYYYMMDD"
 
-                  defaultValue="20201231"
-                  readOnly={ true }
+                  defaultValue={ "20201231" }
+                  readOnly={ readMode }
                   // disabled={ true }
                   // required={ true }
                   // error={ !!( errors && errors.due_date ) }
@@ -334,8 +334,8 @@ const TodoInfoRegister = ( props )=>{
                   format="HH:mm:ss"
                   valueFormat="HHmmss"
 
-                  defaultValue="123456"
-                  readOnly={ true }
+                  defaultValue={ "123456" }
+                  readOnly={ readMode }
                   // disabled={ true }
                   // required={ true }
                   // error={ !!( errors && errors.due_time ) }
@@ -354,7 +354,7 @@ const TodoInfoRegister = ( props )=>{
               placeholder="Description"
 
               defaultValue="초기값을 입력해봅니다"
-              readOnly={ true }
+              readOnly={ readMode }
             />
           </Grid>
           <Grid item xs={ 12 }>
@@ -364,26 +364,42 @@ const TodoInfoRegister = ( props )=>{
               justify="center"
               alignItems="center"
             >
-              <ButtonGroup>
-                <BaseButton
-                  id="btn-cancel"
-                  label="취소"
+            { 
+              readMode
+              ? <BaseButton
+                  id="btn-update"
+                  label="수정"
                   color="primary"
                   size="sm"
-                  onClick={ handleCancel }
+                  onClick={ handleReadMode(false) }
                 />
-                <BaseButton
-                  id="btn-save"
-                  label="저장"
-                  color="primary"
-                  size="sm"
-                  onClick={ handleSave }
-                />
-              </ButtonGroup>
+              : <ButtonGroup>
+                  <BaseButton
+                    id="btn-cancel"
+                    label="취소"
+                    color="primary"
+                    size="sm"
+                    onClick={ handleCancel }
+                  />
+                  <BaseButton
+                    id="btn-save"
+                    label="저장"
+                    color="primary"
+                    size="sm"
+                    onClick={ handleSave }
+                  />
+                </ButtonGroup>
+            }
             </Grid>
           </Grid>
         </Grid>
       </form>
+      <BasePopover isOpen={ mutationLoading }>
+        <span>Now Loading....</span>
+      </BasePopover>
+      <BasePopover isOpen={ !!created } closeInterval={ 3000 }>
+        <span>Save Successed!!!</span>
+      </BasePopover>
     </Paper>
   )
 }

@@ -167,7 +167,7 @@ const HashTagSelect = forwardRef(( props, ref )=>{
                 <Chip
                   label={ tag_name }
                   size="small"
-                  color="secondary"
+                  color="primary"
                   variant="default"
                   avatar={<Avatar>#</Avatar>}
                   { 

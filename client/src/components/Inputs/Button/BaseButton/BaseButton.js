@@ -76,7 +76,7 @@ const BaseButton = ( props )=>{
   )
 }
 
-BaseButton.proptypes = {
+BaseButton.propTypes = {
   id: PropTypes.string,
   name: PropTypes.string,
   className: PropTypes.string,

@@ -69,7 +69,7 @@ const TimePicker = ( props )=>{
   );
 }
 
-TimePicker.proptypes = {
+TimePicker.propTypes = {
   inputRef: PropTypes.any,
   className: PropTypes.string,
   id: PropTypes.string,

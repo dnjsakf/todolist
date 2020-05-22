@@ -70,7 +70,7 @@ const DatePicker = ( props )=>{
   );
 }
 
-DatePicker.proptypes = {
+DatePicker.propTypes = {
   inputRef: PropTypes.any,
   className: PropTypes.string,
   id: PropTypes.string,

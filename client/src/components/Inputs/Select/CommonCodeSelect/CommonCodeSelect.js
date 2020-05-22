@@ -1,7 +1,6 @@
 /* React */
-import React, { forwardRef, useState, useCallback } from 'react';
+import React, { forwardRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Controller } from 'react-hook-form';
 
 /* GraphQL */
 import { useQuery } from '@apollo/react-hooks';
