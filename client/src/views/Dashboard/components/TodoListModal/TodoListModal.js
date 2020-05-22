@@ -31,7 +31,7 @@ const TodoListModal = ( props )=>{
       className={ clsx(classes.root, className) }
       component={
         mode === "detail"
-        ? TodoListDetail
+        ? TodoListRegister
         : TodoListRegister
       }
     />

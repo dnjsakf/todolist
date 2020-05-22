@@ -13,14 +13,10 @@ import Grid from '@material-ui/core/Grid';
 
 /* Components */
 import { BaseButton } from 'Components/Inputs/Button';
-import { BaseModal } from 'Components/Modals';
 import {
   TodoListCard,
-  TodoListRegister,
-  TodoListDetail,
   TodoListModal
 } from './components';
-
 
 /* Another Moudles */
 import clsx from 'clsx';
@@ -41,14 +37,14 @@ const Dashboard = ( props )=>{
   /* Props */
   const { ...rest } = props;
   const variables = {
-    first: 2,
+    first: 3,
     orderBy: ["-no"]
   }
 
   /* State */
   const classes = useStyles();
 
-  const [ open, setOpen ] = useState( true );
+  const [ open, setOpen ] = useState( false );
   const [ mode, setMode ] = useState( "create" );
   const [ id, setId ] = useState( null );
 

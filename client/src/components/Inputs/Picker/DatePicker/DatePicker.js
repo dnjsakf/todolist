@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 
 /* Materialize */
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
@@ -17,7 +16,12 @@ import clsx from 'clsx';
 
 /* Materialize Styles */
 const useStyles = makeStyles(( theme ) => ({
-
+  root: {
+    width: "100%"
+  },
+  input: {
+    textAlign: "right"
+  }
 }));
 
 /* Component */
@@ -44,28 +48,34 @@ const DatePicker = ( props )=>{
 
   return (
     <MuiPickersUtilsProvider utils={ MomentUtils }>
-      <Grid container justify="space-around">
-        <KeyboardDatePicker
-          { ...rest }
-          value={ value }
-          format={ format||"YYYY-MM-DD" }
-          minDate={ moment() }
-          margin="normal"
-          KeyboardButtonProps={{
-            'aria-label': 'change date',
-          }}
-          inputRef={
-            inputRef({
-              type: "date",
-              format: valueFormat
-            })
-          }
-          inputProps={{
-            readOnly: !!readOnly,
-          }}
-          onChange={ handleChange }
-        />
-      </Grid>
+      <KeyboardDatePicker
+        { ...rest }
+        className={ clsx(
+          {
+            [classes.root]: true,
+          },
+          className
+        )}
+        value={ value }
+        format={ format||"YYYY-MM-DD" }
+        minDate={ moment() }
+        margin="normal"
+        KeyboardButtonProps={{
+          'aria-label': 'change date',
+        }}
+        inputRef={
+          inputRef({
+            type: "date",
+            format: valueFormat
+          })
+        }
+        inputProps={{
+          readOnly: !!readOnly,
+          className: classes.input
+        }}
+        readOnly={ !!readOnly }
+        onChange={ handleChange }
+      />
     </MuiPickersUtilsProvider>
   );
 }

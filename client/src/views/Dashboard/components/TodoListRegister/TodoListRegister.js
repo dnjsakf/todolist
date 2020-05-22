@@ -3,8 +3,9 @@ import React, { useRef, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 /* GraphQL */
-import { useMutation } from '@apollo/react-hooks';
-import { TodoListMutation } from 'GraphQL/Mutation';
+import { useQuery, useMutation } from '@apollo/react-hooks';
+import Query from 'GraphQL/Query/TodoList';
+import Mutation from 'GraphQL/Mutation/TodoList';
 
 /* Material */
 import { makeStyles } from '@material-ui/core/styles';
@@ -160,6 +161,9 @@ const TodoInfoRegister = ( props )=>{
   /* Props */
   const classes = useStyles();
   const {
+    data: {
+      id: data_id,
+    },
     className,
     handleClose,
     small,
@@ -172,20 +176,56 @@ const TodoInfoRegister = ( props )=>{
   /* State */
   const formRef = useRef();
   const { refs, getValues } = useFormRef();
-  const [ readMode, setReadMode ] = useState( true ); // 쓰기: false, 읽기: true
+  const [ readMode, setReadMode ] = useState( !!data_id ); // 읽기: true, 쓰기: false
 
+  /* Query: GET_TODO_LIST_FIELD */
+  const { loading, error, data, refetch } = useQuery(
+    Query.GET_TODO_LIST_FIELD, { 
+      skip: !data_id,
+      variables: {
+        no: data_id
+      },
+      onError(error){
+        console.error( error );
+      },
+      onCompleted( loadded ){
+        console.log("[TODO_LIST][LOADED]", data_id, loadded );
+      }
+    }
+  );
+
+  /* Mutation: Create */
   const [ 
-    saveTodoData, 
+    createTodoData, 
     { 
       data: created, 
-      loading: mutationLoading, 
+      loading: createLoading, 
     }
   ] = useMutation(
-    TodoListMutation.CREATE_TODO, {
+    Mutation.CREATE_TODO_LIST, {
     onError( error ){
       console.error( error );
     },
-    onCompleted({ create_todo_list: { todo_list_field: { no } } }) {
+    onCompleted({ success, create_todo_list: { todo_list_field: { no } } }) {
+      console.log("[TODO_LIST][CREATED]", success, no);
+      setReadMode( true );
+    }
+  });
+
+  /* Mutation: Update */
+  const [ 
+    updateTodoData, 
+    { 
+      data: updated, 
+      loading: updateLoading, 
+    }
+  ] = useMutation(
+    Mutation.UPDATE_TODO_LIST, {
+    onError( error ){
+      console.error( error );
+    },
+    onCompleted({ success }) {
+      console.log("[TODO_LIST][UPDATED]", success);
       setReadMode( true );
     }
   });
@@ -197,24 +237,41 @@ const TodoInfoRegister = ( props )=>{
   /* Handler: Change Mode for Read */
   const handleCancel = useCallback((event)=>{
     setReadMode( true );
-    
-    if( handleClose ){
-      handleClose();
-    }
   }, [ handleClose ]);
 
   /* Handler: Save form-data */
   const handleSave = useCallback(( event )=>{
     const variables = getValues();
-    
-    console.log( 'save' );
-    console.log( variables );
 
-    saveTodoData({
-      variables
-    });
-    
-  }, [ getValues ]);
+    if( !readMode ){
+      if( data_id ){
+        updateTodoData({
+          variables: {
+            ...variables,
+            no: data_id
+          }
+        });
+      } else {
+        createTodoData({
+          variables
+        });
+      }
+    }
+
+  }, [ data_id, readMode, getValues ]);
+
+  if( data_id ){
+    if( error ){
+      console.error( error );
+      return <span>Data Load Error...</span>;
+    }
+    if( loading ){
+      return <span>Data Loadding...</span>;
+    }
+    if( !data ){
+      return <span>Data is Null...</span>
+    }
+  }
 
   return (
     <Paper
@@ -255,36 +312,56 @@ const TodoInfoRegister = ( props )=>{
               maxLength={ 30 }
               required={ true }
 
-              defaultValue={ "초기값 테스트입니다" }
+              defaultValue={ data && data.todo_list_field.title }
               readOnly={ readMode }
               // error={ !!( errors && errors.title ) }
             />
           </Grid>
           <Grid item xs={ 12 }>
-            <CommonCodeSelect
-              ref={ refs }
-              id="status"
-              name="status"
-              code="TODO_STATUS"
-              required={ true }
-
-              defaultValue="READY"
-              readOnly={ readMode }
-              // error={ !!( errors && errors.status ) }
-            />
+          {
+            data
+            ? <CommonCodeSelect
+                ref={ refs }
+                id="status"
+                name="status"
+                code={ data.todo_list_field.status.p_code }
+                defaultValue={ data.todo_list_field.status.code }
+                data={ data.todo_list_field.status_codes }
+                required={ true }
+                readOnly={ readMode }
+              />
+            : <CommonCodeSelect
+                ref={ refs }
+                id="status"
+                name="status"
+                code="TODO_STATUS"
+                required={ true }
+                readOnly={ readMode }
+              />
+          }
           </Grid>
           <Grid item xs={ 12 }>
-            <CommonCodeSelect
-              ref={ refs }
-              id="category"
-              name="category"
-              code="TODO_CATE"
-              required={ true }
-
-              defaultValue={ "LANGUAGE" }
-              readOnly={ readMode }
-              // error={ !!( errors && errors.category ) }
-            />
+          {
+            data
+            ? <CommonCodeSelect
+                ref={ refs }
+                id="category"
+                name="category"
+                code={ data.todo_list_field.category.p_code }
+                defaultValue={ data.todo_list_field.category.code }
+                data={ data.todo_list_field.category_codes }
+                required={ true }
+                readOnly={ readMode }
+              />
+            : <CommonCodeSelect
+                ref={ refs }
+                id="category"
+                name="category"
+                code="TODO_CATE"
+                required={ true }
+                readOnly={ readMode }
+              />
+          }
           </Grid>
           <Grid item xs={ 12 }>
             <HashTagSelect
@@ -292,23 +369,16 @@ const TodoInfoRegister = ( props )=>{
               id="hash_tag"
               name="hash_tag"
 
-              defaultValue={[
-                {
-                  id: "hi",
-                  tag: "hi",
-                  tag_name: "hi"
-                },
-                {
-                  id: "hello",
-                  tag: "hello",
-                  tag_name: "hello"
-                }
-              ]}
+              defaultValue={ data && data.todo_list_field.hash_tag }
               readOnly={ readMode }
             />
           </Grid>
           <Grid item xs={ 12 }>
-            <Grid container direction="row" spacing={ 1 }>
+            <Grid 
+              container 
+              direction="row" 
+              spacing={ 1 }
+            >
               <Grid item xs={ 6 }>
                 <DatePicker
                   inputRef={ refs }
@@ -318,10 +388,8 @@ const TodoInfoRegister = ( props )=>{
                   format="YYYY-MM-DD"
                   valueFormat="YYYYMMDD"
 
-                  defaultValue={ "20201231" }
+                  defaultValue={ data && data.todo_list_field.due_date }
                   readOnly={ readMode }
-                  // disabled={ true }
-                  // required={ true }
                   // error={ !!( errors && errors.due_date ) }
                 />
               </Grid>
@@ -334,10 +402,8 @@ const TodoInfoRegister = ( props )=>{
                   format="HH:mm:ss"
                   valueFormat="HHmmss"
 
-                  defaultValue={ "123456" }
+                  defaultValue={ data && data.todo_list_field.due_time }
                   readOnly={ readMode }
-                  // disabled={ true }
-                  // required={ true }
                   // error={ !!( errors && errors.due_time ) }
                 />
               </Grid>
@@ -351,9 +417,9 @@ const TodoInfoRegister = ( props )=>{
               rows={ 5 }
               rowsMax={ 5 }
               maxLength={ 100 }
-              placeholder="Description"
+              placeholder="상세내용"
 
-              defaultValue="초기값을 입력해봅니다"
+              defaultValue={ data && data.todo_list_field.description }
               readOnly={ readMode }
             />
           </Grid>
@@ -394,7 +460,7 @@ const TodoInfoRegister = ( props )=>{
           </Grid>
         </Grid>
       </form>
-      <BasePopover isOpen={ mutationLoading }>
+      <BasePopover isOpen={ createLoading }>
         <span>Now Loading....</span>
       </BasePopover>
       <BasePopover isOpen={ !!created } closeInterval={ 3000 }>

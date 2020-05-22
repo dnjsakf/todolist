@@ -75,3 +75,70 @@ class CreateTodoList(graphene.Mutation):
       todo_list_field=todo_list_model,
       success=True
     )
+
+class UpdateTodoList(graphene.Mutation):  
+  class Arguments:
+    no = graphene.Int(required=True)
+
+    title = graphene.String(required=True)
+    status = JsonType(required=True)
+    category = JsonType(required=True)
+
+    due_date = graphene.String()
+    due_time = graphene.String()
+
+    description = graphene.String()
+    star = graphene.Boolean()
+    
+    hash_tag = graphene.List(InputHashTag)
+
+  # 반환 Field 정의
+  success = graphene.Boolean()
+  
+  @session_user
+  def mutate(root, info, user, no, **input):
+    todo_list_model = TodoListModel.objects(no=no).first()
+    
+    print( todo_list_model )
+
+    updated = TodoListModel.objects(no=no).update(
+      set__title=input.get("title"),
+      set__status=input.get("status"),
+      set__category=input.get("category"),
+      set__description=input.get("description"),
+      set__due_date=input.get("due_date"),
+      set__due_time=input.get("due_time"),
+      set__star=input.get("star"),
+      set__upd_user=user.name,
+      set__upd_dttm=datetime.datetime.now().strftime("%Y%m%d%H%M%S"),
+    )
+    
+    hash_tag_items = input.get("hash_tag", None)
+    if hash_tag_items is not None:
+      _models = []
+
+      TodoListHashTagModel.objects(todo_list=todo_list_model).delete()
+
+      for item in hash_tag_items:
+        hash_tag_model = HashTagModel.objects(tag=item.tag).first()
+        
+        if hash_tag_model is None: # Insert
+          hash_tag_model = HashTagModel(
+            tag=item.tag,
+            tag_name=item.tag_name,
+            reg_user=user.name,
+            reg_dttm=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+          ).save()
+
+        TodoListHashTagModel(
+          todo_list=todo_list_model,
+          hash_tag=hash_tag_model,
+          reg_user=user.name,
+          reg_dttm=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        ).save()
+
+    print( updated )
+    
+    return UpdateTodoList(
+      success=bool(todo_list_model)
+    )

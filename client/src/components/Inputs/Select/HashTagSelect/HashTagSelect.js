@@ -118,8 +118,8 @@ const HashTagSelect = forwardRef(( props, ref )=>{
     }
   }, [ value, inputValue ]);
   
-  const handleDelete = (event, del_id)=>{
-    const del_value = value.filter(({ id })=>( id !== del_id ));
+  const handleDelete = (event, del_id, del_idx)=>{
+    const del_value = value.filter(({ id, idx })=>( id !== del_id || idx === del_idx ));
 
     if( del_value.length !== value.length ){
       setValue(del_value);
@@ -143,7 +143,7 @@ const HashTagSelect = forwardRef(( props, ref )=>{
         <Input
           { ...rest }
           disableUnderline={ !!readOnly }
-          className={clsx({
+          className={ clsx({
             [classes.inputRoot]: true,
           })}
           inputProps={{
@@ -159,9 +159,9 @@ const HashTagSelect = forwardRef(( props, ref )=>{
           }}
           value={ inputValue }
           startAdornment={
-            value.map(({ id, tag, tag_name })=>(
+            value.map(({ id, tag, tag_name }, idx )=>(
               <InputAdornment 
-                key={ id }
+                key={ id+idx }
                 position="start"
               >
                 <Chip
@@ -174,7 +174,7 @@ const HashTagSelect = forwardRef(( props, ref )=>{
                     ...Object.assign({}, 
                       !readOnly && {
                         clickable: true,
-                        onDelete: (event)=>( handleDelete(event, id) ),
+                        onDelete: (event)=>( handleDelete(event, id, idx) ),
                         deleteIcon: <DeleteIcon />
                       }
                     ) 

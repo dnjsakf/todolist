@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
-export const CREATE_TODO = gql(`
-mutation createTodo(
+export const CREATE_TODO_LIST = gql(`
+mutation createTodoList(
   $title: String!
   $status: JsonType!
   $category: JsonType!
@@ -38,6 +38,34 @@ mutation createTodo(
       reg_user
       reg_dttm
     }
+  }
+}
+`);
+
+export const UPDATE_TODO_LIST = gql(`
+mutation updateTodoList(
+  $no: Int!
+  $title: String!
+  $status: JsonType!
+  $category: JsonType!
+  $due_date: String
+  $due_time: String
+  $description: String
+  $star: Boolean
+  $hash_tag: [InputHashTag]
+){
+  update_todo_list(
+    no: $no
+    title: $title
+    status: $status
+    category: $category
+    due_date: $due_date
+    due_time: $due_time
+    description: $description
+    star: $star
+    hash_tag: $hash_tag
+  ){
+    success
   }
 }
 `);

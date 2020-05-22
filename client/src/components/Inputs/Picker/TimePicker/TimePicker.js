@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 
 /* Materialize */
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
@@ -16,9 +15,11 @@ import MomentUtils from '@date-io/moment';
 import clsx from 'clsx';
 
 /* Materialize Styles */
-const useStyles = makeStyles(( theme )=>{
-
-});
+const useStyles = makeStyles(( theme )=>({
+  root: {
+    width: "100%"
+  }
+}));
 
 /* Component */
 const TimePicker = ( props )=>{
@@ -44,27 +45,27 @@ const TimePicker = ( props )=>{
 
   return (
     <MuiPickersUtilsProvider utils={ MomentUtils }>
-      <Grid container justify="space-around">
-        <KeyboardTimePicker
-          { ...rest }
-          value={ value }
-          format={ format||"HH:mm:ss" }
-          margin="normal"
-          KeyboardButtonProps={{
-            'aria-label': 'change time',
-          }}
-          inputRef={
-            inputRef({
-              type: "date",
-              format: valueFormat
-            })
-          }
-          inputProps={{
-            readOnly: !!readOnly,
-          }}
-          onChange={ handleChange }
-        />
-      </Grid>
+      <KeyboardTimePicker
+        { ...rest }
+        value={ value }
+        className={ classes.root }
+        format={ format||"HH:mm:ss" }
+        margin="normal"
+        KeyboardButtonProps={{
+          'aria-label': 'change time',
+        }}
+        inputRef={
+          inputRef({
+            type: "date",
+            format: valueFormat
+          })
+        }
+        inputProps={{
+          readOnly: !!readOnly,
+        }}
+        readOnly={ !!readOnly }
+        onChange={ handleChange }
+      />
     </MuiPickersUtilsProvider>
   );
 }
