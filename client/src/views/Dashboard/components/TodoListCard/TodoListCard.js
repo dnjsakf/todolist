@@ -63,15 +63,15 @@ const TodoListCard = props => {
   const start_dttm = moment(data.reg_dttm, 'YYYY-MM-DD HH:mm:ss');
   const end_dttm = moment(data.due_date+data.due_time, 'YYYYMMDDHHmmss');
   
-  const max_days = end_dttm.diff( start_dttm, 'days' );
-  const diff_days = end_dttm.diff( now_dttm, 'days' );
+  const end_days = end_dttm.diff( start_dttm, 'days' );
+  const now_days = now_dttm.diff( start_dttm, 'days' );
 
   console.log({
     now_dttm,
     start_dttm,
     end_dttm,
-    max_days,
-    diff_days
+    end_days,
+    now_days
   });
 
   return (
@@ -106,7 +106,7 @@ const TodoListCard = props => {
         </Grid>
         <LinearProgress
           className={classes.progress}
-          value={ 75.5 }
+          value={ now_days/end_days*100 }
           variant="determinate"
         />
       </CardContent>

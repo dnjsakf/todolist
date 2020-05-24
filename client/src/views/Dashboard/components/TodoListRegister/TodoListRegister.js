@@ -242,7 +242,7 @@ const TodoInfoRegister = ( props )=>{
   /* Handler: Save form-data */
   const handleSave = useCallback(( event )=>{
     const variables = getValues();
-
+    
     if( !readMode ){
       if( data_id ){
         updateTodoData({

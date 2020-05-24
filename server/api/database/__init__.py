@@ -20,7 +20,8 @@ def init_mockup():
   )
 
   reg_user = "admin"
-  reg_dttm = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+  # reg_dttm = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+  reg_dttm = "20200513000000"
   
   ### 유저 데이터
   admin = UserModel(email="admin@gmail.com", pwd="1234", name="admin", age=999, cell_phone="01012345678").save()

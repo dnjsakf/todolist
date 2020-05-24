@@ -66,7 +66,8 @@ const DatePicker = ( props )=>{
         inputRef={
           inputRef({
             type: "date",
-            format: valueFormat
+            format: valueFormat,
+            value: value
           })
         }
         inputProps={{
