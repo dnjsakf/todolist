@@ -1,6 +1,10 @@
 /* React */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+
+/* GraphQL */
+import { useMutation } from '@apollo/react-hooks';
+import Mutation from 'GraphQL/Mutation/TodoList';
 
 /* Materialize */
 import { makeStyles } from '@material-ui/styles';
@@ -9,18 +13,25 @@ import {
   CardContent,
   Grid,
   Typography,
-  Avatar,
   LinearProgress
 } from '@material-ui/core';
-import InsertChartIcon from '@material-ui/icons/InsertChartOutlined';
 import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 /* Another Moudles */
 import clsx from 'clsx';
 import moment from 'moment';
+
+const calcProgress = (start_date, end_date)=>{
+  const now_dttm = moment();
+  const start_dttm = moment(start_date, 'YYYY-MM-DD HH:mm:ss');
+  const end_dttm = moment(end_date, 'YYYYMMDDHHmmss');
+  
+  const end_days = end_dttm.diff( start_dttm, 'days' );
+  const now_days = now_dttm.diff( start_dttm, 'days' );
+
+  return end_days === 0 ? 100 : now_days / end_days * 100;
+}
 
 /* Materialize Styles */
 const useStyles = makeStyles(( theme )=>({
@@ -60,11 +71,12 @@ const useStyles = makeStyles(( theme )=>({
 }));
 
 /* Component */
-const TodoListCard = props => {
+const TodoListCard = ( props )=>{
   const classes = useStyles();
   const { 
     className,
     data,
+    onClick,
     onDelete,
     ...rest
   } = props;
@@ -73,17 +85,26 @@ const TodoListCard = props => {
     return <span>Data is None...</span>
   }
 
-  const now_dttm = moment();
-  const start_dttm = moment(data.reg_dttm, 'YYYY-MM-DD HH:mm:ss');
-  const end_dttm = moment(data.due_date+data.due_time, 'YYYYMMDDHHmmss');
-  
-  const end_days = end_dttm.diff( start_dttm, 'days' );
-  const now_days = now_dttm.diff( start_dttm, 'days' );
+  const [ progress, setProgress ] = useState(()=>{
+    const start_date = data.reg_dttm;
+    const end_date = data.due_date+data.due_time;
+
+    return calcProgress( start_date, end_date);
+  }, 0 );
+
+  useEffect(()=>{
+    const start_date = data.reg_dttm;
+    const end_date = data.due_date+data.due_time;
+
+    setProgress( calcProgress( start_date, end_date ) );
+ 
+  }, [ data ]);
 
   return (
     <Card
-      {...rest}
+      { ...rest }
       className={ clsx(classes.root, className) }
+      onClick={ onClick ? onClick.bind( null, data.no ) : null }
     >
       <CardContent>
         <Grid
@@ -103,23 +124,23 @@ const TodoListCard = props => {
             <Typography variant="h3">{ data.status.code }</Typography>
             <Typography variant="h5">{`${data.due_date}-${data.due_time}`}</Typography>
           </Grid>
+          <Grid item>
           {
             onDelete && (
-              <Grid item>
-                <IconButton
-                  aria-label={ "삭제" }
-                  title={ "삭제" }
-                  onClick={ onDelete }
-                >
-                  <DeleteIcon fontSize="small"/>
-                </IconButton>
-              </Grid>
+              <IconButton
+                aria-label={ "삭제" }
+                title={ "삭제" }
+                onClick={ onDelete.bind( null, data.no ) }
+              >
+                <DeleteIcon fontSize="small"/>
+              </IconButton>
             )
           }
+          </Grid>
         </Grid>
         <LinearProgress
           className={ classes.progress }
-          value={ now_days/end_days*100 }
+          value={ progress }
           variant="determinate"
         />
       </CardContent>
@@ -139,6 +160,7 @@ TodoListCard.propTypes = {
     hash_tag: PropTypes.array,
   }),
   onClick: PropTypes.func,
+  onDelete: PropTypes.func,
 };
 
 export default TodoListCard;
