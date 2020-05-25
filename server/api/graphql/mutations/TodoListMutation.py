@@ -140,5 +140,23 @@ class UpdateTodoList(graphene.Mutation):
     print( updated )
     
     return UpdateTodoList(
-      success=bool(todo_list_model)
+      success=bool(updated)
+    )
+    
+    
+class DeleteTodoList(graphene.Mutation):  
+  class Arguments:
+    no = graphene.Int(required=True)
+
+  # 반환 Field 정의
+  success = graphene.Boolean()
+  
+  @session_user
+  def mutate(root, info, user, no, **input):
+    deleted = TodoListModel.objects(no=no).delete()
+    
+    #deleted = TodoListHashTagModel.objects(todo_list=todo_list_model).delete()
+
+    return DeleteTodoList(
+      success=bool(deleted)
     )

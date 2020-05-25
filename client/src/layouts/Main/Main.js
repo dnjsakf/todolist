@@ -26,10 +26,14 @@ const useStyles = makeStyles((theme)=> ({
 }));
 
 const Main = ( props )=>{
-  const { children } = props;
-
   const classes = useStyles();
   const theme = useTheme();
+  const {
+    className,
+    children,
+    ...rest
+  } = props;
+
   const isDesktop = useMediaQuery(theme.breakpoints.up('lg'), {
     defaultMatches: true
   });
@@ -47,12 +51,15 @@ const Main = ( props )=>{
   const shouldOpenSidebar = isDesktop ? true : openSidebar;
 
   return (
-    <Suspense fallback={<div>Layout Loading...</div>}>
+    <Suspense fallback={ <div>Layout Loading...</div>} >
       <div
-        className={clsx({
-          [classes.root]: true,
-          [classes.shiftContent]: isDesktop
-        })}
+        className={clsx(
+          {
+            [classes.root]: true,
+            [classes.shiftContent]: isDesktop
+          },
+          className
+        )}
       >
         <Topbar onSidebarOpen={handleSidebarOpen} />
         <Sidebar
@@ -60,7 +67,7 @@ const Main = ( props )=>{
           open={shouldOpenSidebar}
           variant={isDesktop ? 'persistent' : 'temporary'}
         />
-        <main className={classes.content}>
+        <main className={ classes.content }>
           {children}
           <Footer />
         </main>

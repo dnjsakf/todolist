@@ -186,12 +186,12 @@ const HashTagSelect = forwardRef(( props, ref )=>{
           endAdornment={
             !readOnly && (
               <IconButton
-              aria-label={ "삭제" }
-              title={ "삭제" }
-              onClick={ handleClear }
-            >
-              <CloseIcon fontSize="small"/>
-            </IconButton>
+                aria-label={ "삭제" }
+                title={ "삭제" }
+                onClick={ handleClear }
+              >
+                <CloseIcon fontSize="small"/>
+              </IconButton>
             )
           }
           onChange={ handleChangeValue }

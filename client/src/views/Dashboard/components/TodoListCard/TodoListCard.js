@@ -13,6 +13,10 @@ import {
   LinearProgress
 } from '@material-ui/core';
 import InsertChartIcon from '@material-ui/icons/InsertChartOutlined';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import DeleteIcon from '@material-ui/icons/Delete';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 /* Another Moudles */
 import clsx from 'clsx';
@@ -21,11 +25,16 @@ import moment from 'moment';
 /* Materialize Styles */
 const useStyles = makeStyles(( theme )=>({
   root: {
-    height: '100%'
+    height: "100%",
+    opacity: "80%",
+    cursor: "pointer",
+    "&:hover": {
+      opacity: "100%"
+    }
   },
   content: {
-    alignItems: 'center',
-    display: 'flex'
+    alignItems: "center",
+    display: "flex"
   },
   title: {
     fontWeight: 700
@@ -41,7 +50,12 @@ const useStyles = makeStyles(( theme )=>({
     width: 32
   },
   progress: {
-    marginTop: theme.spacing(3)
+    marginTop: theme.spacing(3),
+    height: "1em",
+    borderTopLeftRadius: "1em",
+    borderTopRightRadius: "1em",
+    borderBottomLeftRadius: "1em",
+    borderBottomRightRadius: "1em",
   }
 }));
 
@@ -51,7 +65,7 @@ const TodoListCard = props => {
   const { 
     className,
     data,
-    handleClick,
+    onDelete,
     ...rest
   } = props;
 
@@ -66,19 +80,10 @@ const TodoListCard = props => {
   const end_days = end_dttm.diff( start_dttm, 'days' );
   const now_days = now_dttm.diff( start_dttm, 'days' );
 
-  console.log({
-    now_dttm,
-    start_dttm,
-    end_dttm,
-    end_days,
-    now_days
-  });
-
   return (
     <Card
       {...rest}
       className={ clsx(classes.root, className) }
-      onClick={ handleClick }
     >
       <CardContent>
         <Grid
@@ -98,14 +103,22 @@ const TodoListCard = props => {
             <Typography variant="h3">{ data.status.code }</Typography>
             <Typography variant="h5">{`${data.due_date}-${data.due_time}`}</Typography>
           </Grid>
-          <Grid item>
-            <Avatar className={classes.avatar}>
-              <InsertChartIcon className={classes.icon} />
-            </Avatar>
-          </Grid>
+          {
+            onDelete && (
+              <Grid item>
+                <IconButton
+                  aria-label={ "삭제" }
+                  title={ "삭제" }
+                  onClick={ onDelete }
+                >
+                  <DeleteIcon fontSize="small"/>
+                </IconButton>
+              </Grid>
+            )
+          }
         </Grid>
         <LinearProgress
-          className={classes.progress}
+          className={ classes.progress }
           value={ now_days/end_days*100 }
           variant="determinate"
         />
@@ -124,7 +137,8 @@ TodoListCard.propTypes = {
     due_time: PropTypes.string.isRequired,
     star: PropTypes.bool,
     hash_tag: PropTypes.array,
-  })
+  }),
+  onClick: PropTypes.func,
 };
 
 export default TodoListCard;

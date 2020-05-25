@@ -196,17 +196,17 @@ const TodoInfoRegister = ( props )=>{
 
   /* Mutation: Create */
   const [ 
-    createTodoData, 
+    createTodoList, 
     { 
       data: created, 
-      loading: createLoading, 
+      loading: creating, 
     }
   ] = useMutation(
     Mutation.CREATE_TODO_LIST, {
     onError( error ){
       console.error( error );
     },
-    onCompleted({ success, create_todo_list: { todo_list_field: { no } } }) {
+    onCompleted({ create_todo_list: { success, todo_list_field: { no } } }) {
       console.log("[TODO_LIST][CREATED]", success, no);
       setReadMode( true );
     }
@@ -214,17 +214,17 @@ const TodoInfoRegister = ( props )=>{
 
   /* Mutation: Update */
   const [ 
-    updateTodoData, 
+    updateTodoList, 
     { 
       data: updated, 
-      loading: updateLoading, 
+      loading: updating, 
     }
   ] = useMutation(
     Mutation.UPDATE_TODO_LIST, {
     onError( error ){
       console.error( error );
     },
-    onCompleted({ success }) {
+    onCompleted({ update_todo_list : { success } }) {
       console.log("[TODO_LIST][UPDATED]", success);
       setReadMode( true );
     }
@@ -245,14 +245,14 @@ const TodoInfoRegister = ( props )=>{
     
     if( !readMode ){
       if( data_id ){
-        updateTodoData({
+        updateTodoList({
           variables: {
             ...variables,
             no: data_id
           }
         });
       } else {
-        createTodoData({
+        createTodoList({
           variables
         });
       }
@@ -460,7 +460,7 @@ const TodoInfoRegister = ( props )=>{
           </Grid>
         </Grid>
       </form>
-      <BasePopover isOpen={ createLoading }>
+      <BasePopover isOpen={ creating }>
         <span>Now Loading....</span>
       </BasePopover>
       <BasePopover isOpen={ !!created } closeInterval={ 3000 }>

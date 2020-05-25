@@ -69,3 +69,15 @@ mutation updateTodoList(
   }
 }
 `);
+
+export const DELETE_TODO_LIST = gql(`
+mutation deleteTodoList(
+  $no: Int!
+) {
+  delete_todo_list (
+    no: $no
+  ) {
+    success
+  }
+}
+`)

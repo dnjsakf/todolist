@@ -84,7 +84,7 @@ const CommonCodeSelect = forwardRef(( props, ref )=>{
         className={ classes.selectBox }
 
         labelId={ `${props.name}-${code}-select-label` }
-        defaultValue={ defaultValue||"" }
+        value={ value }
         onChange={ handleChange }
 
         required={ props.required && !props.readOnly }
