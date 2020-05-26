@@ -29,9 +29,8 @@ class OrderedConnectionField(MongoengineConnectionField):
     super(OrderedConnectionField, self).__init__(type, *args, **kwargs)
 
   def get_queryset(cls, model, info, *args, **kwargs):
-    if "orderBy" in kwargs:
-      order = kwargs.pop("orderBy")
-      return model.objects(**kwargs).order_by(*order)
-
-    return model.objects(**kwargs)
+    orderBy = kwargs.pop("orderBy", [])
+    hashTags = kwargs.pop("hashTags", [])
+    
+    return model.objects(**kwargs).order_by(*orderBy)
     

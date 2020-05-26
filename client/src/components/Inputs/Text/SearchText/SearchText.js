@@ -18,10 +18,10 @@ import clsx from 'clsx';
 /* Materialize Styles */
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: '2px 4px',
     display: 'flex',
+    //padding: '2px 4px',
     alignItems: 'center',
-    width: 400,
+    //width: 400,
   },
   input: {
     marginLeft: theme.spacing(1),
@@ -46,20 +46,29 @@ const SearchText = ( props )=>{
     handleSubmit,
     ...rest
   } = props;
+  
+  /* handlers */
+  const handleKeyDown = ( event )=>{
+    if( event.key === "Enter" ){
+      handleSubmit( event );
+    }
+  }
 
   /* Rendering */
   return (
-    <Paper component="form" className={ classes.root }>
+    <Paper className={ classes.root }>
       <IconButton className={ classes.iconButton } aria-label="menu">
         <MenuIcon />
       </IconButton>
       <InputBase
+        type="search"
         className={ classes.input }
         placeholder="Search ToDo"
         inputRef={ inputRef }
         inputProps={{
           'aria-label': 'search todo'
         }}
+        onKeyDown={ handleKeyDown }
       />
       <IconButton
         className={ classes.iconButton } 

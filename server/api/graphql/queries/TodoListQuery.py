@@ -13,8 +13,8 @@ class TodoListQuery(graphene.ObjectType):
     abstract = True
 
   todo_list_edges = OrderedConnectionField(
-    TodoListType
-    , orderBy=graphene.List(graphene.String)
+    TodoListType,
+    orderBy=graphene.List(graphene.String)
   )
   todo_list_field = graphene.Field(
     TodoListType,

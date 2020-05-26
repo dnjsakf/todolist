@@ -73,7 +73,7 @@ const TodoList = ( props )=>{
   const [ id, setId ] = useState( null );
 
   /* Query: Get TodoList Datas */
-  const { loading, error, data: list, fetchMore, refetch } = useQuery(
+  const { loading, error, data: list, fetchMore, refetch, updateQuery } = useQuery(
     Query.GET_TODO_LIST_EDGES, {
       variables,
       onError(error){
@@ -123,7 +123,29 @@ const TodoList = ( props )=>{
   }
   
   const handleSubmit = ( event )=>{
-    console.log("[SEARCH]", searchRef, searchRef.current.value, event)
+    console.log("[SEARCH]", searchRef, searchRef.current.value)
+    
+    const searchText = searchRef.current.value;    
+    if( searchText ){
+      const isHash = searchText.charAt(0) === "#";
+      if( isHash ){
+        console.log({
+          variables: {
+            ...variables,
+            hashTags: searchText.split("#")
+          }
+        });
+      } else {
+        refetch({
+          variables: {
+            ...variables,
+            title: searchText
+          }
+        }).then(( result )=>{
+          console.log( result );
+        });
+      }
+    }
   }
   
   const handleFetchMore = ( event )=>{

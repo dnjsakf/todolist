@@ -33,36 +33,34 @@ const BaseText = forwardRef(( props, ref )=>{
   const handleChange = (event)=>( setValue(event.target.value) );
 
   return (
-    <>
-      <TextField
-        { ...rest }
-        type="search"
-        variant="outlined"
-        size="small"
-        fullWidth
+    <TextField
+      { ...rest }
+      type="search"
+      variant="outlined"
+      size="small"
+      fullWidth
 
-        id={ props.id }
-        name={ props.name }
-        className={ clsx(classes.root, className) }
+      id={ props.id }
+      name={ props.name }
+      className={ clsx(classes.root, className) }
 
-        label={ props.label }
+      label={ props.label }
 
-        placeholder={ props.placeholder }
+      placeholder={ props.placeholder }
 
-        inputRef={ ref() }
-        inputProps={{
-          readOnly: !!props.readOnly,
-          maxLength: props.maxLength
-        }}
+      inputRef={ ref() }
+      inputProps={{
+        readOnly: !!props.readOnly,
+        maxLength: props.maxLength
+      }}
 
-        required={ props.required && !props.readOnly }
-        autoFocus={ !props.readOnly }
-        
-        value={ value }
+      required={ props.required && !props.readOnly }
+      autoFocus={ !props.readOnly }
+      
+      value={ value }
 
-        onChange={ handleChange }
-      />
-    </>
+      onChange={ handleChange }
+    />
   )
 });
 

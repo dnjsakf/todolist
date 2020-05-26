@@ -1,12 +1,8 @@
 # api/query.py
 import graphene
 
-from graphene_mongo import MongoengineConnectionField
-
 from ..models import HashTagModel
 from ..types import HashTagType
-from ..connections import OrderedConnectionField
-
 
 class HashTagQuery(graphene.ObjectType):
   class Meta:
