@@ -68,7 +68,7 @@ const useStyles = makeStyles(( theme ) => ({
 }));
 
 /* Component */
-const HashTagSelect = forwardRef(( props, ref )=>{
+const HashTagText = forwardRef(( props, ref )=>{
   /* Props */
   const classes = useStyles();
   const inputRef = useRef();
@@ -90,6 +90,8 @@ const HashTagSelect = forwardRef(( props, ref )=>{
   }, [ inputValue ]); 
   
   const handleKeyDown = useCallback(( event )=>{
+    event.currentTarget.focus();
+    
     const inputKey = event.key;
 
     if( inputValue ){
@@ -204,7 +206,7 @@ const HashTagSelect = forwardRef(( props, ref )=>{
   )
 });
 
-HashTagSelect.propTypes = {
+HashTagText.propTypes = {
   defaultValue: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
     tag: PropTypes.string.isRequired,
@@ -213,4 +215,4 @@ HashTagSelect.propTypes = {
   readOnly: PropTypes.bool,
 }
 
-export default HashTagSelect;
+export default HashTagText;

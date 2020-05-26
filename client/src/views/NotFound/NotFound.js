@@ -3,7 +3,10 @@ import React from 'react';
 
 /* Materialize */
 import { makeStyles } from '@material-ui/styles';
-import { Grid, Typography } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+
+/* Components */
+import { GridContainer, GridItem } from 'Components/Grid';
 
 /* Materialize Style */
 const useStyles = makeStyles((theme)=>({
@@ -28,16 +31,11 @@ const NotFound = ( props )=>{
 
   return (
     <div className={ classes.root }>
-      <Grid
-        container
+      <GridContainer
         justify="center"
         spacing={4}
       >
-        <Grid
-          item
-          lg={6}
-          xs={12}
-        >
+        <GridItem lg={6} xs={12}>
           <div className={classes.content}>
             <Typography variant="h1">
               404: The page you are looking for isn’t here
@@ -52,8 +50,8 @@ const NotFound = ( props )=>{
               src="/public/images/undraw_page_not_found_su7k.svg"
             />
           </div>
-        </Grid>
-      </Grid>
+        </GridItem>
+      </GridContainer>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 /* React */
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
 /* GraphQL */
@@ -11,11 +11,17 @@ import Mutation from 'GraphQL/Mutation/TodoList';
 import { makeStyles, useTheme } from '@material-ui/styles';
 import { useMediaQuery } from '@material-ui/core';
 import GridList from '@material-ui/core/GridList';
-import Grid from '@material-ui/core/Grid';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import IconButton from '@material-ui/core/IconButton';
+import CheckIcon from '@material-ui/icons/Check';
+import SyncIcon from '@material-ui/icons/Sync';
 
 /* Components */
 import { BaseButton } from 'Components/Inputs/Button';
+import { SearchText } from 'Components/Inputs/Text';
 import { BaseModal } from 'Components/Modals';
+import { GridContainer, GridItem } from 'Components/Grid';
+
 import TodoListCard from './TodoListCard';
 import TodoListRegister from './TodoListRegister';
 
@@ -32,6 +38,9 @@ const useStyles = makeStyles((theme)=>({
     padding: theme.spacing(1),
     margin: "0!important"
   },
+  loadButton: {
+    
+  },
 }));
 
 /* Component */
@@ -39,6 +48,7 @@ const TodoList = ( props )=>{
   /* Props */
   const classes = useStyles();
   const theme = useTheme();
+  const searchRef = useRef();
   const {
     className,
     defaultCount,
@@ -46,11 +56,14 @@ const TodoList = ( props )=>{
   } = props;
   
   const variables = {
-    first: defaultCount||3,
+    first: defaultCount||5,
     orderBy: [ "-no", "-sort_order" ]
   }
   
-  const isDesktop = useMediaQuery(theme.breakpoints.up('sm'), {
+  const isTablet = useMediaQuery(theme.breakpoints.up('sm'), {
+    defaultMatches: true
+  });
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'), {
     defaultMatches: true
   });
 
@@ -71,34 +84,6 @@ const TodoList = ( props )=>{
       }
     }
   );
-  
-  /* Mutation: Delete TodoList */
-  const [ 
-    deleteTodoList, 
-    { 
-      data: deleted, 
-      loading: deleting, 
-    }
-  ] = useMutation(
-    Mutation.DELETE_TODO_LIST, {
-    onError( error ){
-      console.error( error );
-    },
-    onCompleted({ delete_todo_list: { success } }) {
-      console.log("[TODO_LIST][DELETED]", success);
-      refetch();
-    }
-  });
-
-  const handleDelete = (no, event)=>{
-    event.stopPropagation();
-
-    deleteTodoList({
-      variables: {
-        no: no
-      }
-    });
-  }
 
   /* Handlers */
   const handleOpenReadModal = (no, event)=>{
@@ -124,13 +109,24 @@ const TodoList = ( props )=>{
     console.log('handleClose');
     
     setOpen(false);
+    handleReload();
   }
   
   const handleReload = (event)=>{
     refetch();
   }
   
-  const handleFetchMore = (event)=>{
+  const handleDelete = ( success )=>{
+    if( success ){
+      refetch();
+    }
+  }
+  
+  const handleSubmit = ( event )=>{
+    console.log("[SEARCH]", searchRef, searchRef.current.value, event)
+  }
+  
+  const handleFetchMore = ( event )=>{
     fetchMore({
       variables: Object.assign({}, variables, {
         after: pageInfo.endCursor
@@ -157,8 +153,14 @@ const TodoList = ( props )=>{
   const { edges, pageInfo } = list.todo_list_edges;
 
   return (
-    <Grid container>
-      <Grid item xs={ 12 }>
+    <GridContainer>
+      <GridItem xs={ 12 }>
+        <SearchText
+          inputRef={ searchRef }
+          handleSubmit={ handleSubmit }
+        />
+      </GridItem>
+      <GridItem xs={ 12 }>
         <BaseButton
           id="add-todolist"
           label="추가"
@@ -166,8 +168,8 @@ const TodoList = ( props )=>{
           color="primary"
           onClick={ handleOpenWriteModal }
         />
-      </Grid>
-      <Grid item xs={ 12 }>
+      </GridItem>
+      <GridItem xs={ 12 }>
         <BaseButton
           id="btn-load-prev-todolist"
           label="Reload"
@@ -176,36 +178,49 @@ const TodoList = ( props )=>{
           disabled={ loading }
           onClick={ handleReload }
         />
-      </Grid>
-      <Grid item xs={ 12 }>
+      </GridItem>
+      <GridItem xs={ 12 }>
         <GridList
           className={ classes.gridList }
-          cols={ isDesktop ? 3 : 1 }
+          cols={ isDesktop ? 3 : isTablet ? 2 : 1 }
           spacing={ 5 }
         >
         {
           edges.map((edge)=>(
-            <Grid item key={ edge.cursor }>
+            <GridItem key={ edge.cursor }>
               <TodoListCard
                 data={ edge.node }
-                onClick={ handleOpenReadModal }
+                deletable={ true }
                 onDelete={ handleDelete }
+                onClick={ handleOpenReadModal }
               />
-            </Grid>
+            </GridItem>
           ))
         }
         </GridList>
-      </Grid>
-      <Grid item xs={ 12 }>
-        <BaseButton
-          id="btn-load-new-todolist"
-          label="Load"
-          color="primary"
-          size="sm"
-          disabled={ pageInfo && !pageInfo.hasNextPage }
-          onClick={ handleFetchMore }
-        />
-      </Grid>
+      </GridItem>
+      {
+        pageInfo && pageInfo.hasNextPage && (
+          <GridItem xs={ 12 }>
+            <GridItem 
+              container 
+              direction="row"
+              justify="center"
+              alignItems="center"
+            >
+              <IconButton
+                id="btn-load-new-todolist"
+                label="Load"
+                aria-label="Load"
+                onClick={ handleFetchMore }
+                className={ classes.loadButton }
+              >
+                <SyncIcon fontSize="large"/>
+              </IconButton>
+            </GridItem>
+          </GridItem>
+        )
+      }
       <BaseModal
         open={ open }
         mode={ mode }
@@ -218,7 +233,7 @@ const TodoList = ( props )=>{
         handleClose={ handleClose }
         component={ TodoListRegister }
       />
-    </Grid>
+    </GridContainer>
   )
 }
 

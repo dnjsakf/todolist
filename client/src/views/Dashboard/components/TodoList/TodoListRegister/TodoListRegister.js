@@ -9,24 +9,25 @@ import Mutation from 'GraphQL/Mutation/TodoList';
 
 /* Material */
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 /* Components */
-import { 
-  CommonCodeSelect,
-  HashTagSelect
-} from 'Components/Inputs/Select';
+import { CommonCodeSelect } from 'Components/Inputs/Select';
+import { GridContainer, GridItem } from 'Components/Grid';
 import { BaseButton } from 'Components/Inputs/Button';
-import { BaseText } from 'Components/Inputs/Text';
+import { BaseText, HashTagText } from 'Components/Inputs/Text';
 import { BaseTextarea } from 'Components/Inputs/Textarea';
 import { DatePicker, TimePicker } from 'Components/Inputs/Picker';
 import { BasePopover } from 'Components/Popover';
 
 /* Another Modules */
 import clsx from 'clsx';
-import moment from 'moment';;
+import moment from 'moment';
+
+/* Functions */
+import { useFormRef } from './Utils';
 
 /* Materialize Styles */
 const useStyles = makeStyles((theme)=>({
@@ -54,107 +55,17 @@ const useStyles = makeStyles((theme)=>({
   fullWidth: {
     width: "100%"
   },
+  buttonWrapper: {
+    position: "relative",
+    height: "100%",
+    width: "100%",
+    margin: theme.spacing(1),
+  },
+  buttonProgress: {
+    color: theme.palette.white,
+    userSelect: "none",
+  },
 }));
-
-function useFormRef(){
-  let refs = {};
-    
-  function options_validate( options ){
-    try {
-      if( options ){
-        switch( options.type ){
-          case "date":
-          case "time":
-          case "datetime":
-            if( !options.format ) return [ false, "'format' is undefined." ];
-            return [ true, null ];
-            
-          case "json":
-            if( !options.extra ) return [ false, "'extra' is undefined." ];
-            return [ true, null ];
-            
-          case "array":
-            if( !options.value ) return [ false, "'value' is undefined." ];
-            return [ true, null ];
-            
-          default:
-            return [ true, null ];
-        }
-      } else {
-        return [ true, null ];
-      }
-    } catch( error ) {
-      return [ false, error ];
-    }
-  }
-  
-  function setRef( options ){
-    const [ isValid, message ] = options_validate( options );
-    
-    if( !isValid ){
-      console.error( message );
-      return null;
-    }
-    
-    return function( element ){
-      if( !element ) return;
-      
-      /* Set Variables */
-      const name = ( element.node ? element.node.name : element.name );
-      
-      if( !options ) {
-        refs = Object.assign({}, refs, {
-          [name]: element.value
-        });
-      } else {
-        const value = ( options.value||element.value );
-      
-        /* Other Refs */
-        if( options.inputRef ){
-          options.inputRef.current = element;
-        }
-        
-        /* Set Ref data */
-        switch ( options.type ){
-          case "date":
-          case "time":
-          case "datetime":
-            refs = Object.assign({}, refs, {
-              [name]: moment(value, options.format).format(options.format)
-            });
-            break;
-          case "json":
-            refs = Object.assign({}, refs, {
-              [name]: {
-                ...options.extra,
-                [options.name]: value
-              }
-            });
-            break;
-          case "array":
-            refs = Object.assign({}, refs, {
-              [name]: value
-            });
-            break;
-          default:
-            refs = Object.assign({}, refs, {
-              [name]: value
-            });
-        }
-      }
-    }
-  }
-  
-  return {
-    refs: setRef,
-    getValues: ()=>{
-      return refs;
-    },
-    clear: ()=>{
-      refs = {}
-    }
-  }
-}
 
 /* Component */
 const TodoInfoRegister = ( props )=>{
@@ -266,7 +177,7 @@ const TodoInfoRegister = ( props )=>{
       return <span>Data Load Error...</span>;
     }
     if( loading ){
-      return <span>Data Loadding...</span>;
+      return <CircularProgress size={ 100 } className={ classes.buttonProgress } />;
     }
     if( !data ){
       return <span>Data is Null...</span>
@@ -295,14 +206,13 @@ const TodoInfoRegister = ( props )=>{
         noValidate
         autoComplete="off"
       >
-        <Grid 
-          container
+        <GridContainer
           direction="row"
           alignItems="center"
           justify="space-between"
           spacing={ 1 }
         >
-          <Grid item xs={ 12 }>
+          <GridItem xs={ 12 }>
             <BaseText
               ref={ refs }
               id="title" 
@@ -316,8 +226,8 @@ const TodoInfoRegister = ( props )=>{
               readOnly={ readMode }
               // error={ !!( errors && errors.title ) }
             />
-          </Grid>
-          <Grid item xs={ 12 }>
+          </GridItem>
+          <GridItem xs={ 12 }>
           {
             data
             ? <CommonCodeSelect
@@ -339,8 +249,8 @@ const TodoInfoRegister = ( props )=>{
                 readOnly={ readMode }
               />
           }
-          </Grid>
-          <Grid item xs={ 12 }>
+          </GridItem>
+          <GridItem xs={ 12 }>
           {
             data
             ? <CommonCodeSelect
@@ -362,9 +272,9 @@ const TodoInfoRegister = ( props )=>{
                 readOnly={ readMode }
               />
           }
-          </Grid>
-          <Grid item xs={ 12 }>
-            <HashTagSelect
+          </GridItem>
+          <GridItem xs={ 12 }>
+            <HashTagText
               ref={ refs }
               id="hash_tag"
               name="hash_tag"
@@ -372,14 +282,13 @@ const TodoInfoRegister = ( props )=>{
               defaultValue={ data && data.todo_list_field.hash_tag }
               readOnly={ readMode }
             />
-          </Grid>
-          <Grid item xs={ 12 }>
-            <Grid 
-              container 
+          </GridItem>
+          <GridItem xs={ 12 }>
+            <GridContainer 
               direction="row" 
               spacing={ 1 }
             >
-              <Grid item xs={ 6 }>
+              <GridItem xs={ 6 }>
                 <DatePicker
                   inputRef={ refs }
                   id="date-picker-dialog"
@@ -392,8 +301,8 @@ const TodoInfoRegister = ( props )=>{
                   readOnly={ readMode }
                   // error={ !!( errors && errors.due_date ) }
                 />
-              </Grid>
-              <Grid item xs={ 6 }>
+              </GridItem>
+              <GridItem xs={ 6 }>
                 <TimePicker
                   inputRef={ refs }
                   id="time-picker-dialog"
@@ -406,10 +315,10 @@ const TodoInfoRegister = ( props )=>{
                   readOnly={ readMode }
                   // error={ !!( errors && errors.due_time ) }
                 />
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item xs={ 12 }>
+              </GridItem>
+            </GridContainer>
+          </GridItem>
+          <GridItem xs={ 12 }>
             <BaseTextarea
               ref={ refs }
               id="description"
@@ -422,10 +331,9 @@ const TodoInfoRegister = ( props )=>{
               defaultValue={ data && data.todo_list_field.description }
               readOnly={ readMode }
             />
-          </Grid>
-          <Grid item xs={ 12 }>
-            <Grid
-              container 
+          </GridItem>
+          <GridItem xs={ 12 }>
+            <GridContainer
               direction="row" 
               justify="center"
               alignItems="center"
@@ -456,9 +364,9 @@ const TodoInfoRegister = ( props )=>{
                   />
                 </ButtonGroup>
             }
-            </Grid>
-          </Grid>
-        </Grid>
+            </GridContainer>
+          </GridItem>
+        </GridContainer>
       </form>
       <BasePopover isOpen={ creating }>
         <span>Now Loading....</span>

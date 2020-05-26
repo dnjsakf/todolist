@@ -1,13 +1,22 @@
-import React, { forwardRef } from 'react';
-import { NavLink as RouterLink } from 'react-router-dom';
+/* React */
+import React, { Suspense, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
-import { makeStyles } from '@material-ui/styles';
-import { List, ListItem, Button, colors } from '@material-ui/core';
+/* Router */
+import { NavLink as RouterLink } from 'react-router-dom';
 
+/* Materialize */
+import { makeStyles } from '@material-ui/styles';
+import { blueGrey } from '@material-ui/core/colors';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+/* Another Modules */
 import clsx from 'clsx';
 
-
+/* Materialize Styles */
 const useStyles = makeStyles((theme)=>({
   root: {},
   item: {
@@ -17,7 +26,7 @@ const useStyles = makeStyles((theme)=>({
   },
   button: {
     fontFamily: ["Roboto", "Helvetica", "Arial", "sans-serif"],
-    color: colors.blueGrey[800],
+    color: blueGrey[800],
     padding: '10px 8px',
     justifyContent: 'flex-start',
     textTransform: 'none',
@@ -42,6 +51,7 @@ const useStyles = makeStyles((theme)=>({
   }
 }));
 
+/* Component */
 const CustomRouterLink = forwardRef((props, ref) => (
   <div
     ref={ref}
@@ -51,33 +61,43 @@ const CustomRouterLink = forwardRef((props, ref) => (
   </div>
 ));
 
+/* Component */
 const SidebarNav = ( props )=>{
-  const { pages, className, ...rest } = props;
-
+  /* Props */
   const classes = useStyles();
-
+  const {
+    pages,
+    className,
+    ...rest
+  } = props;
+  
+  /* Rendering */
   return (
     <List
       {...rest}
-      className={clsx(classes.root, className)}
+      className={ clsx(classes.root, className )}
     >
-      {pages.map(page => (
+    {
+      pages.map(({ title, href, Icon })=>(
         <ListItem
+          key={ title }
           className={classes.item}
           disableGutters
-          key={page.title}
         >
           <Button
-            activeClassName={classes.active}
-            className={classes.button}
-            component={CustomRouterLink}
-            to={page.href}
+            activeClassName={ classes.active }
+            className={ classes.button }
+            component={ CustomRouterLink }
+            to={ href }
           >
-            <div className={classes.icon}>{page.icon}</div>
-            {page.title}
+            <div className={ classes.icon }>
+              <Icon />
+            </div>
+            { title }
           </Button>
         </ListItem>
-      ))}
+      ))
+    }
     </List>
   );
 };

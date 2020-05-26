@@ -1,17 +1,25 @@
+/* React */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
+/* Router */
 import { Link as RouterLink } from 'react-router-dom';
 
+/* Materialize */
 import { makeStyles } from '@material-ui/styles';
-import { AppBar, Toolbar, Badge, Hidden, IconButton } from '@material-ui/core';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Badge from '@material-ui/core/Badge';
+import Hidden from '@material-ui/core/Hidden';
+import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import InputIcon from '@material-ui/icons/Input';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 
+/* Another Modules */
 import clsx from 'clsx';
 
-
+/* Materialize Styles */
 const useStyles = makeStyles((theme)=>({
   root: {
     boxShadow: 'none'
@@ -24,13 +32,20 @@ const useStyles = makeStyles((theme)=>({
   }
 }));
 
+/* Component */
 const Topbar = ( props )=>{
-  const { className, onSidebarOpen, ...rest } = props;
-
+  /* Props */
   const classes = useStyles();
+  const {
+    className,
+    onSidebarOpen,
+    ...rest
+  } = props;
 
+  /* State */
   const [ notifications ] = useState([]);
 
+  /* Rendering */
   return (
     <AppBar
       {...rest}

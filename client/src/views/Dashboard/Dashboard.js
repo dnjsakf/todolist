@@ -4,11 +4,10 @@ import PropTypes from 'prop-types';
 
 /* Materialize */
 import { makeStyles } from '@material-ui/styles';
-import Grid from '@material-ui/core/Grid';
 
 /* Components */
+import { GridContainer, GridItem } from 'Components/Grid'
 import { TodoList } from './components';
-import { DragAndDrop } from 'Components/Events'
 
 /* Another Moudles */
 import clsx from 'clsx';
@@ -31,19 +30,16 @@ const Dashboard = ( props )=>{
   } = props;
   
   return (
-    <Grid
-      container
-      className={ classes.root }
-    >
-      <Grid item xs={ 12 }>
-        <TodoList />
-      </Grid>
-    </Grid>
+    <GridContainer className={ clsx(classes.root, className) }>
+      <GridItem xs={ 12 }>
+        <TodoList defaultCount={ 5 } />
+      </GridItem>
+    </GridContainer>
   )
 }
 
-Dashboard.proptypes = {
-
+Dashboard.propTypes = {
+  className: PropTypes.string
 }
 
 export default Dashboard;

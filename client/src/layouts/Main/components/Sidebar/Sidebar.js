@@ -1,10 +1,12 @@
-import React from 'react';
+/* React */
+import React, { Suspense, lazy } from 'react';
 import PropTypes from 'prop-types';
 
-import { Profile, SidebarNav, UpgradePlan } from './components';
-
+/* Materialize */
 import { makeStyles } from '@material-ui/styles';
-import { Divider, Drawer } from '@material-ui/core';
+import Divider from '@material-ui/core/Divider';
+import Drawer from '@material-ui/core/Drawer';
+
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import PeopleIcon from '@material-ui/icons/People';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
@@ -14,9 +16,13 @@ import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import SettingsIcon from '@material-ui/icons/Settings';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 
+/* Components */
+import { Profile, SidebarNav, UpgradePlan } from './components';
+
+/* Another Modules */
 import clsx from 'clsx';
 
-
+/* Materialize Styles */
 const useStyles = makeStyles(theme => ({
   drawer: {
     width: 240,
@@ -40,54 +46,63 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+
+const pages = [
+  {
+    title: 'Dashboard',
+    href: '/dashboard',
+    Icon: DashboardIcon
+  },
+  {
+    title: 'Users',
+    href: '/users',
+    Icon: PeopleIcon
+  },
+  {
+    title: 'Products',
+    href: '/products',
+    Icon: ShoppingBasketIcon
+  },
+  {
+    title: 'Authentication',
+    href: '/sign-in',
+    Icon: LockOpenIcon
+  },
+  {
+    title: 'Typography',
+    href: '/typography',
+    Icon: TextFieldsIcon
+  },
+  {
+    title: 'Icons',
+    href: '/icons',
+    Icon: ImageIcon
+  },
+  {
+    title: 'Account',
+    href: '/account',
+    Icon: AccountBoxIcon
+  },
+  {
+    title: 'Settings',
+    href: '/settings',
+    Icon: SettingsIcon
+  }
+];
+
+/* Component */
 const Sidebar = ( props )=>{
-  const { open, variant, onClose, className, ...rest } = props;
-
+  /* Props */
   const classes = useStyles();
+  const {
+    open,
+    variant,
+    onClose,
+    className,
+    ...rest
+  } = props;
 
-  const pages = [
-    {
-      title: 'Dashboard',
-      href: '/dashboard',
-      icon: <DashboardIcon />
-    },
-    {
-      title: 'Users',
-      href: '/users',
-      icon: <PeopleIcon />
-    },
-    {
-      title: 'Products',
-      href: '/products',
-      icon: <ShoppingBasketIcon />
-    },
-    {
-      title: 'Authentication',
-      href: '/sign-in',
-      icon: <LockOpenIcon />
-    },
-    {
-      title: 'Typography',
-      href: '/typography',
-      icon: <TextFieldsIcon />
-    },
-    {
-      title: 'Icons',
-      href: '/icons',
-      icon: <ImageIcon />
-    },
-    {
-      title: 'Account',
-      href: '/account',
-      icon: <AccountBoxIcon />
-    },
-    {
-      title: 'Settings',
-      href: '/settings',
-      icon: <SettingsIcon />
-    }
-  ];
-
+  /* Rendering */
   return (
     <Drawer
       anchor="left"
@@ -98,13 +113,13 @@ const Sidebar = ( props )=>{
     >
       <div
         {...rest}
-        className={clsx(classes.root, className)}
+        className={ clsx(classes.root, className) }
       >
         <Profile />
-        <Divider className={classes.divider} />
+        <Divider className={ classes.divider } />
         <SidebarNav
-          className={classes.nav}
-          pages={pages}
+          className={ classes.nav }
+          pages={ pages }
         />
         <UpgradePlan />
       </div>

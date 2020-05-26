@@ -1,13 +1,19 @@
+/* React */
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import { makeStyles } from '@material-ui/styles';
-import { Avatar, Typography } from '@material-ui/core';
+/* Router */
+import { Link as RouterLink } from 'react-router-dom';
 
+/* Materialize */
+import { makeStyles } from '@material-ui/styles';
+import Avatar from '@material-ui/core/Avatar';
+import Typography from '@material-ui/core/Typography';
+
+/* Another Modules */
 import clsx from 'clsx';
 
-
+/* Materialize Styles */
 const useStyles = makeStyles((theme)=>({
   root: {
     display: 'flex',
@@ -24,36 +30,41 @@ const useStyles = makeStyles((theme)=>({
   }
 }));
 
+/* Component */
 const Profile = ( props )=>{
-  const { className, ...rest } = props;
-
+  /* Props */
   const classes = useStyles();
+  const {
+    className,
+    ...rest
+  } = props;
 
   const user = {
-    name: 'Shen Zhi',
+    name: 'Dochi',
     avatar: '/public/images/avatars/avatar_11.png',
-    bio: 'Brain Director'
+    bio: 'Developer'
   };
 
+  /* Rendering */
   return (
     <div
       {...rest}
-      className={clsx(classes.root, className)}
+      className={ clsx(classes.root, className) }
     >
       <Avatar
         alt="Person"
-        className={classes.avatar}
-        component={RouterLink}
-        src={user.avatar}
+        className={ classes.avatar }
+        component={ RouterLink }
+        src={ user.avatar }
         to="/settings"
       />
       <Typography
-        className={classes.name}
+        className={ classes.name }
         variant="h4"
       >
-        {user.name}
+        { user.name }
       </Typography>
-      <Typography variant="body2">{user.bio}</Typography>
+      <Typography variant="body2">{ user.bio }</Typography>
     </div>
   );
 };

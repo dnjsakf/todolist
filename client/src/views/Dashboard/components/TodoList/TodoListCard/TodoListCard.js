@@ -8,15 +8,17 @@ import Mutation from 'GraphQL/Mutation/TodoList';
 
 /* Materialize */
 import { makeStyles } from '@material-ui/styles';
-import {
-  Card,
-  CardContent,
-  Grid,
-  Typography,
-  LinearProgress
-} from '@material-ui/core';
+import { green, grey } from '@material-ui/core/colors';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import DeleteIcon from '@material-ui/icons/Delete';
+
+/* Components */
+import { GridContainer, GridItem } from 'Components/Grid';
 
 /* Another Moudles */
 import clsx from 'clsx';
@@ -37,10 +39,11 @@ const calcProgress = (start_date, end_date)=>{
 const useStyles = makeStyles(( theme )=>({
   root: {
     height: "100%",
-    opacity: "80%",
-    cursor: "pointer",
+    opacity: "90%",
+    backgroundColor: theme.palette.card.background.main,
     "&:hover": {
-      opacity: "100%"
+      opacity: "100%",
+      backgroundColor:  theme.palette.card.background.hover,
     }
   },
   content: {
@@ -48,7 +51,22 @@ const useStyles = makeStyles(( theme )=>({
     display: "flex"
   },
   title: {
-    fontWeight: 700
+    fontWeight: 600,
+    cursor: "pointer",
+    "&:hover": {
+      fontWeight: 900,
+      textDecoration: "underline",
+    },
+  },
+  hashTag: {
+    color: theme.palette.hash.secondary,
+    marginRight: "1px",
+    fontWeight: 600,
+    cursor: "pointer",
+    "&:hover": {
+      color: theme.palette.hash.primary,
+      textDecoration: "underline",
+    }
   },
   avatar: {
     backgroundColor: theme.palette.primary.main,
@@ -60,23 +78,39 @@ const useStyles = makeStyles(( theme )=>({
     height: 32,
     width: 32
   },
-  progress: {
+  progressBar: {
     marginTop: theme.spacing(3),
     height: "1em",
     borderTopLeftRadius: "1em",
     borderTopRightRadius: "1em",
     borderBottomLeftRadius: "1em",
     borderBottomRightRadius: "1em",
-  }
+  },
+  buttonWrapper: {
+    position: "relative",
+    height: "100%",
+    width: "100%",
+    margin: theme.spacing(1),
+  },
+  buttonProgress: {
+    color: green[500],
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  },
 }));
 
 /* Component */
 const TodoListCard = ( props )=>{
+  /* Props */
   const classes = useStyles();
   const { 
     className,
     data,
     onClick,
+    deletable,
     onDelete,
     ...rest
   } = props;
@@ -85,13 +119,47 @@ const TodoListCard = ( props )=>{
     return <span>Data is None...</span>
   }
 
+  /* State */
   const [ progress, setProgress ] = useState(()=>{
     const start_date = data.reg_dttm;
     const end_date = data.due_date+data.due_time;
 
     return calcProgress( start_date, end_date);
   }, 0 );
+  
+  /* Mutation: Delete TodoList */
+  const [ 
+    deleteTodoList, 
+    { 
+      data: deleted, 
+      loading: deleting, 
+    }
+  ] = useMutation(
+    Mutation.DELETE_TODO_LIST, {
+    onError( error ){
+      console.error( error );
+    },
+    onCompleted({ delete_todo_list: { success } }) {
+      console.log("[TODO_LIST][DELETED]", success);
+      
+      if( onDelete ){
+        onDelete( success );
+      }
+    }
+  });
+  
+  /* Handlers */
+  const handleDelete = (no, event)=>{
+    event.stopPropagation();
 
+    deleteTodoList({
+      variables: {
+        no: no
+      }
+    });
+  }
+
+  /* Effects */
   useEffect(()=>{
     const start_date = data.reg_dttm;
     const end_date = data.due_date+data.due_time;
@@ -99,50 +167,87 @@ const TodoListCard = ( props )=>{
     setProgress( calcProgress( start_date, end_date ) );
  
   }, [ data ]);
+  
+  /* Rendering */
+  if( deleting ){
+    return (
+      <Card className={ clsx(classes.root, className) }>
+        <CardContent className={ classes.buttonWrapper }>
+          <CircularProgress size={ 24 } className={ classes.buttonProgress } />
+        </CardContent>
+      </Card>
+    )
+  }
 
+  /* Rendering */
   return (
     <Card
       { ...rest }
       className={ clsx(classes.root, className) }
-      onClick={ onClick ? onClick.bind( null, data.no ) : null }
     >
       <CardContent>
-        <Grid
-          container
+        <GridContainer
           justify="space-between"
         >
-          <Grid item>
+          <GridItem>
             <Typography
+              aria-label="todo-title"
+              variant="h3"
               className={ classes.title }
-              color="textSecondary"
-              gutterBottom
-              variant="body2"
+              onClick={ onClick ? onClick.bind( null, data.no ) : null }
             >
-              { `${data.category.p_code}:${data.category.code}` }
+            { data.title }
             </Typography>
-            <Typography variant="h3">{ data.title }</Typography>
-            <Typography variant="h3">{ data.status.code }</Typography>
-            <Typography variant="h5">{`${data.due_date}-${data.due_time}`}</Typography>
-          </Grid>
-          <Grid item>
+            <Typography
+              aria-label="todo-status"
+              variant="h4"
+              color="textSecondary"
+            >
+            { data.status.code }
+            </Typography>
+            <Typography
+              aria-label="due-datetime"
+              variant="h5"
+              color="textSecondary"
+            >
+            { `${data.due_date}-${data.due_time}` }
+            </Typography>
+          </GridItem>
+          <GridItem>
           {
-            onDelete && (
+            deletable && (
               <IconButton
-                aria-label={ "삭제" }
-                title={ "삭제" }
-                onClick={ onDelete.bind( null, data.no ) }
+                aria-label={ "delete-todolist" }
+                title={ "delete-todolist" }
+                onClick={ handleDelete.bind( null, data.no ) }
               >
                 <DeleteIcon fontSize="small"/>
               </IconButton>
             )
           }
-          </Grid>
-        </Grid>
+          </GridItem>
+        </GridContainer>
         <LinearProgress
-          className={ classes.progress }
+          className={ classes.progressBar }
           value={ progress }
           variant="determinate"
         />
+        <GridContainer justify="flex-start">
+        {
+          data.hash_tag.map(({ id, tag_name }, idx )=>(
+            <GridItem key={ id+idx }>
+              <Typography
+                aria-label="todo-hashtag"
+                className={ classes.hashTag }
+                variant="body2"
+                onClick={ (event)=>{ console.log( "[SEARCH][HASH_TAG]", tag_name ); } }
+              >
+              { `#${tag_name}` }
+              </Typography>
+            </GridItem>
+          ))
+        }
+        </GridContainer>
       </CardContent>
     </Card>
   );
