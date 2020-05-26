@@ -1,5 +1,5 @@
 /* React */
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 /* GraphQL */
@@ -8,19 +8,16 @@ import Query from 'GraphQL/Query/TodoList';
 
 /* Materialize */
 import { makeStyles, useTheme } from '@material-ui/styles';
-import { useMediaQuery } from '@material-ui/core';
-import GridList from '@material-ui/core/GridList';
 import IconButton from '@material-ui/core/IconButton';
 import SyncIcon from '@material-ui/icons/Sync';
 
 /* Components */
-import { BaseButton } from 'Components/Inputs/Button';
 import { SearchText } from 'Components/Inputs/Text';
 import { BaseModal } from 'Components/Modals';
 import { GridContainer, GridItem } from 'Components/Grid';
 
-import TodoListCard from './TodoListCard';
 import TodoListRegister from './TodoListRegister';
+import TodoListContent from './TodoListContent';
 
 /* Another Moudles */
 import clsx from 'clsx';
@@ -56,14 +53,6 @@ const TodoList = ( props )=>{
     first: defaultCount||5,
     orderBy: [ "-no", "-sort_order" ]
   }
-  
-  const isTablet = useMediaQuery(theme.breakpoints.up('sm'), {
-    defaultMatches: true
-  });
-  const isDesktop = useMediaQuery(theme.breakpoints.up('md'), {
-    defaultMatches: true
-  });
-
   /* State */
   const [ open, setOpen ] = useState( false );
   const [ mode, setMode ] = useState( "create" );
@@ -71,15 +60,15 @@ const TodoList = ( props )=>{
   const [ variables, setVariables ] = useState( initVariables );
 
   /* Query: Get TodoList Datas */
-  const { loading, error, data: list, fetchMore, refetch, } = useQuery(
+  const { loading, error, data, fetchMore, refetch, } = useQuery(
     Query.GET_TODO_LIST_EDGES, {
-      fetchPolicy: "no-cache",
+      fetchPolicy: "cache-and-network",
       variables,
       onError(error){
         console.error( error );
       },
-      onCompleted( data ){
-        console.log( data );
+      onCompleted( completed ){
+        console.log( completed );
       }
     }
   );
@@ -146,12 +135,14 @@ const TodoList = ( props )=>{
   }
   
   const handleFetchMore = ( event )=>{
+    const { pageInfo } = data.todo_list_edges;
+
     fetchMore({
-      variables: Object.assign({}, variables, {
-        after: list.todo_list_edges.pageInfo.endCursor
+      variables: Object.assign({}, initVariables, {
+        after: pageInfo.endCursor
       }),
       updateQuery: ( prev, { fetchMoreResult: { todo_list_edges : crnt } })=>{
-        const updated = Object.assign({}, prev, {
+        return Object.assign({}, prev, {
           todo_list_edges: {
             ...prev.todo_list_edges,
             edges: [
@@ -161,7 +152,6 @@ const TodoList = ( props )=>{
             pageInfo: crnt.pageInfo,
           }
         });
-        return updated;
       }
     });
   }
@@ -175,6 +165,8 @@ const TodoList = ( props )=>{
 
   if( error ) return null;
 
+  console.log( data );
+
   return (
     <GridContainer>
       <GridItem xs={ 12 }>
@@ -186,31 +178,14 @@ const TodoList = ( props )=>{
         />
       </GridItem>
       <GridItem xs={ 12 }>
-      {
-        !loading && (
-          <GridList
-            className={ classes.gridList }
-            cols={ isDesktop ? 3 : isTablet ? 2 : 1 }
-            spacing={ 5 }
-          >
-          {
-            list.todo_list_edges.edges.map((edge)=>(
-              <GridItem key={ edge.cursor }>
-                <TodoListCard
-                  data={ edge.node }
-                  deletable={ true }
-                  onDelete={ handleDelete }
-                  onClick={ handleOpenReadModal }
-                />
-              </GridItem>
-            ))
-          }
-          </GridList>
-        )
-      }
+        <TodoListContent
+          handleDelete={ handleDelete }
+          handleClick={ handleOpenReadModal }
+          data={ !loading && data.todo_list_edges.edges }
+        />
       </GridItem>
       {
-        !loading && list.todo_list_edges.pageInfo.hasNextPage && (
+        !loading && data.todo_list_edges.pageInfo.hasNextPage && (
           <GridItem xs={ 12 }>
             <GridItem 
               container 
