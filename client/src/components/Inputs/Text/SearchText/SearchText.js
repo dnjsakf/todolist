@@ -8,9 +8,10 @@ import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import SearchIcon from '@material-ui/icons/Search';
-import DirectionsIcon from '@material-ui/icons/Directions';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import EditIcon from '@material-ui/icons/Edit';
 
 /* Another Modules */
 import clsx from 'clsx';
@@ -43,23 +44,44 @@ const SearchText = ( props )=>{
   const {
     className,
     inputRef,
-    handleSubmit,
+    onSubmit,
+    onRefresh,
+    onEdit,
     ...rest
   } = props;
   
   /* handlers */
   const handleKeyDown = ( event )=>{
-    if( event.key === "Enter" ){
-      handleSubmit( event );
+    if( event.key === "Enter" && onSubmit ){
+      onSubmit( event );
     }
   }
 
   /* Rendering */
   return (
     <Paper className={ classes.root }>
-      <IconButton className={ classes.iconButton } aria-label="menu">
-        <MenuIcon />
-      </IconButton>
+      {
+        onEdit && (
+          <IconButton 
+            className={ classes.iconButton } 
+            aria-label="edit"
+            onClick={ onEdit }
+          >
+            <EditIcon />
+          </IconButton>
+        )        
+      }
+      {
+        onRefresh && (
+          <IconButton 
+            className={ classes.iconButton } 
+            aria-label="refresh"
+            onClick={ onRefresh }
+          >
+            <RefreshIcon />
+          </IconButton>
+        )
+      }
       <InputBase
         type="search"
         className={ classes.input }
@@ -73,7 +95,7 @@ const SearchText = ( props )=>{
       <IconButton
         className={ classes.iconButton } 
         aria-label="search"
-        onClick={ handleSubmit }
+        onClick={ onSubmit }
       >
         <Divider className={ classes.divider } orientation="vertical" />
         <SearchIcon />
@@ -85,7 +107,9 @@ const SearchText = ( props )=>{
 SearchText.propTypes = {
   className: PropTypes.string,
   inputRef: PropTypes.any.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  onRefresh: PropTypes.func,
+  onEdit: PropTypes.func,
 }
 
 export default SearchText;

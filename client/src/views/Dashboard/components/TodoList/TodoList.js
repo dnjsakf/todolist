@@ -1,19 +1,16 @@
 /* React */
-import React, { Suspense, useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 /* GraphQL */
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import Query from 'GraphQL/Query/TodoList';
-import Mutation from 'GraphQL/Mutation/TodoList';
 
 /* Materialize */
 import { makeStyles, useTheme } from '@material-ui/styles';
 import { useMediaQuery } from '@material-ui/core';
 import GridList from '@material-ui/core/GridList';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
-import CheckIcon from '@material-ui/icons/Check';
 import SyncIcon from '@material-ui/icons/Sync';
 
 /* Components */
@@ -55,7 +52,7 @@ const TodoList = ( props )=>{
     ...rest
   } = props;
   
-  const variables = {
+  const initVariables = {
     first: defaultCount||5,
     orderBy: [ "-no", "-sort_order" ]
   }
@@ -71,10 +68,12 @@ const TodoList = ( props )=>{
   const [ open, setOpen ] = useState( false );
   const [ mode, setMode ] = useState( "create" );
   const [ id, setId ] = useState( null );
+  const [ variables, setVariables ] = useState( initVariables );
 
   /* Query: Get TodoList Datas */
-  const { loading, error, data: list, fetchMore, refetch, updateQuery } = useQuery(
+  const { loading, error, data: list, fetchMore, refetch, } = useQuery(
     Query.GET_TODO_LIST_EDGES, {
+      fetchPolicy: "no-cache",
       variables,
       onError(error){
         console.error( error );
@@ -109,11 +108,12 @@ const TodoList = ( props )=>{
     console.log('handleClose');
     
     setOpen(false);
-    handleReload();
+
+    refetch();
   }
   
-  const handleReload = (event)=>{
-    refetch();
+  const handleRefresh = (event)=>{
+    setVariables( initVariables );
   }
   
   const handleDelete = ( success )=>{
@@ -123,12 +123,12 @@ const TodoList = ( props )=>{
   }
   
   const handleSubmit = ( event )=>{
-    console.log("[SEARCH]", searchRef, searchRef.current.value)
+    const searchText = searchRef.current.value;
     
-    const searchText = searchRef.current.value;    
     if( searchText ){
       const isHash = searchText.charAt(0) === "#";
       if( isHash ){
+        console.log("[SEARCH][HASH]", searchText);
         console.log({
           variables: {
             ...variables,
@@ -136,13 +136,10 @@ const TodoList = ( props )=>{
           }
         });
       } else {
-        refetch({
-          variables: {
-            ...variables,
-            title: searchText
-          }
-        }).then(( result )=>{
-          console.log( result );
+        console.log("[SEARCH][TEXT]", searchText);
+        setVariables({
+          ...variables,
+          title: searchText
         });
       }
     }
@@ -151,7 +148,7 @@ const TodoList = ( props )=>{
   const handleFetchMore = ( event )=>{
     fetchMore({
       variables: Object.assign({}, variables, {
-        after: pageInfo.endCursor
+        after: list.todo_list_edges.pageInfo.endCursor
       }),
       updateQuery: ( prev, { fetchMoreResult: { todo_list_edges : crnt } })=>{
         const updated = Object.assign({}, prev, {
@@ -169,60 +166,51 @@ const TodoList = ( props )=>{
     });
   }
 
-  if( loading ) return <span>Data loading....</span>;
+  useEffect(()=>{
+    console.log( variables );
+    if( !loading ){
+      refetch({ variables });
+    }
+  }, [ variables ]);
+
   if( error ) return null;
-  
-  const { edges, pageInfo } = list.todo_list_edges;
 
   return (
     <GridContainer>
       <GridItem xs={ 12 }>
         <SearchText
           inputRef={ searchRef }
-          handleSubmit={ handleSubmit }
+          onSubmit={ handleSubmit }
+          onRefresh={ handleRefresh }
+          onEdit={ handleOpenWriteModal }
         />
       </GridItem>
       <GridItem xs={ 12 }>
-        <BaseButton
-          id="add-todolist"
-          label="추가"
-          size="sm"
-          color="primary"
-          onClick={ handleOpenWriteModal }
-        />
-      </GridItem>
-      <GridItem xs={ 12 }>
-        <BaseButton
-          id="btn-load-prev-todolist"
-          label="Reload"
-          color="primary"
-          size="sm"
-          disabled={ loading }
-          onClick={ handleReload }
-        />
-      </GridItem>
-      <GridItem xs={ 12 }>
-        <GridList
-          className={ classes.gridList }
-          cols={ isDesktop ? 3 : isTablet ? 2 : 1 }
-          spacing={ 5 }
-        >
-        {
-          edges.map((edge)=>(
-            <GridItem key={ edge.cursor }>
-              <TodoListCard
-                data={ edge.node }
-                deletable={ true }
-                onDelete={ handleDelete }
-                onClick={ handleOpenReadModal }
-              />
-            </GridItem>
-          ))
-        }
-        </GridList>
+      {
+        !loading && (
+          <GridList
+            className={ classes.gridList }
+            cols={ isDesktop ? 3 : isTablet ? 2 : 1 }
+            spacing={ 5 }
+          >
+          {
+            list.todo_list_edges.edges.map((edge)=>(
+              <GridItem key={ edge.cursor }>
+                <TodoListCard
+                  data={ edge.node }
+                  deletable={ true }
+                  onDelete={ handleDelete }
+                  onClick={ handleOpenReadModal }
+                />
+              </GridItem>
+            ))
+          }
+          </GridList>
+        )
+      }
       </GridItem>
       {
-        pageInfo && pageInfo.hasNextPage && (
+        !loading && list.todo_list_edges.pageInfo.hasNextPage && (
           <GridItem xs={ 12 }>
             <GridItem 
               container 

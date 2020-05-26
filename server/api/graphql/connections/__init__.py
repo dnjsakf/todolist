@@ -1,6 +1,8 @@
 # api/connections.py
 import graphene
 
+import pprint
+
 from graphene import relay
 from graphene_mongo import MongoengineConnectionField
 
@@ -29,8 +31,8 @@ class OrderedConnectionField(MongoengineConnectionField):
     super(OrderedConnectionField, self).__init__(type, *args, **kwargs)
 
   def get_queryset(cls, model, info, *args, **kwargs):
+    title = kwargs.pop("title", "")
     orderBy = kwargs.pop("orderBy", [])
-    hashTags = kwargs.pop("hashTags", [])
-    
-    return model.objects(**kwargs).order_by(*orderBy)
+
+    return model.objects( title__contains=title ).order_by(*orderBy)
     

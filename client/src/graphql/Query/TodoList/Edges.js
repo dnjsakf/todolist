@@ -7,6 +7,9 @@ export default {
     $last: Int
     $before: String
     $after: String
+    
+    $title: String
+
     $orderBy: [String]
   ) {
     todo_list_edges(
@@ -14,6 +17,9 @@ export default {
       last: $last
       before: $before
       after: $after
+
+      title: $title
+
       orderBy: $orderBy
     ) {
       pageInfo {
