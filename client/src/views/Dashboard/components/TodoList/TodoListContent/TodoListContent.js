@@ -31,8 +31,9 @@ const TodoListContent = ( props )=>{
   const {
     type,
     className,
-    handleDelete,
     handleClick,
+    handleDelete,
+    handleHashTag,
     data,
     ...rest
   } = props;
@@ -60,8 +61,9 @@ const TodoListContent = ( props )=>{
             <TodoListCard
               data={ node }
               deletable={ true }
-              onDelete={ handleDelete }
               onClick={ handleClick }
+              onDelete={ handleDelete }
+              onHashTag={ handleHashTag }
             />
           </GridItem>
         ))
@@ -82,8 +84,9 @@ TodoListContent.proptypes = {
   ]),
   className: PropTypes.string,
   data: PropTypes.array,
+  handleClick: PropTypes.func,
   handleDelete: PropTypes.func,
-  handleOpenReadModal: PropTypes.func,
+  handleHashTag: PropTypes.func,
 }
 
 TodoListContent.defaultProps = {

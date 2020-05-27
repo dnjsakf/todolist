@@ -33,10 +33,7 @@ mutation createTodoList(
       due_time
       description
       star
-      hash_tag {
-        tag
-        tag_name
-      }
+      hash_tags
       reg_user
       reg_dttm
     }

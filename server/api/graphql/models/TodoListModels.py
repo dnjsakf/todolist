@@ -24,7 +24,7 @@ class TodoListModel(BaseDocument):
   hash_tags = fields.ListField(fields.StringField())
   
   @queryset_manager
-  def withHashTag(doc_cls, queryset):
+  def withStar(doc_cls, queryset):
     return queryset.filter(star=True)
 
 ### TodoList 댓글 모델

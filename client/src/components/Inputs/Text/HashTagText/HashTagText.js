@@ -20,12 +20,6 @@ import { uuid } from 'uuidv4';
 /* Materialize Styles */
 const useStyles = makeStyles(( theme ) => ({
   root: {
-    minWidth: 300,
-    '& > * + *': {
-      marginTop: theme.spacing(3),
-    },
-  },
-  inputRoot: {
     flexWrap: 'wrap',
     '& $input': {
       width: 0,
@@ -57,6 +51,9 @@ const useStyles = makeStyles(( theme ) => ({
       },
     },
   },
+  fullWidth: {
+    width: "100%"
+  },
   input: {
     flexGrow: 1,
     textOverflow: 'ellipsis',
@@ -77,6 +74,8 @@ const HashTagText = forwardRef(( props, ref )=>{
     defaultValue,
     readOnly,
     disabled,
+    fullWidth,
+    onSubmit,
     ...rest
   } = props;
   
@@ -93,26 +92,28 @@ const HashTagText = forwardRef(( props, ref )=>{
     event.currentTarget.focus();
     
     const inputKey = event.key;
-
-    if( inputValue ){
-      // Todo: 한글&특수문자 처리
-      if( ["Enter", "Tab"].indexOf(inputKey) > -1 ){
-        setValue([
-          ...value,
-          inputValue
-        ]);
-        setInputValue("");
-        event.preventDefault();
-      }
-    } else {
-      if( inputKey === "Backspace" ){
-        if( value.length > 0 ){
-          setValue(value.slice(0, value.length-1));
+    
+    switch( inputKey ){
+      case "Enter":
+      case "Tab":
+      case " ":
+        if( inputValue ){
+          setValue([
+            ...value,
+            inputValue
+          ]);
+          setInputValue("");
         }
         event.preventDefault();
-      } else if ( inputKey === "" ){
-        event.preventDefault();
-      }
+        break;
+      case "Backspace":
+        if( !inputValue ){
+          if( value.length > 0 ){
+            setValue(value.slice(0, value.length-1));
+          }
+          event.preventDefault();
+        }
+        break;
     }
   }, [ value, inputValue ]);
   
@@ -123,88 +124,94 @@ const HashTagText = forwardRef(( props, ref )=>{
       setValue(del_value);
     }
     
-    inputRef.current.focus();
+    inputRef.current && inputRef.current.focus();
   };
 
   const handleClear = useCallback((event)=>{
     setInputValue("");
     setValue([]);
 
-    inputRef.current.focus();
+    inputRef.current && inputRef.current.focus();
+  }, [ value ]);
+  
+  useEffect(()=>{
+    onSubmit && onSubmit( value );
   }, [ value ]);
 
   return (
-    <div className={ classes.root }>
-      <FormControl
-        fullWidth
-      >
-        <Input
-          { ...rest }
-          disableUnderline={ !!readOnly }
-          className={ clsx({
-            [classes.inputRoot]: true,
-          })}
-          inputProps={{
-            ref: ref && ref({
-              type: "array",
-              value: value,
-              inputRef
-            }),
-            className: clsx({
-              [classes.input]: true,
-              [classes.inputFocused]: true
-            }),
-          }}
-          value={ inputValue }
-          startAdornment={
-            value.map(( hash_tag, idx )=>(
-              <InputAdornment 
-                key={ hash_tag+idx }
-                position="start"
-              >
-                <Chip
-                  label={ hash_tag }
-                  size="small"
-                  color="primary"
-                  variant="default"
-                  avatar={<Avatar>#</Avatar>}
-                  { 
-                    ...Object.assign({}, 
-                      !readOnly && {
-                        clickable: true,
-                        onDelete: (event)=>( handleDelete(event, hash_tag, idx) ),
-                        deleteIcon: <DeleteIcon />
-                      }
-                    ) 
+    <Input
+      { ...rest }
+      disableUnderline={ !!readOnly }
+      className={ clsx({
+        [classes.root]: true,
+        [classes.fullWidth]: fullWidth,
+      })}
+      inputProps={{
+        ref: ref && ref({
+          type: "array",
+          value: value,
+          inputRef
+        }),
+        className: clsx({
+          [classes.input]: true,
+          [classes.inputFocused]: true,
+        }),
+      }}
+      value={ inputValue }
+      startAdornment={
+        value.map(( hash_tag, idx )=>(
+          <InputAdornment 
+            key={ hash_tag+idx }
+            position="start"
+          >
+            <Chip
+              label={ hash_tag }
+              size="small"
+              color="primary"
+              variant="default"
+              avatar={<Avatar>#</Avatar>}
+              { 
+                ...Object.assign({}, 
+                  !readOnly && {
+                    clickable: true,
+                    onDelete: (event)=>( handleDelete(event, hash_tag, idx) ),
+                    deleteIcon: <DeleteIcon />
                   }
-                />
-              </InputAdornment>
-            ))
-          }
-          endAdornment={
-            !readOnly && (
-              <IconButton
-                aria-label={ "삭제" }
-                title={ "삭제" }
-                onClick={ handleClear }
-              >
-                <CloseIcon fontSize="small"/>
-              </IconButton>
-            )
-          }
-          onChange={ handleChangeValue }
-          onKeyDown={ handleKeyDown }
+                ) 
+              }
+            />
+          </InputAdornment>
+        ))
+      }
+      endAdornment={
+        !readOnly && (
+          <IconButton
+            aria-label={ "삭제" }
+            title={ "삭제" }
+            onClick={ handleClear }
+          >
+            <CloseIcon fontSize="small"/>
+          </IconButton>
+        )
+      }
+      onChange={ handleChangeValue }
+      onKeyDown={ handleKeyDown }
 
-          readOnly={ !!readOnly }
-        />
-      </FormControl>
-    </div>
+      readOnly={ !!readOnly }
+    />
   )
 });
 
 HashTagText.propTypes = {
   defaultValue: PropTypes.array,
   readOnly: PropTypes.bool,
+  fullWidth: PropTypes.bool,
+  onSubmit: PropTypes.func,
+}
+
+HashTagText.defaultProps = {
+  readOnly: false,
+  fullWidth: true
 }
 
 export default HashTagText;

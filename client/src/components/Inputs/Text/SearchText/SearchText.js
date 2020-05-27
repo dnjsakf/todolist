@@ -1,5 +1,5 @@
 /* React */
-import React, { forwardRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 /* Materialize */
@@ -12,6 +12,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import SearchIcon from '@material-ui/icons/Search';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import EditIcon from '@material-ui/icons/Edit';
+
+/* Components */
+import HashTagText from 'Components/Inputs/Text/HashTagText';
 
 /* Another Modules */
 import clsx from 'clsx';
@@ -50,13 +53,29 @@ const SearchText = ( props )=>{
     ...rest
   } = props;
   
+  const hashTagRef = ( options )=>( element )=>{
+    options.inputRef.current = element;
+    inputRef.current = element;
+  }
+  
+  /* State */
+  const [ type, setType ] = useState( "text" );
+  
   /* handlers */
   const handleKeyDown = ( event )=>{
-    if( event.key === "Enter" && onSubmit ){
-      event.currentTarget.focus();
-    
-      onSubmit( event );
+    switch( event.key ){
+      case "Enter":
+        onSubmit( "text" );
+        
+        event.preventDefault();
+        break;
     }
+  }
+  
+  const handleHashTagSubmit = ( value )=>{
+    inputRef.current.value = value;
+    
+    onSubmit( "hash" );
   }
 
   /* Rendering */
@@ -84,16 +103,26 @@ const SearchText = ( props )=>{
           </IconButton>
         )
       }
+      <HashTagText
+        ref={ hashTagRef }
+        id="search_text"
+        name="search_text"
+        onSubmit={ handleHashTagSubmit }
+      />
+      {/*
       <InputBase
         type="search"
+        id="search_text"
+        name="search_text"
         className={ classes.input }
         placeholder="Search ToDo"
-        inputRef={ inputRef }
         inputProps={{
-          'aria-label': 'search todo'
+          ref: inputRef,
+          'aria-label': 'search todo',
         }}
         onKeyDown={ handleKeyDown }
       />
+      */}
       <IconButton
         className={ classes.iconButton } 
         aria-label="search"

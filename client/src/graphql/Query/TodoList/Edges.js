@@ -9,6 +9,7 @@ export default {
     $after: String
     
     $title: String
+    $hash_tags: String
 
     $orderBy: [String]
   ) {
@@ -19,6 +20,7 @@ export default {
       after: $after
 
       title: $title
+      hash_tags: $hash_tags
 
       orderBy: $orderBy
     ) {

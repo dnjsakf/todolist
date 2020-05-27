@@ -31,8 +31,20 @@ class OrderedConnectionField(MongoengineConnectionField):
     super(OrderedConnectionField, self).__init__(type, *args, **kwargs)
 
   def get_queryset(cls, model, info, *args, **kwargs):
-    title = kwargs.pop("title", "")
+    title = kwargs.pop("title", None)
+    hash_tags = kwargs.pop("hash_tags", None)
+    
+    cond = {}
+    if title is not None:
+      cond["title__icontains"] = title
+    
+    if hash_tags is not None:
+      cond["hash_tags__all"] = hash_tags.split(",")
+      
     orderBy = kwargs.pop("orderBy", [])
+    
+    print( orderBy )
+    print( cond )
 
-    return model.objects( title__contains=title ).order_by(*orderBy)
+    return model.objects(**cond).order_by(*orderBy)
     

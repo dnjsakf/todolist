@@ -105,32 +105,42 @@ const TodoList = ( props )=>{
     }
   }
   
-  const handleRefresh = (event)=>{
+  const handleRefresh = ( event )=>{
     setVariables( initVariables );
     
     searchRef.current.value = "";
     searchRef.current.focus();
   }
   
-  const handleSubmit = ( event )=>{
-    const searchText = event.currentTarget.value;
+  const handleSubmit = ( type )=>{
+    const searchText = searchRef.current.value;
     
-    const isHash = searchText.charAt(0) === "#";
-    if( isHash ){
-      console.log("[SEARCH][HASH]", searchText);
-      console.log({
-        variables: {
-          ...variables,
-          hashTags: searchText.split("#")
-        }
-      });
-    } else {
-      console.log("[SEARCH][TEXT]", searchText);
+    if( type === "hash" ){
       setVariables({
         ...variables,
-        title: searchText
+        title: null,
+        hash_tags: searchText
+      });
+    } else {
+      setVariables({
+        ...variables,
+        title: searchText,
+        hash_tags: null,
       });
     }
+  }
+  
+  const handleHashTag = ( tag, event )=>{    
+    const hash_tag = "#"+tag;
+    const current_text = searchRef.current.value;
+    
+    let searchText = current_text;
+    if( current_text.indexOf(hash_tag) > -1 ){
+      searchText = current_text.replace(RegExp(hash_tag), "")
+    }
+    searchRef.current.value = searchText+hash_tag;
+    
+    handleSubmit( event );
   }
   
   const handleFetchMore = ( event )=>{
@@ -157,9 +167,9 @@ const TodoList = ( props )=>{
   }
 
   useEffect(()=>{
-    //if( !loading ){
+    if( !loading ){
       refetch({ variables });
-    //}
+    }
   }, [ variables ]);
 
   if( error ) return null;
@@ -178,6 +188,7 @@ const TodoList = ( props )=>{
         <TodoListContent
           handleDelete={ handleDelete }
           handleClick={ handleOpenReadModal }
+          handleHashTag={ handleHashTag }
           data={ data && data.todo_list_edges.edges }
         />
       </GridItem>

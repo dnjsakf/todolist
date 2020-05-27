@@ -104,6 +104,7 @@ const TodoListCard = ( props )=>{
     deletable,
     onClick,
     onDelete,
+    onHashTag,
     ...rest
   } = props;
 
@@ -226,18 +227,20 @@ const TodoListCard = ( props )=>{
         />
         <GridContainer justify="flex-start">
         {
-          data.hash_tags.map(( hash_tag, idx )=>(
-            <GridItem key={ hash_tag+idx }>
-              <Typography
-                aria-label="todo-hashtag"
-                className={ classes.hashTag }
-                variant="body2"
-                onClick={ (event)=>{ console.log( "[SEARCH][HASH_TAG]", hash_tag ); } }
-              >
-              { `#${hash_tag}` }
-              </Typography>
-            </GridItem>
-          ))
+          onHashTag && (
+            data.hash_tags.map(( hash_tag, idx )=>(
+              <GridItem key={ hash_tag+idx }>
+                <Typography
+                  aria-label="todo-hashtag"
+                  className={ classes.hashTag }
+                  variant="body2"
+                  onClick={ onHashTag.bind( null, hash_tag ) }
+                >
+                { `#${hash_tag}` }
+                </Typography>
+              </GridItem>
+            ))
+          )
         }
         </GridContainer>
       </CardContent>
@@ -258,6 +261,7 @@ TodoListCard.propTypes = {
   }),
   onClick: PropTypes.func,
   onDelete: PropTypes.func,
+  onHashTag: PropTypes.func
 };
 
 TodoListCard.defaultProps = {
