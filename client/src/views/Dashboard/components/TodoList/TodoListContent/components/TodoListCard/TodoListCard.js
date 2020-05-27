@@ -102,9 +102,9 @@ const TodoListCard = ( props )=>{
     className,
     data,
     deletable,
-    onClick,
+    onClickTitle,
+    onClickHashTag,
     onDelete,
-    onHashTag,
     ...rest
   } = props;
 
@@ -187,7 +187,7 @@ const TodoListCard = ( props )=>{
               aria-label="todo-title"
               variant="h3"
               className={ classes.title }
-              onClick={ onClick ? onClick.bind( null, data.no ) : null }
+              onClick={ onClickTitle ? onClickTitle.bind( null, data.no ) : null }
             >
             { data.title }
             </Typography>
@@ -227,14 +227,14 @@ const TodoListCard = ( props )=>{
         />
         <GridContainer justify="flex-start">
         {
-          onHashTag && (
+          onClickHashTag && (
             data.hash_tags.map(( hash_tag, idx )=>(
               <GridItem key={ hash_tag+idx }>
                 <Typography
                   aria-label="todo-hashtag"
                   className={ classes.hashTag }
                   variant="body2"
-                  onClick={ onHashTag.bind( null, hash_tag ) }
+                  onClick={ onClickHashTag.bind( null, hash_tag ) }
                 >
                 { `#${hash_tag}` }
                 </Typography>
@@ -261,7 +261,7 @@ TodoListCard.propTypes = {
   }),
   onClick: PropTypes.func,
   onDelete: PropTypes.func,
-  onHashTag: PropTypes.func
+  onClickHashTag: PropTypes.func
 };
 
 TodoListCard.defaultProps = {

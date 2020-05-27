@@ -84,16 +84,12 @@ const HashTagText = forwardRef(( props, ref )=>{
   const [ value, setValue ] = useState( defaultValue||[] );
 
   /* Handler */
-  const handleChangeValue = useCallback(( event )=>{
-    setInputValue( event.target.value );
+  const handleChange = useCallback(( event )=>{
+    setInputValue( event.currentTarget.value );
   }, [ inputValue ]); 
   
-  const handleKeyDown = useCallback(( event )=>{
-    event.currentTarget.focus();
-    
-    const inputKey = event.key;
-    
-    switch( inputKey ){
+  const handleKeyPress = ( event )=>{
+    switch( event.key ){
       case "Enter":
       case "Tab":
       case " ":
@@ -106,6 +102,11 @@ const HashTagText = forwardRef(( props, ref )=>{
         }
         event.preventDefault();
         break;
+    }
+  }
+
+  const handleKeyDown = ( event )=>{
+    switch( event.key ){
       case "Backspace":
         if( !inputValue ){
           if( value.length > 0 ){
@@ -115,7 +116,7 @@ const HashTagText = forwardRef(( props, ref )=>{
         }
         break;
     }
-  }, [ value, inputValue ]);
+  }
   
   const handleDelete = (event, del_tag, del_idx)=>{
     const del_value = value.filter(( tag, idx )=>( !(tag === del_tag && idx === del_idx) ));
@@ -194,8 +195,9 @@ const HashTagText = forwardRef(( props, ref )=>{
           </IconButton>
         )
       }
-      onChange={ handleChangeValue }
+      onChange={ handleChange }
       onKeyDown={ handleKeyDown }
+      onKeyPress={ handleKeyPress }
 
       readOnly={ !!readOnly }
     />

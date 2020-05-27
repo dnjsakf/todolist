@@ -112,16 +112,18 @@ const TodoList = ( props )=>{
     searchRef.current.focus();
   }
   
-  const handleSubmit = ( type )=>{
+  const handleSearchSubmit = ( type )=>{
     const searchText = searchRef.current.value;
     
     if( type === "hash" ){
-      setVariables({
-        ...variables,
-        title: null,
-        hash_tags: searchText
-      });
+        console.log("[SEARCH][HASH]", searchText);
+        setVariables({
+          ...variables,
+          title: null,
+          hash_tags: searchText === "" ?  null : searchText
+        });
     } else {
+      console.log("[SEARCH][TEXT]", searchText);
       setVariables({
         ...variables,
         title: searchText,
@@ -130,7 +132,7 @@ const TodoList = ( props )=>{
     }
   }
   
-  const handleHashTag = ( tag, event )=>{    
+  const handleClickHashTag = ( tag, event )=>{    
     const hash_tag = "#"+tag;
     const current_text = searchRef.current.value;
     
@@ -140,7 +142,7 @@ const TodoList = ( props )=>{
     }
     searchRef.current.value = searchText+hash_tag;
     
-    handleSubmit( event );
+    handleSearchSubmit( event );
   }
   
   const handleFetchMore = ( event )=>{
@@ -179,16 +181,16 @@ const TodoList = ( props )=>{
       <GridItem xs={ 12 }>
         <SearchText
           inputRef={ searchRef }
-          onSubmit={ handleSubmit }
+          onSubmit={ handleSearchSubmit }
           onRefresh={ handleRefresh }
           onEdit={ handleOpenWriteModal }
         />
       </GridItem>
       <GridItem xs={ 12 }>
         <TodoListContent
-          handleDelete={ handleDelete }
-          handleClick={ handleOpenReadModal }
-          handleHashTag={ handleHashTag }
+          onDelete={ handleDelete }
+          onClickTitle={ handleOpenReadModal }
+          onClickHashTag={ handleClickHashTag }
           data={ data && data.todo_list_edges.edges }
         />
       </GridItem>

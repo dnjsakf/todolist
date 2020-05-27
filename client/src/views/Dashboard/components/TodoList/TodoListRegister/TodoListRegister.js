@@ -24,7 +24,6 @@ import { BasePopover } from 'Components/Popover';
 
 /* Another Modules */
 import clsx from 'clsx';
-import moment from 'moment';
 
 /* Functions */
 import useFormRef from './Utils/useFormRef';

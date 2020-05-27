@@ -40,6 +40,7 @@ export default {
           category
           due_date
           due_time
+          description
           star
           hash_tags
           sort_order
