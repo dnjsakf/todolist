@@ -9,7 +9,8 @@ mutation createTodoList(
   $due_time: String
   $description: String
   $star: Boolean
-  $hash_tag: [InputHashTag]
+  #$hash_tag: [InputHashTag]
+  $hash_tags: [String]
 ){
   create_todo_list(
     title: $title
@@ -19,7 +20,8 @@ mutation createTodoList(
     due_time: $due_time
     description: $description
     star: $star
-    hash_tag: $hash_tag
+    #hash_tag: $hash_tag
+    hash_tags: $hash_tags
   ){
     success
     todo_list_field {
@@ -52,7 +54,8 @@ mutation updateTodoList(
   $due_time: String
   $description: String
   $star: Boolean
-  $hash_tag: [InputHashTag]
+  #$hash_tag: [InputHashTag]
+  $hash_tags: [String]
 ){
   update_todo_list(
     no: $no
@@ -63,7 +66,8 @@ mutation updateTodoList(
     due_time: $due_time
     description: $description
     star: $star
-    hash_tag: $hash_tag
+    #hash_tag: $hash_tag
+    hash_tags: $hash_tags
   ){
     success
   }

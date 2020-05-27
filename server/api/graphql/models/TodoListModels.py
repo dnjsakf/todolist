@@ -1,5 +1,6 @@
 # api/models.py
 from mongoengine import fields
+from mongoengine.queryset import queryset_manager
 from .CommonModels import BaseDocument
 from .HashTagModels import HashTagModel
 
@@ -19,6 +20,12 @@ class TodoListModel(BaseDocument):
   
   description = fields.StringField()
   star = fields.BooleanField(default=False)
+  
+  hash_tags = fields.ListField(fields.StringField())
+  
+  @queryset_manager
+  def withHashTag(doc_cls, queryset):
+    return queryset.filter(star=True)
 
 ### TodoList 댓글 모델
 class TodoListCommentModel(BaseDocument):

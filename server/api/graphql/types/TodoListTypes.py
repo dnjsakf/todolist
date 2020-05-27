@@ -25,7 +25,7 @@ class TodoListType(BaseType):
   category_codes = graphene.Field(CommonCodeType)
   status_codes = graphene.Field(CommonCodeType)
   
-  hash_tag = graphene.List(HashTagType)
+  #hash_tag = graphene.List(HashTagType)
 
   def resolve_category_codes(parent, info, **input):
     codes = parent.category.get("p_code").split(":")
@@ -67,5 +67,5 @@ class TodoListType(BaseType):
     }
     return CommonCodeModel.objects(**cond).first()
     
-  def resolve_hash_tag(parent, info, **input):
-    return TodoListHashTagModel.objects(todo_list=parent).values_list('hash_tag').all()
+  #def resolve_hash_tag(parent, info, **input):
+  #  return TodoListHashTagModel.objects(todo_list=parent).values_list('hash_tag').all()

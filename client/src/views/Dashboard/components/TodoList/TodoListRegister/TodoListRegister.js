@@ -27,7 +27,7 @@ import clsx from 'clsx';
 import moment from 'moment';
 
 /* Functions */
-import { useFormRef } from './Utils';
+import useFormRef from './Utils/useFormRef';
 
 /* Materialize Styles */
 const useStyles = makeStyles((theme)=>({
@@ -228,58 +228,35 @@ const TodoInfoRegister = ( props )=>{
             />
           </GridItem>
           <GridItem xs={ 12 }>
-          {
-            data
-            ? <CommonCodeSelect
-                ref={ refs }
-                id="status"
-                name="status"
-                code={ data.todo_list_field.status.p_code }
-                defaultValue={ data.todo_list_field.status.code }
-                data={ data.todo_list_field.status_codes }
-                required={ true }
-                readOnly={ readMode }
-              />
-            : <CommonCodeSelect
-                ref={ refs }
-                id="status"
-                name="status"
-                code="TODO_STATUS"
-                required={ true }
-                readOnly={ readMode }
-              />
-          }
+            <CommonCodeSelect
+              ref={ refs }
+              id="status"
+              name="status"
+              code={ data ? data.todo_list_field.status.p_code : "TODO_STATUS" }
+              defaultValue={ data && data.todo_list_field.status.code }
+              data={ data && data.todo_list_field.status_codes }
+              required={ true }
+              readOnly={ readMode }
+            />
           </GridItem>
           <GridItem xs={ 12 }>
-          {
-            data
-            ? <CommonCodeSelect
-                ref={ refs }
-                id="category"
-                name="category"
-                code={ data.todo_list_field.category.p_code }
-                defaultValue={ data.todo_list_field.category.code }
-                data={ data.todo_list_field.category_codes }
-                required={ true }
-                readOnly={ readMode }
-              />
-            : <CommonCodeSelect
-                ref={ refs }
-                id="category"
-                name="category"
-                code="TODO_CATE"
-                required={ true }
-                readOnly={ readMode }
-              />
-          }
+            <CommonCodeSelect
+              ref={ refs }
+              id="category"
+              name="category"
+              code={ data ? data.todo_list_field.category.p_code : "TODO_CATE" }
+              defaultValue={ data && data.todo_list_field.category.code }
+              data={ data && data.todo_list_field.category_codes }
+              required={ true }
+              readOnly={ readMode }
+            />
           </GridItem>
           <GridItem xs={ 12 }>
             <HashTagText
               ref={ refs }
-              id="hash_tag"
-              name="hash_tag"
-
-              defaultValue={ data && data.todo_list_field.hash_tag }
+              id="hash_tags"
+              name="hash_tags"
+              defaultValue={ data && data.todo_list_field.hash_tags }
               readOnly={ readMode }
             />
           </GridItem>
@@ -378,9 +355,14 @@ const TodoInfoRegister = ( props )=>{
   )
 }
 
-TodoInfoRegister.proptypes = {
+TodoInfoRegister.propTypes = {
   className: PropTypes.string,
-  handleClose: PropTypes.func
+  data_id: PropTypes.any,
+  handleClose: PropTypes.func,
+}
+
+TodoInfoRegister.defaultProps = {
+  data_id: null,
 }
 
 export default TodoInfoRegister;

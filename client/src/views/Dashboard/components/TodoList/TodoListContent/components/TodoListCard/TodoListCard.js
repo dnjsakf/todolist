@@ -24,16 +24,8 @@ import { GridContainer, GridItem } from 'Components/Grid';
 import clsx from 'clsx';
 import moment from 'moment';
 
-const calcProgress = (start_date, end_date)=>{
-  const now_dttm = moment();
-  const start_dttm = moment(start_date, 'YYYY-MM-DD HH:mm:ss');
-  const end_dttm = moment(end_date, 'YYYYMMDDHHmmss');
-  
-  const end_days = end_dttm.diff( start_dttm, 'days' );
-  const now_days = now_dttm.diff( start_dttm, 'days' );
-
-  return end_days === 0 ? 100 : now_days / end_days * 100;
-}
+/* Functions */
+import { minutesProgress as calcProgress } from './Utils/progress';
 
 /* Materialize Styles */
 const useStyles = makeStyles(( theme )=>({
@@ -97,8 +89,8 @@ const useStyles = makeStyles(( theme )=>({
     position: 'absolute',
     top: '50%',
     left: '50%',
-    marginTop: -12,
-    marginLeft: -12,
+    marginTop: -34,
+    marginLeft: -34,
   },
 }));
 
@@ -109,8 +101,8 @@ const TodoListCard = ( props )=>{
   const { 
     className,
     data,
-    onClick,
     deletable,
+    onClick,
     onDelete,
     ...rest
   } = props;
@@ -124,7 +116,7 @@ const TodoListCard = ( props )=>{
     const start_date = data.reg_dttm;
     const end_date = data.due_date+data.due_time;
 
-    return calcProgress( start_date, end_date);
+    return calcProgress( start_date, end_date );
   }, 0 );
   
   /* Mutation: Delete TodoList */
@@ -173,7 +165,7 @@ const TodoListCard = ( props )=>{
     return (
       <Card className={ clsx(classes.root, className) }>
         <CardContent className={ classes.buttonWrapper }>
-          <CircularProgress size={ 24 } className={ classes.buttonProgress } />
+          <CircularProgress size={ 68 } className={ classes.buttonProgress } />
         </CardContent>
       </Card>
     )
@@ -234,15 +226,15 @@ const TodoListCard = ( props )=>{
         />
         <GridContainer justify="flex-start">
         {
-          data.hash_tag.map(({ id, tag_name }, idx )=>(
-            <GridItem key={ id+idx }>
+          data.hash_tags.map(( hash_tag, idx )=>(
+            <GridItem key={ hash_tag+idx }>
               <Typography
                 aria-label="todo-hashtag"
                 className={ classes.hashTag }
                 variant="body2"
-                onClick={ (event)=>{ console.log( "[SEARCH][HASH_TAG]", tag_name ); } }
+                onClick={ (event)=>{ console.log( "[SEARCH][HASH_TAG]", hash_tag ); } }
               >
-              { `#${tag_name}` }
+              { `#${hash_tag}` }
               </Typography>
             </GridItem>
           ))
@@ -267,5 +259,9 @@ TodoListCard.propTypes = {
   onClick: PropTypes.func,
   onDelete: PropTypes.func,
 };
+
+TodoListCard.defaultProps = {
+  deletable: false,
+}
 
 export default TodoListCard;

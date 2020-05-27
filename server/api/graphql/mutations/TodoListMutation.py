@@ -30,7 +30,8 @@ class CreateTodoList(graphene.Mutation):
     description = graphene.String()
     star = graphene.Boolean()
     
-    hash_tag = graphene.List(InputHashTag)
+    #hash_tag = graphene.List(InputHashTag)
+    hash_tags = graphene.List(graphene.String)
 
   # 반환 Field 정의
   todo_list_field = graphene.Field(TodoListType)
@@ -46,20 +47,21 @@ class CreateTodoList(graphene.Mutation):
       due_date=input.get("due_date"),
       due_time=input.get("due_time"),
       star=input.get("star"),
+      hash_tags=input.get("hash_tags"),
       reg_user=user.name,
       reg_dttm=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     ).save()
     
-    hash_tag_items = input.get("hash_tag", None)
-    if hash_tag_items is not None:
+    hash_tags = input.get("hash_tags", None)
+    if hash_tags is not None:
       _models = []
-      for item in hash_tag_items:
-        hash_tag_model = HashTagModel.objects(tag=item.tag).first()
+      for hash_tag in hash_tags:
+        hash_tag_model = HashTagModel.objects(tag=hash_tag).first()
         
         if hash_tag_model is None: # Insert
           hash_tag_model = HashTagModel(
-            tag=item.tag,
-            tag_name=item.tag_name,
+            tag=hash_tag,
+            tag_name=hash_tag,
             reg_user=user.name,
             reg_dttm=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
           ).save()
@@ -90,7 +92,8 @@ class UpdateTodoList(graphene.Mutation):
     description = graphene.String()
     star = graphene.Boolean()
     
-    hash_tag = graphene.List(InputHashTag)
+    #hash_tag = graphene.List(InputHashTag)
+    hash_tags = graphene.List(graphene.String)
 
   # 반환 Field 정의
   success = graphene.Boolean()
@@ -98,8 +101,6 @@ class UpdateTodoList(graphene.Mutation):
   @session_user
   def mutate(root, info, user, no, **input):
     todo_list_model = TodoListModel.objects(no=no).first()
-    
-    print( todo_list_model )
 
     updated = TodoListModel.objects(no=no).update(
       set__title=input.get("title"),
@@ -109,23 +110,24 @@ class UpdateTodoList(graphene.Mutation):
       set__due_date=input.get("due_date"),
       set__due_time=input.get("due_time"),
       set__star=input.get("star"),
+      set__hash_tags=input.get("hash_tags"),
       set__upd_user=user.name,
       set__upd_dttm=datetime.datetime.now().strftime("%Y%m%d%H%M%S"),
     )
     
-    hash_tag_items = input.get("hash_tag", None)
-    if hash_tag_items is not None:
+    hash_tags = input.get("hash_tags", None)
+    if hash_tags is not None:
       _models = []
 
       TodoListHashTagModel.objects(todo_list=todo_list_model).delete()
 
-      for item in hash_tag_items:
-        hash_tag_model = HashTagModel.objects(tag=item.tag).first()
+      for hash_tag in hash_tags:
+        hash_tag_model = HashTagModel.objects(tag=hash_tag).first()
         
         if hash_tag_model is None: # Insert
           hash_tag_model = HashTagModel(
-            tag=item.tag,
-            tag_name=item.tag_name,
+            tag=hash_tag,
+            tag_name=hash_tag,
             reg_user=user.name,
             reg_dttm=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
           ).save()

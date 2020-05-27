@@ -99,11 +99,7 @@ const HashTagText = forwardRef(( props, ref )=>{
       if( ["Enter", "Tab"].indexOf(inputKey) > -1 ){
         setValue([
           ...value,
-          {
-            id: uuid(),
-            tag: inputValue,
-            tag_name: inputValue,
-          }
+          inputValue
         ]);
         setInputValue("");
         event.preventDefault();
@@ -120,8 +116,8 @@ const HashTagText = forwardRef(( props, ref )=>{
     }
   }, [ value, inputValue ]);
   
-  const handleDelete = (event, del_id, del_idx)=>{
-    const del_value = value.filter(({ id, idx })=>( id !== del_id || idx === del_idx ));
+  const handleDelete = (event, del_idx)=>{
+    const del_value = value.filter(({ id, idx })=>( idx === del_idx ));
 
     if( del_value.length !== value.length ){
       setValue(del_value);
@@ -149,9 +145,9 @@ const HashTagText = forwardRef(( props, ref )=>{
             [classes.inputRoot]: true,
           })}
           inputProps={{
-            ref: ref({
+            ref: ref && ref({
               type: "array",
-              value: value.map(({ tag, tag_name })=>({ tag, tag_name })),
+              value: value,
               inputRef
             }),
             className: clsx({
@@ -161,13 +157,13 @@ const HashTagText = forwardRef(( props, ref )=>{
           }}
           value={ inputValue }
           startAdornment={
-            value.map(({ id, tag, tag_name }, idx )=>(
+            value.map(( hash_tag, idx )=>(
               <InputAdornment 
-                key={ id+idx }
+                key={ hash_tag+idx }
                 position="start"
               >
                 <Chip
-                  label={ tag_name }
+                  label={ hash_tag }
                   size="small"
                   color="primary"
                   variant="default"
@@ -176,7 +172,7 @@ const HashTagText = forwardRef(( props, ref )=>{
                     ...Object.assign({}, 
                       !readOnly && {
                         clickable: true,
-                        onDelete: (event)=>( handleDelete(event, id, idx) ),
+                        onDelete: (event)=>( handleDelete(event, idx) ),
                         deleteIcon: <DeleteIcon />
                       }
                     ) 
@@ -207,11 +203,7 @@ const HashTagText = forwardRef(( props, ref )=>{
 });
 
 HashTagText.propTypes = {
-  defaultValue: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    tag: PropTypes.string.isRequired,
-    tag_name: PropTypes.string.isRequired,
-  })),
+  defaultValue: PropTypes.array,
   readOnly: PropTypes.bool,
 }
 

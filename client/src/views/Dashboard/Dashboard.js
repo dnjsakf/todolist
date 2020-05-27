@@ -32,7 +32,7 @@ const Dashboard = ( props )=>{
   return (
     <GridContainer className={ clsx(classes.root, className) }>
       <GridItem xs={ 12 }>
-        <TodoList defaultCount={ 2 } />
+        <TodoList defaultCount={ 4 } />
       </GridItem>
     </GridContainer>
   )

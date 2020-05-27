@@ -68,7 +68,7 @@ def init_mockup():
   
   ### Todo 샘플 데이터
   todo_list_1 = TodoListModel(
-    title="ToDo List 만들기",
+    title="ToDo List 만들기1",
     status={
       "p_code": "TODO_STATUS",
       "code": "READY"
@@ -79,10 +79,13 @@ def init_mockup():
     },
     due_date="20201231",
     due_time="000000",
-    description="나의 첫번째 ToDo List 만들기.",
+    description="ToDo List 만들기.",
+    
+    hash_tags=[ "개발", "투두리스트" ],
     
     reg_user=reg_user,
     reg_dttm=reg_dttm
+    
   ).save()
 
   ### Todo 샘플 데이터
@@ -98,8 +101,10 @@ def init_mockup():
     },
     due_date="20201231",
     due_time="000000",
-    description="나의 첫번째 ToDo List 만들기.",
+    description="ToDo List 만들기.",
     star=True,
+    
+    hash_tags=[ "개발", "투두리스트" ],
     
     reg_user=reg_user,
     reg_dttm=reg_dttm
@@ -118,8 +123,10 @@ def init_mockup():
     },
     due_date="20201231",
     due_time="000000",
-    description="나의 첫번째 ToDo List 만들기.",
+    description="ToDo List 만들기.",
     star=True,
+    
+    hash_tags=[ "개발", "투두리스트" ],
     
     reg_user=reg_user,
     reg_dttm=reg_dttm
@@ -138,8 +145,10 @@ def init_mockup():
     },
     due_date="20201231",
     due_time="000000",
-    description="나의 첫번째 ToDo List 만들기.",
+    description="ToDo List 만들기.",
     star=True,
+    
+    hash_tags=[ "개발", "투두리스트" ],
     
     reg_user=reg_user,
     reg_dttm=reg_dttm
@@ -158,8 +167,10 @@ def init_mockup():
     },
     due_date="20201231",
     due_time="000000",
-    description="나의 첫번째 ToDo List 만들기.",
+    description="ToDo List 만들기.",
     star=True,
+    
+    hash_tags=[ "개발", "투두리스트" ],
     
     reg_user=reg_user,
     reg_dttm=reg_dttm
@@ -178,8 +189,10 @@ def init_mockup():
     },
     due_date="20201231",
     due_time="000000",
-    description="나의 첫번째 ToDo List 만들기.",
+    description="ToDo List 만들기.",
     star=True,
+    
+    hash_tags=[ "개발", "투두리스트" ],
     
     reg_user=reg_user,
     reg_dttm=reg_dttm

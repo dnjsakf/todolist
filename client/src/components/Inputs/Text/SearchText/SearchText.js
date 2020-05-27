@@ -53,6 +53,8 @@ const SearchText = ( props )=>{
   /* handlers */
   const handleKeyDown = ( event )=>{
     if( event.key === "Enter" && onSubmit ){
+      event.currentTarget.focus();
+    
       onSubmit( event );
     }
   }

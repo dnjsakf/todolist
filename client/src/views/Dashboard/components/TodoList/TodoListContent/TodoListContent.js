@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { makeStyles, useTheme } from '@material-ui/styles';
 import { useMediaQuery } from '@material-ui/core';
 import GridList from '@material-ui/core/GridList';
+import Typography from '@material-ui/core/Typography';
 
 /* Components */
 import { GridItem } from 'Components/Grid';
@@ -28,6 +29,7 @@ const TodoListContent = ( props )=>{
   const classes = useStyles();
   const theme = useTheme();
   const {
+    type,
     className,
     handleDelete,
     handleClick,
@@ -41,42 +43,52 @@ const TodoListContent = ( props )=>{
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'), {
     defaultMatches: true
   });
+  
+  const cols = isDesktop ? 3 : isTablet ? 2 : 1;
 
-  /* State */
-  const [ list, setList ] = useState( data );
-
-  useEffect(()=>{
-    console.log( data );
-    setList( data );
-  }, [ data ]);
-
+  /* Rendering */
   return (
     <GridList
       className={ classes.root }
-      cols={ isDesktop ? 3 : isTablet ? 2 : 1 }
+      cols={ cols }
       spacing={ 5 }
     >
     {
-      list && list.map(({ cursor, node })=>(
-        <GridItem key={ cursor }>
-          <TodoListCard
-            data={ node }
-            deletable={ true }
-            onDelete={ handleDelete }
-            onClick={ handleClick }
-          />
+      data
+      ? data.map(({ cursor, node })=>(
+          <GridItem key={ cursor }>
+            <TodoListCard
+              data={ node }
+              deletable={ true }
+              onDelete={ handleDelete }
+              onClick={ handleClick }
+            />
+          </GridItem>
+        ))
+      : <GridItem>
+          <Typography variant="body1">
+            No Data
+          </Typography>
         </GridItem>
-      ))
     }
     </GridList>
   )
 }
 
 TodoListContent.proptypes = {
+  type: PropTypes.oneOf([
+    "card",
+    "item"
+  ]),
   className: PropTypes.string,
+  data: PropTypes.array,
   handleDelete: PropTypes.func,
   handleOpenReadModal: PropTypes.func,
-  data: PropTypes.array
+}
+
+TodoListContent.defaultProps = {
+  type: "card",
+  data: [],
 }
 
 export default TodoListContent;

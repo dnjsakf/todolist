@@ -18,11 +18,7 @@ export default {
       due_time
       description
       star
-      hash_tag {
-        id
-        tag
-        tag_name
-      }
+      hash_tags
       sort_order
       reg_user
       reg_dttm

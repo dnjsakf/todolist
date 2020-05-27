@@ -46,13 +46,10 @@ const TodoList = ( props )=>{
   const {
     className,
     defaultCount,
+    initVariables,
     ...rest
   } = props;
   
-  const initVariables = {
-    first: defaultCount||5,
-    orderBy: [ "-no", "-sort_order" ]
-  }
   /* State */
   const [ open, setOpen ] = useState( false );
   const [ mode, setMode ] = useState( "create" );
@@ -68,7 +65,8 @@ const TodoList = ( props )=>{
         console.error( error );
       },
       onCompleted( completed ){
-        console.log( completed );
+        console.log('[GET_TODO_LIST_EDGES][COMPLETED]',completed );
+        searchRef.current.focus();
       }
     }
   );
@@ -101,42 +99,44 @@ const TodoList = ( props )=>{
     refetch();
   }
   
-  const handleRefresh = (event)=>{
-    setVariables( initVariables );
-  }
-  
   const handleDelete = ( success )=>{
     if( success ){
       refetch();
     }
   }
   
-  const handleSubmit = ( event )=>{
-    const searchText = searchRef.current.value;
+  const handleRefresh = (event)=>{
+    setVariables( initVariables );
     
-    if( searchText ){
-      const isHash = searchText.charAt(0) === "#";
-      if( isHash ){
-        console.log("[SEARCH][HASH]", searchText);
-        console.log({
-          variables: {
-            ...variables,
-            hashTags: searchText.split("#")
-          }
-        });
-      } else {
-        console.log("[SEARCH][TEXT]", searchText);
-        setVariables({
+    searchRef.current.value = "";
+    searchRef.current.focus();
+  }
+  
+  const handleSubmit = ( event )=>{
+    const searchText = event.currentTarget.value;
+    
+    const isHash = searchText.charAt(0) === "#";
+    if( isHash ){
+      console.log("[SEARCH][HASH]", searchText);
+      console.log({
+        variables: {
           ...variables,
-          title: searchText
-        });
-      }
+          hashTags: searchText.split("#")
+        }
+      });
+    } else {
+      console.log("[SEARCH][TEXT]", searchText);
+      setVariables({
+        ...variables,
+        title: searchText
+      });
     }
   }
   
   const handleFetchMore = ( event )=>{
+    if( !data ) return false;
+    
     const { pageInfo } = data.todo_list_edges;
-
     fetchMore({
       variables: Object.assign({}, initVariables, {
         after: pageInfo.endCursor
@@ -157,15 +157,12 @@ const TodoList = ( props )=>{
   }
 
   useEffect(()=>{
-    console.log( variables );
-    if( !loading ){
+    //if( !loading ){
       refetch({ variables });
-    }
+    //}
   }, [ variables ]);
 
   if( error ) return null;
-
-  console.log( data );
 
   return (
     <GridContainer>
@@ -181,11 +178,11 @@ const TodoList = ( props )=>{
         <TodoListContent
           handleDelete={ handleDelete }
           handleClick={ handleOpenReadModal }
-          data={ !loading && data.todo_list_edges.edges }
+          data={ data && data.todo_list_edges.edges }
         />
       </GridItem>
       {
-        !loading && data.todo_list_edges.pageInfo.hasNextPage && (
+        data && data.todo_list_edges.pageInfo.hasNextPage && (
           <GridItem xs={ 12 }>
             <GridItem 
               container 
@@ -223,7 +220,14 @@ const TodoList = ( props )=>{
 }
 
 TodoList.proptypes = {
+  initVariables: PropTypes.object,
+}
 
+TodoList.defaultProps = {
+  initVariables: {
+    first: 5,
+    orderBy: [ "-no", "-sort_order" ]
+  }
 }
 
 export default TodoList;
