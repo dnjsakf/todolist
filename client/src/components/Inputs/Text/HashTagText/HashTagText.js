@@ -116,8 +116,8 @@ const HashTagText = forwardRef(( props, ref )=>{
     }
   }, [ value, inputValue ]);
   
-  const handleDelete = (event, del_idx)=>{
-    const del_value = value.filter(({ id, idx })=>( idx === del_idx ));
+  const handleDelete = (event, del_tag, del_idx)=>{
+    const del_value = value.filter(( tag, idx )=>( !(tag === del_tag && idx === del_idx) ));
 
     if( del_value.length !== value.length ){
       setValue(del_value);
@@ -172,7 +172,7 @@ const HashTagText = forwardRef(( props, ref )=>{
                     ...Object.assign({}, 
                       !readOnly && {
                         clickable: true,
-                        onDelete: (event)=>( handleDelete(event, idx) ),
+                        onDelete: (event)=>( handleDelete(event, hash_tag, idx) ),
                         deleteIcon: <DeleteIcon />
                       }
                     ) 
