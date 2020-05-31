@@ -12,7 +12,10 @@ class HashTagQuery(graphene.ObjectType):
     HashTagType,
     tag=graphene.String()
   )
-  hash_tag_fields = graphene.List(HashTagType)
+  hash_tag_fields = graphene.List(
+    HashTagType,
+    tag=graphene.String()
+  )
 
   @classmethod
   def resolve_hash_tag_field(cls, root, info, tag):
@@ -20,5 +23,11 @@ class HashTagQuery(graphene.ObjectType):
 
   @classmethod
   def resolve_hash_tag_fields(cls, root, info, **input):
-    return HashTagModel.objects(**input).all()
+    cond = {}
+
+    tag = input.get("tag", None)
+    if tag is not None:
+      cond["tag__icontains"] = tag
+
+    return HashTagModel.objects(**cond).all()
     

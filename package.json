@@ -26,6 +26,7 @@
     "graphql-tag": "^2.10.3",
     "history": "4.9.0",
     "moment": "^2.24.0",
+    "notistack": "^0.9.16",
     "prop-types": "^15.7.2",
     "query-string": "^6.8.3",
     "react": "^16.8.6",

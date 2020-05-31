@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 
 /* Materialize */
 import { makeStyles } from '@material-ui/core/styles';
-import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Chip from '@material-ui/core/Chip';
@@ -13,9 +12,11 @@ import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
 
+/* Components */
+import { GridContainer, GridItem } from 'Components/Grid'
+
 /* Another Modules */
 import clsx from 'clsx';
-import { uuid } from 'uuidv4';
 
 /* Materialize Styles */
 const useStyles = makeStyles(( theme ) => ({
@@ -62,6 +63,16 @@ const useStyles = makeStyles(( theme ) => ({
   inputFocused: {
     opacity: 1,
   },
+  clearButton: {
+    position: "absolute",
+    right: 0,
+    padding: theme.spacing(1)
+  },
+  inputAdornment: {
+    marginTop: theme.spacing(1.75),
+    marginBottom: theme.spacing(1.75),
+    marginRight: theme.spacing(0.5),
+  }
 }));
 
 /* Component */
@@ -76,17 +87,23 @@ const HashTagText = forwardRef(( props, ref )=>{
     disabled,
     fullWidth,
     onSubmit,
+    maxLength,
+    maxHashTag,
     ...rest
   } = props;
   
   /* State */
   const [ inputValue, setInputValue ] = useState("");
   const [ value, setValue ] = useState( defaultValue||[] );
+  const [ focused, setFocused ] = useState( false );
+  const [ placeholder, setPlaceholder ] = useState("");
 
   /* Handler */
   const handleChange = useCallback(( event )=>{
-    setInputValue( event.currentTarget.value );
-  }, [ inputValue ]); 
+    if( value.length < maxHashTag ){
+      setInputValue( event.currentTarget.value );
+    }
+  }, [ value, inputValue ]); 
   
   const handleKeyPress = ( event )=>{
     switch( event.key ){
@@ -117,8 +134,15 @@ const HashTagText = forwardRef(( props, ref )=>{
         break;
     }
   }
+
+  const handleFocus = ( event )=>{
+    setFocused( true );
+  }
+  const handleBlur = ( event )=>{
+    setFocused( false );
+  }
   
-  const handleDelete = (event, del_tag, del_idx)=>{
+  const handleDelete = (del_tag, del_idx, event)=>{
     const del_value = value.filter(( tag, idx )=>( !(tag === del_tag && idx === del_idx) ));
 
     if( del_value.length !== value.length ){
@@ -134,73 +158,103 @@ const HashTagText = forwardRef(( props, ref )=>{
 
     inputRef.current && inputRef.current.focus();
   }, [ value ]);
-  
+
+  /* Effects */
   useEffect(()=>{
     onSubmit && onSubmit( value );
+
+    if( value.length < maxHashTag ){
+      setPlaceholder("");
+    } else {
+      setPlaceholder("더이상 입력할 수 없습니다.");
+    }
   }, [ value ]);
 
-  return (
-    <Input
-      { ...rest }
-      disableUnderline={ !!readOnly }
-      className={ clsx({
-        [classes.root]: true,
-        [classes.fullWidth]: fullWidth,
-      })}
-      inputProps={{
-        ref: ref && ref({
-          type: "array",
-          value: value,
-          inputRef
-        }),
-        className: clsx({
-          [classes.input]: true,
-          [classes.inputFocused]: true,
-        }),
-      }}
-      value={ inputValue }
-      startAdornment={
-        value.map(( hash_tag, idx )=>(
-          <InputAdornment 
-            key={ hash_tag+idx }
-            position="start"
-          >
-            <Chip
-              label={ hash_tag }
-              size="small"
-              color="primary"
-              variant="default"
-              avatar={<Avatar>#</Avatar>}
-              { 
-                ...Object.assign({}, 
-                  !readOnly && {
-                    clickable: true,
-                    onDelete: (event)=>( handleDelete(event, hash_tag, idx) ),
-                    deleteIcon: <DeleteIcon />
-                  }
-                ) 
-              }
-            />
-          </InputAdornment>
-        ))
-      }
-      endAdornment={
-        !readOnly && (
-          <IconButton
-            aria-label={ "삭제" }
-            title={ "삭제" }
-            onClick={ handleClear }
-          >
-            <CloseIcon fontSize="small"/>
-          </IconButton>
-        )
-      }
-      onChange={ handleChange }
-      onKeyDown={ handleKeyDown }
-      onKeyPress={ handleKeyPress }
+  useEffect(()=>{
+    if( !focused ){
+      setPlaceholder("");
+      setInputValue("");
+    }
+  }, [ focused ]);
 
-      readOnly={ !!readOnly }
-    />
+  /* Rendering */
+  return (
+    <>
+      <Input
+        { ...rest }
+        disableUnderline={ !!readOnly }
+        className={ clsx({
+          [classes.root]: true,
+          [classes.fullWidth]: fullWidth,
+        })}
+        inputProps={{
+          ref: ref && ref({
+            type: "array",
+            value: value,
+            inputRef
+          }),
+          className: clsx({
+            [classes.input]: true,
+            [classes.inputFocused]: focused,
+          }),
+          maxLength: maxLength,
+          placeholder: placeholder,
+        }}
+        value={ inputValue }
+        startAdornment={
+          value.map(( hash_tag, idx )=>(
+            <InputAdornment
+              key={ hash_tag+idx }
+              position="start"
+              className={ classes.inputAdornment}
+            >
+              <Chip
+                label={ hash_tag }
+                size="small"
+                color="primary"
+                variant="default"
+                avatar={<Avatar>#</Avatar>}
+                { 
+                  ...Object.assign({}, 
+                    !readOnly && {
+                      clickable: true,
+                      onDelete: handleDelete.bind( null, hash_tag, idx ),
+                      deleteIcon: <DeleteIcon />
+                    }
+                  ) 
+                }
+              />
+            </InputAdornment>
+          ))
+        }
+        endAdornment={
+          !readOnly && (
+            <IconButton
+              aria-label={ "삭제" }
+              title={ "삭제" }
+              onClick={ handleClear }
+              className={ classes.clearButton }
+            >
+              <CloseIcon fontSize="small"/>
+            </IconButton>
+          )
+        }
+
+        {
+          ...Object.assign({},
+            !readOnly && {
+              onChange: handleChange,
+              onKeyDown: handleKeyDown,
+              onKeyPress: handleKeyPress
+            }
+          )
+        }
+        onFocus={ handleFocus }
+        onBlur={ handleBlur }
+
+        readOnly={ !!readOnly || !focused }
+      />
+    </>
   )
 });
 
@@ -209,11 +263,15 @@ HashTagText.propTypes = {
   readOnly: PropTypes.bool,
   fullWidth: PropTypes.bool,
   onSubmit: PropTypes.func,
+  maxLength: PropTypes.number,
+  maxHashTag: PropTypes.number,
 }
 
 HashTagText.defaultProps = {
   readOnly: false,
-  fullWidth: true
+  fullWidth: true,
+  maxLength: 10,
+  maxHashTag: 15,
 }
 
 export default HashTagText;

@@ -208,7 +208,7 @@ const TodoListCard = ( props )=>{
           </GridItem>
           <GridItem>
           {
-            deletable && (
+            onDelete && (
               <IconButton
                 aria-label={ "delete-todolist" }
                 title={ "delete-todolist" }

@@ -21,6 +21,7 @@ import TodoListContent from './TodoListContent';
 
 /* Another Moudles */
 import clsx from 'clsx';
+import { SnackbarProvider } from 'notistack';
 
 /* Materialize Styles */
 const useStyles = makeStyles((theme)=>({
@@ -148,24 +149,37 @@ const TodoList = ( props )=>{
   const handleFetchMore = ( event )=>{
     if( !data ) return false;
     
-    const { pageInfo } = data.todo_list_edges;
-    fetchMore({
-      variables: Object.assign({}, initVariables, {
-        after: pageInfo.endCursor
-      }),
-      updateQuery: ( prev, { fetchMoreResult: { todo_list_edges : crnt } })=>{
-        return Object.assign({}, prev, {
-          todo_list_edges: {
-            ...prev.todo_list_edges,
-            edges: [
-              ...prev.todo_list_edges.edges,
-              ...crnt.edges
-            ],
-            pageInfo: crnt.pageInfo,
-          }
-        });
-      }
-    });
+    const { hasNextPage, endCursor } = data.todo_list_edges.pageInfo;
+
+    if( hasNextPage ){
+      fetchMore({
+        variables: Object.assign({}, initVariables, {
+          after: endCursor
+        }),
+        updateQuery: ( prev, { fetchMoreResult: { todo_list_edges : crnt } })=>{
+          return Object.assign({}, prev, {
+            todo_list_edges: {
+              ...prev.todo_list_edges,
+              edges: [
+                ...prev.todo_list_edges.edges,
+                ...crnt.edges
+              ],
+              pageInfo: crnt.pageInfo,
+            }
+          });
+        }
+      });
+    }
+  }
+
+  const handleScroll = ( event )=>{
+    const scrollEl = document.scrollingElement;
+    const maxScrollTop = scrollEl.scrollHeight - window.innerHeight;
+    const currentScrollTop = window.scrollY;
+
+    if( currentScrollTop === maxScrollTop ){
+      handleFetchMore( event );
+    }
   }
 
   useEffect(()=>{
@@ -174,61 +188,70 @@ const TodoList = ( props )=>{
     }
   }, [ variables ]);
 
+  useEffect(()=>{
+    window.addEventListener('scroll', handleScroll, false);
+    return ()=>{
+      window.removeEventListener('scroll', handleScroll, false);
+    }
+  }, [ data ]);
+
   if( error ) return null;
 
   return (
-    <GridContainer>
-      <GridItem xs={ 12 }>
-        <SearchText
-          inputRef={ searchRef }
-          onSubmit={ handleSearchSubmit }
-          onRefresh={ handleRefresh }
-          onEdit={ handleOpenWriteModal }
-        />
-      </GridItem>
-      <GridItem xs={ 12 }>
-        <TodoListContent
-          onDelete={ handleDelete }
-          onClickTitle={ handleOpenReadModal }
-          onClickHashTag={ handleClickHashTag }
-          data={ data && data.todo_list_edges.edges }
-        />
-      </GridItem>
-      {
-        data && data.todo_list_edges.pageInfo.hasNextPage && (
-          <GridItem xs={ 12 }>
-            <GridItem 
-              container 
-              direction="row"
-              justify="center"
-              alignItems="center"
-            >
-              <IconButton
-                id="btn-load-new-todolist"
-                label="Load"
-                aria-label="Load"
-                onClick={ handleFetchMore }
-                className={ classes.loadButton }
+    <SnackbarProvider maxSnack={3}>
+      <GridContainer>
+        <GridItem xs={ 12 }>
+          <SearchText
+            inputRef={ searchRef }
+            onSubmit={ handleSearchSubmit }
+            onRefresh={ handleRefresh }
+            onEdit={ handleOpenWriteModal }
+          />
+        </GridItem>
+        <GridItem xs={ 12 }>
+          <TodoListContent
+            onDelete={ handleDelete }
+            onClickTitle={ handleOpenReadModal }
+            onClickHashTag={ handleClickHashTag }
+            data={ data && data.todo_list_edges.edges }
+          />
+        </GridItem>
+        {
+          data && data.todo_list_edges.pageInfo.hasNextPage && (
+            <GridItem xs={ 12 }>
+              <GridItem 
+                container 
+                direction="row"
+                justify="center"
+                alignItems="center"
               >
-                <SyncIcon fontSize="large"/>
-              </IconButton>
+                <IconButton
+                  id="btn-load-new-todolist"
+                  label="Load"
+                  aria-label="Load"
+                  onClick={ handleFetchMore }
+                  className={ classes.loadButton }
+                >
+                  <SyncIcon fontSize="large"/>
+                </IconButton>
+              </GridItem>
             </GridItem>
-          </GridItem>
-        )
-      }
-      <BaseModal
-        open={ open }
-        mode={ mode }
-        id="todo_list_modal"
-        name="todo_list_modal"
-        data={{
-          id: id
-        }}
-        large
-        handleClose={ handleClose }
-        component={ TodoListRegister }
-      />
-    </GridContainer>
+          )
+        }
+        <BaseModal
+          id="todo_list_modal"
+          name="todo_list_modal"
+          data={{
+            id: id
+          }}
+          open={ open }
+          mode={ mode }
+          large
+          handleClose={ handleClose }
+          component={ TodoListRegister }
+        />
+      </GridContainer>
+    </SnackbarProvider>
   )
 }
 

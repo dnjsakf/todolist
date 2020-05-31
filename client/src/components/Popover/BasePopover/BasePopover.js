@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 
 /* Materialize */
 import { makeStyles } from '@material-ui/core/styles';
-import Popover from '@material-ui/core/Popover';
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import SnackBar from '@material-ui/core/Snackbar';
+import Slide from '@material-ui/core/Slide';
 
 /* Another Modules */
 import clsx from 'clsx';
@@ -37,6 +37,13 @@ const BasePopover = ( props )=>{
   const handleClose = ( event )=>{
     setOpen( false );
   }
+
+  const handleCloseSnack = ( event, reason )=>{
+    if( reason == 'clickaway' ){
+      return;
+    }
+    setOpen( false );
+  }
   
   useEffect(()=>{
     setOpen( isOpen );
@@ -51,19 +58,21 @@ const BasePopover = ( props )=>{
   }, [ open ]); 
   
   return (
-    <Popover
+    <SnackBar
       open={ open }
-      anchorReference="anchorPosition"
-      anchorPosition={{
-        top: document.body.offsetHeight,
-        left: document.body.offsetWidth,
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'left'
       }}
-      onClose={ handleClose }
-    >
-      <Typography className={ classes.typography }>
-        { children }
-      </Typography>
-    </Popover>
+      onClose={ handleCloseSnack }
+      TransitionComponent={ <Slide direction="up" /> }
+      action={
+        <Button color="secondary" size="small">
+          UNDO
+        </Button>
+      }
+      message={ children }
+    />
   );
 }
 

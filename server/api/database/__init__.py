@@ -54,164 +54,58 @@ def init_mockup():
 
   ### 4 Depth 데이터
   CommonCodeModel(full_code="TODO_CATE:LANGUAGE:JAVASCRIPT:ES6:TEST", depth=5, p_code=todo_cate_develop_javascript_es6, code="TEST", code_name="TEST", sort_order=1, reg_user=reg_user, reg_dttm=reg_dttm).save()
-
   
   ### HashTag 데이터
-  hash_1 = HashTagModel(tag="개발", tag_name="개발", reg_user=reg_user, reg_dttm=reg_dttm)
-  hash_2 = HashTagModel(tag="투두리스트", tag_name="투두리스트", reg_user=reg_user, reg_dttm=reg_dttm)
-  hash_3 = HashTagModel(tag="파이썬", tag_name="파이썬", reg_user=reg_user, reg_dttm=reg_dttm)
-  hash_4 = HashTagModel(tag="graphQL", tag_name="graphQL", reg_user=reg_user, reg_dttm=reg_dttm)
-  hash_5 = HashTagModel(tag="몽고DB", tag_name="몽고DB", reg_user=reg_user, reg_dttm=reg_dttm)
-  hash_6 = HashTagModel(tag="React", tag_name="React", reg_user=reg_user, reg_dttm=reg_dttm)
+  # hash_1 = HashTagModel(tag="개발", tag_name="개발", reg_user=reg_user, reg_dttm=reg_dttm)
+  # hash_2 = HashTagModel(tag="투두리스트", tag_name="투두리스트", reg_user=reg_user, reg_dttm=reg_dttm)
+  # hash_3 = HashTagModel(tag="파이썬", tag_name="파이썬", reg_user=reg_user, reg_dttm=reg_dttm)
+  # hash_4 = HashTagModel(tag="graphQL", tag_name="graphQL", reg_user=reg_user, reg_dttm=reg_dttm)
+  # hash_5 = HashTagModel(tag="몽고DB", tag_name="몽고DB", reg_user=reg_user, reg_dttm=reg_dttm)
+  # hash_6 = HashTagModel(tag="React", tag_name="React", reg_user=reg_user, reg_dttm=reg_dttm)
   
-  HashTagModel.objects.insert([ hash_1, hash_2, hash_3, hash_4, hash_5, hash_6 ])
+  # HashTagModel.objects.insert([ hash_1, hash_2, hash_3, hash_4, hash_5, hash_6 ])
   
   ### Todo 샘플 데이터
-  todo_list_1 = TodoListModel(
-    title="ToDo List 만들기1",
-    status={
-      "p_code": "TODO_STATUS",
-      "code": "READY"
-    },
-    category={
-      "p_code": "TODO_CATE:LANGUAGE",
-      "code": "JAVA"
-    },
-    due_date="20201231",
-    due_time="000000",
-    description="ToDo List 만들기.",
-    
-    hash_tags=[ "개발", "투두리스트" ],
-    
-    reg_user=reg_user,
-    reg_dttm=reg_dttm
-    
-  ).save()
+  for idx in range(1, 51):
 
-  ### Todo 샘플 데이터
-  todo_list_2 = TodoListModel(
-    title="ToDo List 만들기2",
-    status={
-      "p_code": "TODO_STATUS",
-      "code": "READY"
-    },
-    category={
-      "p_code": "TODO_CATE:LANGUAGE:PYTHON",
-      "code": "PYTHON3"
-    },
-    due_date="20201231",
-    due_time="000000",
-    description="ToDo List 만들기.",
-    star=True,
-    
-    hash_tags=[ "개발", "투두리스트" ],
-    
-    reg_user=reg_user,
-    reg_dttm=reg_dttm
-  ).save()
+    reg_dttm = (datetime.datetime.now() - datetime.timedelta(days=idx)).strftime("%Y%m%d%H%M%S")
+    hash_tags = [ "개발", "투두리스트", "ToDo", "List", "만들기", f"{ idx }" ]
 
-  ### Todo 샘플 데이터
-  todo_list_3 = TodoListModel(
-    title="ToDo List 만들기3",
-    status={
-      "p_code": "TODO_STATUS",
-      "code": "READY"
-    },
-    category={
-      "p_code": "TODO_CATE:LANGUAGE:PYTHON",
-      "code": "PYTHON3"
-    },
-    due_date="20201231",
-    due_time="000000",
-    description="ToDo List 만들기.",
-    star=True,
-    
-    hash_tags=[ "개발", "투두리스트" ],
-    
-    reg_user=reg_user,
-    reg_dttm=reg_dttm
-  ).save()
-  
-    ### Todo 샘플 데이터
-  todo_list_4 = TodoListModel(
-    title="ToDo List 만들기4",
-    status={
-      "p_code": "TODO_STATUS",
-      "code": "READY"
-    },
-    category={
-      "p_code": "TODO_CATE:LANGUAGE:PYTHON",
-      "code": "PYTHON3"
-    },
-    due_date="20201231",
-    due_time="000000",
-    description="ToDo List 만들기.",
-    star=True,
-    
-    hash_tags=[ "개발", "투두리스트" ],
-    
-    reg_user=reg_user,
-    reg_dttm=reg_dttm
-  ).save()
-  
-    ### Todo 샘플 데이터
-  todo_list_5 = TodoListModel(
-    title="ToDo List 만들기5",
-    status={
-      "p_code": "TODO_STATUS",
-      "code": "READY"
-    },
-    category={
-      "p_code": "TODO_CATE:LANGUAGE:PYTHON",
-      "code": "PYTHON3"
-    },
-    due_date="20201231",
-    due_time="000000",
-    description="ToDo List 만들기.",
-    star=True,
-    
-    hash_tags=[ "개발", "투두리스트" ],
-    
-    reg_user=reg_user,
-    reg_dttm=reg_dttm
-  ).save()
-  
-    ### Todo 샘플 데이터
-  todo_list_6 = TodoListModel(
-    title="ToDo List 만들기6",
-    status={
-      "p_code": "TODO_STATUS",
-      "code": "READY"
-    },
-    category={
-      "p_code": "TODO_CATE:LANGUAGE:PYTHON",
-      "code": "PYTHON3"
-    },
-    due_date="20201231",
-    due_time="000000",
-    description="ToDo List 만들기.",
-    star=True,
-    
-    hash_tags=[ "개발", "투두리스트" ],
-    
-    reg_user=reg_user,
-    reg_dttm=reg_dttm
-  ).save()
-  
-  TodoListHashTagModel.objects.insert(
-    [
-      TodoListHashTagModel(todo_list=todo_list_1, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm),
-      TodoListHashTagModel(todo_list=todo_list_1, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm),  
-      TodoListHashTagModel(todo_list=todo_list_2, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm),
-      TodoListHashTagModel(todo_list=todo_list_2, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm),  
-      TodoListHashTagModel(todo_list=todo_list_3, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm),
-      TodoListHashTagModel(todo_list=todo_list_3, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm),  
-      TodoListHashTagModel(todo_list=todo_list_4, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm),
-      TodoListHashTagModel(todo_list=todo_list_4, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm),  
-      TodoListHashTagModel(todo_list=todo_list_5, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm),
-      TodoListHashTagModel(todo_list=todo_list_5, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm),  
-      TodoListHashTagModel(todo_list=todo_list_6, hash_tag=hash_1, reg_user=reg_user, reg_dttm=reg_dttm),
-      TodoListHashTagModel(todo_list=todo_list_6, hash_tag=hash_2, reg_user=reg_user, reg_dttm=reg_dttm)
-    ]
-  )
+    todo_list = TodoListModel(
+      title=f"ToDo List 만들기 { idx }",
+      status={
+        "p_code": "TODO_STATUS",
+        "code": "READY"
+      },
+      category={
+        "p_code": "TODO_CATE:LANGUAGE:PYTHON",
+        "code": "PYTHON3"
+      },
+      due_date=(datetime.datetime.now() + datetime.timedelta(days=idx)).strftime("%Y%m%d"),
+      due_time="000000",
+      description="ToDoList MockUp Data",
+      star=True,
+      
+      hash_tags=hash_tags,
+      
+      reg_user=reg_user,
+      reg_dttm=reg_dttm
+    ).save()
+
+    for tag in hash_tags:
+      hash_tag = HashTagModel.objects(tag=tag).first()
+      
+      if hash_tag is None:
+        hash_tag = HashTagModel(tag=tag, tag_name=tag, reg_user=reg_user, reg_dttm=reg_dttm).save()
+      else:
+        hash_tag.update(set__upd_user=reg_user, set__upd_dttm=reg_dttm)
+        hash_tag = HashTagModel.objects(tag=tag).first()
+
+      TodoListHashTagModel(
+        todo_list=todo_list,
+        hash_tag=hash_tag,
+        reg_user=reg_user,
+        reg_dttm=reg_dttm
+      ).save()
+
   
