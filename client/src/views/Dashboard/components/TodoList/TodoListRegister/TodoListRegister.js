@@ -391,12 +391,14 @@ const TodoInfoRegister = ( props )=>{
 
 TodoInfoRegister.propTypes = {
   className: PropTypes.string,
-  data_id: PropTypes.any,
+  data: PropTypes.object,
   handleClose: PropTypes.func,
 }
 
 TodoInfoRegister.defaultProps = {
-  data_id: null,
+  data: {
+    id: null
+  },
 }
 
 export default TodoInfoRegister;

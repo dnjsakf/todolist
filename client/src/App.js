@@ -81,7 +81,6 @@ const App = ( props ) => {
           to="/dashboard"
         />
         <RouteWithLayout
-          exact
           path="/dashboard"
           layout={ MainLayout }
           component={ DashboardView }

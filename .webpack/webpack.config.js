@@ -17,6 +17,7 @@ module.exports = {
   },
   entry: {
     index: [
+      '@babel/polyfill',
       path.join(sourcePath, 'index.js'),
       path.join(sourcePath, 'index.css'),
     ],

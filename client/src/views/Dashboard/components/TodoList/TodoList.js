@@ -2,14 +2,15 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
+/* React Router */
+import { Switch, Route, withRouter, useHistory } from 'react-router-dom';
+
 /* GraphQL */
 import { useQuery } from '@apollo/react-hooks';
 import Query from 'GraphQL/Query/TodoList';
 
 /* Materialize */
 import { makeStyles, useTheme } from '@material-ui/styles';
-import IconButton from '@material-ui/core/IconButton';
-import SyncIcon from '@material-ui/icons/Sync';
 
 /* Components */
 import { SearchText } from 'Components/Inputs/Text';
@@ -33,9 +34,6 @@ const useStyles = makeStyles((theme)=>({
     padding: theme.spacing(1),
     margin: "0!important"
   },
-  loadButton: {
-    
-  },
 }));
 
 /* Component */
@@ -53,9 +51,10 @@ const TodoList = ( props )=>{
   
   /* State */
   const [ open, setOpen ] = useState( false );
-  const [ mode, setMode ] = useState( "create" );
+  const [ mode, setMode ] = useState( props.mode );
   const [ id, setId ] = useState( null );
   const [ variables, setVariables ] = useState( initVariables );
+  const history = useHistory();
 
   /* Query: Get TodoList Datas */
   const { loading, error, data, fetchMore, refetch, } = useQuery(
@@ -77,18 +76,25 @@ const TodoList = ( props )=>{
     event.preventDefault();
     console.log('handleOpenReadModal');
     
-    setMode("detail");
-    setOpen(true);
-    setId(no);
+
+    if( mode === 'link' ) {
+      history.push(`/dashboard/${ no }`);
+    } else {
+      setOpen(true);
+      setId(no);
+    }
   }
 
   const handleOpenWriteModal = (event)=>{
     event.preventDefault();
     console.log('handleOpenWriteModal');
     
-    setMode("create");
-    setOpen(true);
-    setId(null);
+    if( mode === 'link' ){
+      history.push('/dashboard/register');
+    } else {
+      setOpen(true);
+      setId(null);
+    }
   }
 
   const handleClose = (event)=>{
@@ -178,7 +184,7 @@ const TodoList = ( props )=>{
     const currentScrollTop = window.scrollY;
 
     if( currentScrollTop === maxScrollTop ){
-      handleFetchMore( event );
+      // handleFetchMore( event );
     }
   }
 
@@ -208,36 +214,48 @@ const TodoList = ( props )=>{
             onEdit={ handleOpenWriteModal }
           />
         </GridItem>
+        <Switch>
+          <Route
+            exact
+            path="/dashboard"
+            component={( routeProps )=>(
+              <TodoListContent 
+                onDelete={ handleDelete }
+                onClickTitle={ handleOpenReadModal }
+                onClickHashTag={ handleClickHashTag }
+                onReload={ handleFetchMore }
+                data={ data && data.todo_list_edges.edges }
+                pageInfo={ data && data.todo_list_edges.pageInfo }
+              />
+            )}
+          />
+          <Route
+            path="/dashboard/register"
+            component={ TodoListRegister }
+          />
+          <Route
+            path="/dashboard/:id"
+            component={ ({ history, location, match, staticContext })=>(
+              <TodoListRegister 
+                data={{
+                  id: match.params.id
+                }}
+              />
+            )}
+          />
+        </Switch>
+        {/* 
         <GridItem xs={ 12 }>
           <TodoListContent
             onDelete={ handleDelete }
             onClickTitle={ handleOpenReadModal }
             onClickHashTag={ handleClickHashTag }
+            onReload={ handleFetchMore }
             data={ data && data.todo_list_edges.edges }
+            pageInfo={ data && data.todo_list_edges.pageInfo }
           />
         </GridItem>
-        {
-          data && data.todo_list_edges.pageInfo.hasNextPage && (
-            <GridItem xs={ 12 }>
-              <GridItem 
-                container 
-                direction="row"
-                justify="center"
-                alignItems="center"
-              >
-                <IconButton
-                  id="btn-load-new-todolist"
-                  label="Load"
-                  aria-label="Load"
-                  onClick={ handleFetchMore }
-                  className={ classes.loadButton }
-                >
-                  <SyncIcon fontSize="large"/>
-                </IconButton>
-              </GridItem>
-            </GridItem>
-          )
-        }
+        */}
         <BaseModal
           id="todo_list_modal"
           name="todo_list_modal"
@@ -245,7 +263,7 @@ const TodoList = ( props )=>{
             id: id
           }}
           open={ open }
-          mode={ mode }
+          // mode={ mode }
           large
           handleClose={ handleClose }
           component={ TodoListRegister }
@@ -256,14 +274,17 @@ const TodoList = ( props )=>{
 }
 
 TodoList.proptypes = {
+  className: PropTypes.string,
   initVariables: PropTypes.object,
+  mode: PropTypes.oneOf([ 'popup', 'link' ]),
 }
 
 TodoList.defaultProps = {
   initVariables: {
     first: 5,
     orderBy: [ "-no", "-sort_order" ]
-  }
+  },
+  mode: 'link',
 }
 
 export default TodoList;
