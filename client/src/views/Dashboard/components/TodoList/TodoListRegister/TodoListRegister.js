@@ -210,7 +210,17 @@ const TodoInfoRegister = ( props )=>{
     }
 
   }, [ data_id, readMode, getValues ]);
+  
+  /* Effects */
+  useEffect(()=>{
+    console.log("create");
+    return ()=>{
+      console.log("destroy");
+    }
+  }, []);
 
+  
+  /* Rendering */
   if( data_id ){
     if( error ){
       console.error( error );
