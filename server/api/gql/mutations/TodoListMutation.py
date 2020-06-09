@@ -6,8 +6,7 @@ import json
 from ..models import TodoListModel, HashTagModel, TodoListHashTagModel
 from ..types import TodoListType, HashTagType
 
-from server.api.graphql.utils.decorators import session_user
-
+from ..utils.decorators import session_user
 
 class JsonType(graphene.types.json.JSONString):
   @staticmethod

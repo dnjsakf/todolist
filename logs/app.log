@@ -1,0 +1,32 @@
+*** Starting uWSGI 2.0.18 (64bit) on [Tue Jun  9 23:33:26 2020] ***
+compiled with version: 4.2.1 Compatible Apple LLVM 10.0.1 (clang-1001.0.46.4) on 31 August 2019 09:48:35
+os: Darwin-19.4.0 Darwin Kernel Version 19.4.0: Wed Mar  4 22:28:40 PST 2020; root:xnu-6153.101.6~15/RELEASE_X86_64
+nodename: heo
+machine: x86_64
+clock source: unix
+pcre jit disabled
+detected number of CPU cores: 8
+current working directory: /Users/heo/Desktop/source/python/todolist
+detected binary path: /Library/Frameworks/Python.framework/Versions/3.7/bin/uwsgi
+chdir() to /Users/heo/Desktop/source/python/todolist
+*** WARNING: you are running uWSGI without its master process manager ***
+your processes number limit is 1392
+your memory page size is 4096 bytes
+detected max file descriptor number: 10240
+lock engine: OSX spinlocks
+thunder lock: disabled (you can enable it with --thunder-lock)
+uwsgi socket 0 bound to UNIX address /tmp/uwsgi-app.sock fd 3
+Python version: 3.7.4 (v3.7.4:e09359112e, Jul  8 2019, 14:54:52)  [Clang 6.0 (clang-600.0.57)]
+PEP 405 virtualenv detected: /Users/heo/Desktop/source/python/todolist/.venv
+Set PythonHome to /Users/heo/Desktop/source/python/todolist/.venv
+*** Python threads support is disabled. You can enable it with --enable-threads ***
+Python main interpreter initialized at 0x7fe14c005fc0
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 72888 bytes (71 KB) for 1 cores
+*** Operational MODE: single process ***
+WSGI app 0 (mountpoint='') ready in 0 seconds on interpreter 0x7fe14c005fc0 pid: 19811 (default app)
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI worker 1 (and the only) (pid: 19811, cores: 1)
+writing pidfile to /tmp/uwsgi-app.pid
+[pid: 19811|app: 0|req: 1/1] 127.0.0.1 () {42 vars in 769 bytes} [Tue Jun  9 23:34:17 2020] GET /dashboard => generated 644 bytes in 1 msecs via sendfile() (HTTP/1.1 200) 8 headers in 316 bytes (0 switches on core 0)

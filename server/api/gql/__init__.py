@@ -1,9 +1,9 @@
 # api/schema.py
 import graphene
 
-from server.api.graphql.queries import Query
-from server.api.graphql.mutations import Mutation
-from server.api.graphql.types import (
+from .queries import Query
+from .mutations import Mutation
+from .types import (
   CommonCodeType, 
   TodoListType,
   HashTagType

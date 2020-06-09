@@ -255,7 +255,6 @@ const TodoList = ( props )=>{
             pageInfo={ data && data.todo_list_edges.pageInfo }
           />
         </GridItem>
-        */}
         <BaseModal
           id="todo_list_modal"
           name="todo_list_modal"
@@ -268,6 +267,7 @@ const TodoList = ( props )=>{
           handleClose={ handleClose }
           component={ TodoListRegister }
         />
+        */}
       </GridContainer>
     </SnackbarProvider>
   )

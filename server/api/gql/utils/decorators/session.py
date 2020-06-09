@@ -1,6 +1,6 @@
 
 from functools import wraps
-from server.api.graphql.models import UserModel
+from server.api.gql.models import UserModel
 
 def session_user(func):
   @wraps(func)

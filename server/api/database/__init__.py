@@ -11,7 +11,7 @@ def connect_db(database, host, mockup=False, **kwargs):
 # 기초 데이터 Insert 함수
 def init_mockup():
   import datetime
-  from server.api.graphql.models import (
+  from server.api.gql.models import (
     UserModel,
     CommonCodeModel,
     TodoListModel,
