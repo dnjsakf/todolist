@@ -11,7 +11,7 @@ from .gql import schema
 app = Flask(__name__)
 
 CORS(app=app, resources={
-  r"/*": { "origin": "*" }
+  r"*": { "origin": "*" }
 })
 
 app.config.from_pyfile('../config/flask.config.py')
@@ -35,4 +35,4 @@ connect_db(MONGO_DATABASE, MONGO_HOST, mockup=True)
 if __name__ == '__main__':
   dotenv.load_dotenv(dotenv_path="config/.venv")
 
-  app.run(host="0.0.0.0", port=3001)
+  app.run(host="0.0.0.0", port=3003)

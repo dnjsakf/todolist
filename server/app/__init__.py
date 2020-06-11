@@ -16,10 +16,10 @@ app.config.from_pyfile('../config/flask.config.py')
 app.register_blueprint(bp_home, url_prefix="/")
 
 CORS(app=app, resources={
-  r"/*": { "origin": "*" }
+  r"*": { "origin": "*" }
 })
 
 if __name__ == '__main__':
   dotenv.load_dotenv(dotenv_path="config/.env")
 
-  app.run(host="0.0.0.0", port=3000)
+  app.run(host="0.0.0.0", port=3002)

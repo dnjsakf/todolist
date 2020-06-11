@@ -55,4 +55,4 @@ function render(Component){
 
 render( App );
 
-serviceWorker.unregister();
+//serviceWorker.unregister();

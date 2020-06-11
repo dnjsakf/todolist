@@ -1,0 +1,114 @@
+2020/06/09 08:29:36 [emerg] 2284#11432: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2020/06/09 08:31:42 [emerg] 568#11988: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2020/06/09 08:33:12 [error] 2656#6136: *1 CreateFile() "C:\work\nginx-1.19.0/html/favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost:3000", referrer: "http://localhost:3000/"
+2020/06/09 08:33:49 [notice] 10004#7412: signal process started
+2020/06/09 08:34:00 [notice] 9548#11952: signal process started
+2020/06/09 08:34:00 [error] 9548#11952: CreateFile() "C:\work\nginx-1.19.0/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/06/09 08:38:59 [emerg] 10844#11484: unknown log format "main" in C:\work\nginx-1.19.0/conf/nginx.conf:25
+2020/06/09 08:39:59 [notice] 6316#8588: signal process started
+2020/06/09 08:39:59 [error] 6316#8588: CreateFile() "C:\work\nginx-1.19.0/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/06/09 08:41:21 [error] 952#10176: *5 directory index of "C:/work/html/" is forbidden, client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", host: "localhost:3000"
+2020/06/09 08:42:42 [notice] 9068#11380: signal process started
+2020/06/10 16:11:39 [notice] 9244#6100: signal process started
+2020/06/11 08:06:58 [notice] 884#9712: signal process started
+2020/06/11 08:07:16 [error] 8264#12032: *1 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:3002/", host: "localhost:3000"
+2020/06/11 08:07:17 [error] 8264#12032: *1 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:3002/favicon.ico", host: "localhost:3000", referrer: "http://localhost:3000/"
+2020/06/11 08:08:09 [notice] 8084#10988: signal process started
+2020/06/11 08:08:11 [notice] 620#1960: signal process started
+2020/06/11 08:08:11 [error] 620#1960: CreateFile() "C:\work\nginx-1.19.0/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/06/11 08:10:43 [error] 8264#12032: *27 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /todolist HTTP/1.1", upstream: "http://127.0.0.1:3002/todolist", host: "localhost:3000"
+2020/06/11 08:13:26 [error] 8264#12032: *32 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /todolist HTTP/1.1", upstream: "http://127.0.0.1:3002/todolist", host: "localhost:3000"
+2020/06/11 08:13:28 [error] 8264#12032: *32 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:3002/favicon.ico", host: "localhost:3000", referrer: "http://localhost:3000/todolist"
+2020/06/11 08:13:34 [error] 8264#12032: *37 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "POST /graphql/graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql/graphql", host: "localhost:4000", referrer: "http://localhost:4000/dashboard"
+2020/06/11 08:13:34 [error] 8264#12032: *39 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "POST /graphql/graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql/graphql", host: "localhost:4000", referrer: "http://localhost:4000/dashboard"
+2020/06/11 08:14:14 [notice] 12024#688: signal process started
+2020/06/11 08:14:18 [error] 8264#12032: *42 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "POST /graphql/graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql/graphql", host: "localhost:4000", referrer: "http://localhost:4000/dashboard"
+2020/06/11 08:14:18 [error] 8264#12032: *44 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "POST /graphql/graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql/graphql", host: "localhost:4000", referrer: "http://localhost:4000/dashboard"
+2020/06/11 08:14:25 [error] 8264#12032: *46 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /graphql/graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql/graphql", host: "localhost:4000"
+2020/06/11 08:14:42 [emerg] 5220#9952: bind() to 0.0.0.0:4000 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2020/06/11 08:15:27 [error] 8264#12032: *48 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /graphql/graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql/graphql", host: "localhost:4000"
+2020/06/11 08:15:30 [error] 8264#12032: *51 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "OPTIONS /graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql", host: "localhost:3000", referrer: "http://localhost:4000/dashboard"
+2020/06/11 08:15:30 [error] 8264#12032: *50 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "OPTIONS /graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql", host: "localhost:3000", referrer: "http://localhost:4000/dashboard"
+2020/06/11 08:17:56 [emerg] 3956#8964: duplicate location "/" in C:\work\nginx-1.19.0/conf/nginx.conf:49
+2020/06/11 08:19:16 [notice] 7900#6576: signal process started
+2020/06/11 08:19:24 [error] 8264#12032: *55 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "OPTIONS /graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql", host: "localhost:3000", referrer: "http://localhost:4000/dashboard"
+2020/06/11 08:19:24 [error] 8264#12032: *56 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "OPTIONS /graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql", host: "localhost:3000", referrer: "http://localhost:4000/dashboard"
+2020/06/11 08:19:50 [error] 8264#12032: *61 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "OPTIONS /graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql", host: "localhost:3000", referrer: "http://localhost:4000/dashboard"
+2020/06/11 08:19:50 [error] 8264#12032: *60 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "OPTIONS /graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql", host: "localhost:3000", referrer: "http://localhost:4000/dashboard"
+2020/06/11 08:19:57 [notice] 11812#9124: signal process started
+2020/06/11 08:20:02 [error] 8264#12032: *66 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "OPTIONS /graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql", host: "localhost:3000", referrer: "http://localhost:4000/dashboard"
+2020/06/11 08:20:02 [error] 8264#12032: *65 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "OPTIONS /graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql", host: "localhost:3000", referrer: "http://localhost:4000/dashboard"
+2020/06/11 08:20:16 [error] 8264#12032: *70 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "OPTIONS /graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql", host: "localhost:3000", referrer: "http://localhost:4000/dashboard"
+2020/06/11 08:20:16 [error] 8264#12032: *72 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "OPTIONS /graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql", host: "localhost:3000", referrer: "http://localhost:4000/dashboard"
+2020/06/11 08:22:18 [error] 8264#12032: *82 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "OPTIONS /graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql", host: "localhost:3000", referrer: "http://localhost:4000/dashboard"
+2020/06/11 08:22:19 [error] 8264#12032: *84 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "OPTIONS /graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql", host: "localhost:3000", referrer: "http://localhost:4000/dashboard"
+2020/06/11 08:22:50 [error] 8264#12032: *87 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "OPTIONS /graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql", host: "localhost:3000", referrer: "http://localhost:4000/dashboard"
+2020/06/11 08:22:50 [error] 8264#12032: *89 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "OPTIONS /graphql HTTP/1.1", upstream: "http://127.0.0.1:3003/graphql", host: "localhost:3000", referrer: "http://localhost:4000/dashboard"
+2020/06/11 08:28:03 [notice] 7472#10712: signal process started
+2020/06/11 08:34:52 [error] 8264#12032: *131 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /todolist HTTP/1.1", upstream: "http://127.0.0.1:3002/todolist", host: "localhost:3000"
+2020/06/11 08:34:55 [error] 8264#12032: *131 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /todolist HTTP/1.1", upstream: "http://127.0.0.1:3002/todolist", host: "localhost:3000"
+2020/06/11 08:37:00 [error] 8264#12032: *141 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /todolist HTTP/1.1", upstream: "http://127.0.0.1:3002/todolist", host: "localhost:3000"
+2020/06/11 08:40:10 [notice] 6340#7412: signal process started
+2020/06/11 08:45:10 [notice] 8272#9796: signal process started
+2020/06/11 08:46:37 [error] 8264#12032: *169 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /todolist HTTP/1.1", upstream: "http://127.0.0.1:3002/todolist", host: "localhost:3000"
+2020/06/11 08:46:53 [notice] 11276#6084: signal process started
+2020/06/11 08:46:53 [error] 11276#6084: CreateFile() "C:\work\nginx-1.19.0/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/06/11 08:48:25 [notice] 9564#11620: signal process started
+2020/06/11 11:19:30 [error] 5564#11956: *31 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /dashboard HTTP/1.1", upstream: "http://127.0.0.1:3002/dashboard", host: "localhost:3000"
+2020/06/11 11:19:44 [notice] 11268#11148: signal process started
+2020/06/11 11:20:10 [notice] 10828#10092: signal process started
+2020/06/11 11:22:37 [notice] 7492#4564: using inherited sockets from "C:\work\nginx-1.9.0\nginx"
+2020/06/11 11:22:37 [emerg] 7492#4564: invalid socket number "C:\work\nginx-1.9.0\nginx" in NGINX environment variable, ignoring the rest of the variable
+2020/06/11 11:22:37 [emerg] 7492#4564: invalid socket number "C:\work\nginx-1.9.0\nginx" in NGINX environment variable, ignoring
+2020/06/11 11:22:37 [notice] 7492#4564: signal process started
+2020/06/11 11:22:53 [notice] 2300#636: using inherited sockets from "C:\work\nginx-1.9.0\nginx"
+2020/06/11 11:22:53 [emerg] 2300#636: invalid socket number "C:\work\nginx-1.9.0\nginx" in NGINX environment variable, ignoring the rest of the variable
+2020/06/11 11:22:53 [emerg] 2300#636: invalid socket number "C:\work\nginx-1.9.0\nginx" in NGINX environment variable, ignoring
+2020/06/11 11:22:53 [notice] 2300#636: signal process started
+2020/06/11 11:22:53 [error] 2300#636: CreateFile() "C:\work\nginx-1.19.0/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/06/11 11:26:00 [notice] 8928#9896: signal process started
+2020/06/11 11:26:00 [error] 8928#9896: CreateFile() "C:\work\nginx-1.19.0/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/06/11 11:33:40 [notice] 5772#9268: signal process started
+2020/06/11 11:40:21 [notice] 2908#9352: using inherited sockets from "C:\work\nginx-1.19.0\nginx"
+2020/06/11 11:40:21 [emerg] 2908#9352: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring the rest of the variable
+2020/06/11 11:40:21 [emerg] 2908#9352: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring
+2020/06/11 11:40:21 [notice] 10788#11340: using inherited sockets from "C:\work\nginx-1.19.0\nginx"
+2020/06/11 11:40:21 [emerg] 10788#11340: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring the rest of the variable
+2020/06/11 11:40:21 [emerg] 10788#11340: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring
+2020/06/11 11:41:43 [notice] 10124#10076: using inherited sockets from "C:\work\nginx-1.19.0\nginx"
+2020/06/11 11:41:43 [emerg] 10124#10076: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring the rest of the variable
+2020/06/11 11:41:43 [emerg] 10124#10076: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring
+2020/06/11 11:41:44 [notice] 708#5532: using inherited sockets from "C:\work\nginx-1.19.0\nginx"
+2020/06/11 11:41:44 [emerg] 708#5532: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring the rest of the variable
+2020/06/11 11:41:44 [emerg] 708#5532: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring
+2020/06/11 11:43:24 [notice] 4296#10684: signal process started
+2020/06/11 11:44:55 [error] 10276#1924: *1 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /dashboard HTTP/1.1", upstream: "http://127.0.0.1:3002/dashboard", host: "localhost:3000"
+2020/06/11 11:45:10 [notice] 11140#10416: signal process started
+2020/06/11 13:20:00 [notice] 2796#10444: signal process started
+2020/06/11 13:20:00 [error] 2796#10444: CreateFile() "C:\Users\14D00944\Desktop\python\todolist\.nginx/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/06/11 13:20:07 [error] 2584#9668: *16 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /dashboard HTTP/1.1", upstream: "http://127.0.0.1:3002/dashboard", host: "localhost:3000"
+2020/06/11 13:21:06 [error] 2584#9668: *20 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /dashboard HTTP/1.1", upstream: "http://127.0.0.1:3002/dashboard", host: "localhost:3000"
+2020/06/11 13:23:11 [notice] 12032#7492: using inherited sockets from "C:\work\nginx-1.19.0\nginx"
+2020/06/11 13:23:11 [emerg] 12032#7492: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring the rest of the variable
+2020/06/11 13:23:11 [emerg] 12032#7492: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring
+2020/06/11 13:23:12 [notice] 11200#8672: using inherited sockets from "C:\work\nginx-1.19.0\nginx"
+2020/06/11 13:23:12 [emerg] 11200#8672: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring the rest of the variable
+2020/06/11 13:23:12 [emerg] 11200#8672: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring
+2020/06/11 13:23:32 [error] 11200#2396: *8 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /dashboard HTTP/1.1", upstream: "http://127.0.0.1:3002/dashboard", host: "localhost:3000"
+2020/06/11 13:24:00 [notice] 6136#9972: signal process started
+2020/06/11 13:24:00 [error] 6136#9972: CreateFile() "C:\Users\14D00944\Desktop\python\todolist\.nginx/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/06/11 13:24:03 [error] 11200#2396: *11 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /dashboard HTTP/1.1", upstream: "http://127.0.0.1:3002/dashboard", host: "localhost:3000"
+2020/06/11 13:24:16 [notice] 9660#11816: using inherited sockets from "C:\work\nginx-1.19.0\nginx"
+2020/06/11 13:24:16 [emerg] 9660#11816: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring the rest of the variable
+2020/06/11 13:24:16 [emerg] 9660#11816: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring
+2020/06/11 13:24:16 [notice] 9660#11816: signal process started
+2020/06/11 13:24:16 [error] 9660#11816: CreateFile() "C:\Users\14D00944\Desktop\python\todolist\.nginx/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/06/11 13:24:32 [notice] 8256#2856: using inherited sockets from "C:\work\nginx-1.19.0\nginx"
+2020/06/11 13:24:32 [emerg] 8256#2856: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring the rest of the variable
+2020/06/11 13:24:32 [emerg] 8256#2856: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring
+2020/06/11 13:24:32 [notice] 8256#2856: signal process started
+2020/06/11 13:24:32 [error] 8256#2856: CreateFile() "C:\Users\14D00944\Desktop\python\todolist\.nginx/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/06/11 13:24:57 [notice] 4748#10676: using inherited sockets from "C:\work\nginx-1.19.0\nginx"
+2020/06/11 13:24:57 [emerg] 4748#10676: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring the rest of the variable
+2020/06/11 13:24:57 [emerg] 4748#10676: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring
+2020/06/11 13:24:57 [notice] 4748#10676: signal process started
