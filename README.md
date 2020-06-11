@@ -28,9 +28,7 @@ $ brew install nginx
 ```
 $ pip install -r requirements.txt
 ```
-
-<<<<<<< HEAD
-=======
+#
 6) **Node Package Install**
 ```
 $ npm install
@@ -47,4 +45,3 @@ $ virtualenv .venv
 $ chmod +x start.nginx.sh
 $ chmod +x stop.nginx.sh
 ```
->>>>>>> cb6ba9a715245a620857815a229f258a1e98fab9
