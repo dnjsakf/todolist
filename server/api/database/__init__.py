@@ -1,12 +1,20 @@
 # api/datdabase.py
 from mongoengine import connect
 
+
+connection = None
+
 # Database Connection 함수
 def connect_db(database, host, mockup=False, **kwargs):
-  connect(database, host=host, alias="default")
+  global connection
 
-  if mockup == True: 
-    init_mockup()
+  if connection is None:
+    connection = None
+      
+    connect(database, host=host, alias="default")
+
+    if mockup == True: 
+      init_mockup()
 
 # 기초 데이터 Insert 함수
 def init_mockup():

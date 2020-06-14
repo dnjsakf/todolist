@@ -1,7 +1,0 @@
-2020/06/11 13:21:01 [emerg] 11708#10496: CreateFile() "C:\Users\14D00944\Desktop\python\todolist/conf/nginx.conf" failed (3: The system cannot find the path specified)
-2020/06/11 13:21:33 [emerg] 4740#8904: CreateDirectory() "C:\Users\14D00944\Desktop\python\todolist/temp/client_body_temp" failed (3: The system cannot find the path specified)
-2020/06/11 13:22:45 [notice] 9116#3736: using inherited sockets from "C:\work\nginx-1.19.0\nginx"
-2020/06/11 13:22:45 [emerg] 9116#3736: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring the rest of the variable
-2020/06/11 13:22:45 [emerg] 9116#3736: invalid socket number "C:\work\nginx-1.19.0\nginx" in NGINX environment variable, ignoring
-2020/06/11 13:22:45 [emerg] 9116#3736: CreateDirectory() "C:\Users\14D00944\Desktop\python\todolist/temp/client_body_temp" failed (3: The system cannot find the path specified)
-2020/06/11 13:23:23 [emerg] 9608#9128: CreateFile() "C:\Users\14D00944\Desktop\python\todolist/conf/nginx.conf" failed (3: The system cannot find the path specified)

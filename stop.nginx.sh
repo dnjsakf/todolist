@@ -15,6 +15,6 @@ else
 fi
 
 echo "Nginx stopping..."
-nginx -s stop -p $NGINX_HOME -c $NGINX_CONF
+sudo nginx -s stop -p $NGINX_HOME -c $NGINX_CONF
 
 echo "All stopped"

@@ -45,3 +45,12 @@ $ virtualenv .venv
 $ chmod +x start.nginx.sh
 $ chmod +x stop.nginx.sh
 ```
+
+
+
+
+gunicorn -c guni-api.py api:app -D
+gunicorn -c guni-app.py app:app -D
+
+kill $(head -1 /tmp/gunicorn-api.pid)
+kill $(head -1 /tmp/gunicorn-app.pid)
