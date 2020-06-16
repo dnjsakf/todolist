@@ -1,7 +1,0 @@
-[2020-06-12 23:40:18 +0900] [13573] [INFO] Starting gunicorn 20.0.4
-[2020-06-12 23:40:18 +0900] [13573] [INFO] Listening at: unix:/tmp/gunicorn-app.sock wsgi-app:app (13573)
-[2020-06-12 23:40:18 +0900] [13573] [INFO] Using worker: sync
-[2020-06-12 23:40:18 +0900] [13576] [INFO] Booting worker with pid: 13576
-[2020-06-12 23:41:15 +0900] [13573] [INFO] Handling signal: term
-[2020-06-12 23:41:15 +0900] [13576] [INFO] Worker exiting (pid: 13576)
-[2020-06-12 23:41:15 +0900] [13573] [INFO] Shutting down: Master

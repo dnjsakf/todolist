@@ -1,0 +1,1 @@
+from server.app.routes.home import app as route_home

@@ -1,20 +1,21 @@
 from flask import Flask
 from flask_cors import CORS
 
-from server.app.routes.home import bp_home
-
-def create_app():
+def create_app(*args, **kwargs):
   app = Flask(
     __name__,
     static_url_path="/public/",
     static_folder="../../client/dist",
     template_folder="templates"
   )
-  app.config.from_pyfile('config/flask.config.py')
-  app.register_blueprint(bp_home, url_prefix="/")
 
-  CORS(app=app, resources={
-    r"*": { "origin": "*" }
-  })
-
+  with app.app_context():
+    app.config.from_pyfile('config/flask.config.py')
+    
+    CORS(app=app, resources={
+      r"*": { "origin": "*" }
+    })
+    
+    from server.app import routes
+  
   return app

@@ -1,0 +1,200 @@
+CentOS 7
+
+###########################
+### Create User & Group ###
+###########################
+$ groupadd g_news 
+$ useradd -g g_news u_news 
+$ passwd u_news
+
+
+###########################
+### Python Defendencies ###
+###########################
+$ yum install gcc gcc-c++ 
+$ yum install zlib-devel
+$ yum install openssl openssl-devel
+$ yum install sqlite sqlite-devel
+$ yum install wget tree
+
+
+###########################
+#### Install Python3.6 ####
+###########################
+$ mkdir /tmp/python-install -p
+$ cd /tmp/python-install
+$ wget https://www.python.org/ftp/python/3.6.6/Python-3.6.6rc1.tgz
+$ tar -zxvf Python-3.6.6rc1.tgz
+$ cd Python-3.6.6rc1
+$ ./configure --enable-optimizations
+$ make altinstall
+
+$ cd /tmp
+$ rm -rf ./python-install
+
+
+###########################
+###### Symbolic Link ######
+###########################
+$ cd /usr/local/bin
+$ ln -s python3.6 python3
+$ python3 --version
+
+
+###########################
+#### Create Virtualenv ####
+###########################
+$ mkdir ~/pysrc/myflask
+$ cd ~/pysrc/myflask
+$ python3 -m venv .venv
+#$ chown -R u_news:g_news .venv
+#$ su - u_news
+$ source ~/pysrc/myflask/.venv/bin/activate
+
+(.venv)$ deactivate #Exit Virtualenv
+
+
+###########################
+# Install Python Packages #
+###########################
+$ pip install flask python-dotenv gunicorn
+
+
+###########################
+# Write Environment Vars. #
+###########################
+(.venv)$ vi .env
+#--------------------------------------#
+FLASK_ENV=development   # default. production
+FLASK_DEBUG=1
+#--------------------------------------#
+
+
+###########################
+#### Write Flask Server ###
+###########################
+(.venv)$ vi app.py
+#--------------------------------------#
+import dotenv
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/", methods=["GET","POST"])
+def index():
+  return "<h1>Hello, Flask!!!</h1>"
+  
+if __name__ == '__main__':
+  dotenv.load_dotenv(dotenv_path=".env")
+  app.run(host="0.0.0.0", port="3000")
+#--------------------------------------#
+
+
+###########################
+#### Run Flask Dev Mode ###
+###########################
+# need dotenv, __name__ is '__main__'
+(.venv)$ python app.py
+or
+# needless dotenv, __name__ is 'app'
+(.venv)$ FLASK_APP=app.py
+(.venv)$ flask run --host=0.0.0.0 --port=3000
+
+
+###########################
+####### Write WSGI ########
+###########################
+(.venv)$ vi wsgi.py
+#--------------------------------------#
+from app import app as application
+
+if __name__ == '__main__':
+  application.run()
+#--------------------------------------#
+
+
+###########################
+## Write Gunicorn Config ##
+###########################
+(.venv)$ vi gunicorn_cfg.py
+#--------------------------------------#
+# https://readthedocs.org/projects/gunicorn-docs/downloads/pdf/latest/
+#daemon=True
+workers = 5
+bind = 'unix:/tmp/gunicorn.sock'
+pidfile = '/tmp/gunicorn.pid'
+
+loglevel = 'debug'
+accesslog = 'logs/access.log'
+errorlog = 'logs/error.log'
+#--------------------------------------#
+
+
+###########################
+###### Run Gunicorn  ######
+###########################
+(.venv)$ gunicorn -D -c gunicorn_cfg.py wsgi:application
+(.venv)$ ps -ef | grep gunicorn
+
+
+
+###########################
+###### Nginx Config  ######
+###########################
+(.venv)$ sudo vim /usr/local/nginx/conf/nginx.conf
+#--------------------------------------#
+...
+http {
+  server {
+    listen        3000;
+    server_name   0.0.0.0;
+    
+    access_log    logs/app.access.log;
+    
+    location / {
+      proxy_pass http://unix:/tmp/gunicorn.sock;
+      
+      # proxy_params
+      proxy_redirect      off;
+      proxy_set_header    Host            $host;
+      proxy_set_header    X-Real-IP       $remote_addr;
+      proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+  }
+}
+...
+#--------------------------------------#
+
+$ nginx -t
+$ nginx
+$ nginx -s stop
+
+$ curl -GET http://localhost:3000
+
+
+###########################
+##### WSGI For Windows ####
+###########################
+waitress-serve --listen=*:3000 wsgi:application
+
+
+
+
+###########################
+###### Install Docker #####
+###########################
+$ sudo yum install -y yum-utils
+$ sudo yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
+
+    
+wget https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-selinux-17.03.3.ce-1.el7.noarch.rpm
+wget https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.13-3.2.el7.x86_64.rpm
+wget https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-19.03.11-3.el7.x86_64.rpm
+wget https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-cli-19.03.11-3.el7.x86_64.rpm
+
+sudo yum -y install docker-ce-selinux-17.03.3.ce-1.el7.noarch.rpm
+sudo yum -y install containerd.io-1.2.13-3.2.el7.x86_64.rpm
+sudo yum -y install docker-ce-19.03.11-3.el7.x86_64.rpm
+sudo yum -y install docker-ce-cli-19.03.11-3.el7.x86_64.rpm

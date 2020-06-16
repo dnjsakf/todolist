@@ -1,7 +1,6 @@
 # api/datdabase.py
 from mongoengine import connect
 
-
 connection = None
 
 # Database Connection 함수
@@ -9,9 +8,7 @@ def connect_db(database, host, mockup=False, **kwargs):
   global connection
 
   if connection is None:
-    connection = None
-      
-    connect(database, host=host, alias="default")
+    connection = connect(database, host=host, alias="default")
 
     if mockup == True: 
       init_mockup()
