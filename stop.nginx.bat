@@ -7,7 +7,7 @@ popd
 
 REM nginx
 set NGINX_HOME=%BASEDIR%\.nginx
-set NGINX_CONF=%NGINX_HOME%\conf\win.nginx.conf
+set NGINX_CONF=conf/win.nginx.conf
 
 
 REM 명령어 검색

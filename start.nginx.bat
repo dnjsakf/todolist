@@ -6,7 +6,7 @@ set BASEDIR=%CD%
 popd
 
 set NGINX_HOME=%BASEDIR%\.nginx
-set NGINX_CONF=%NGINX_HOME%\conf\win.nginx.conf
+set NGINX_CONF=conf/win.nginx.conf
 
-start %NGINX_HOME%\nginx -c %NGINX_CONF% -p %NGINX_HOME%
+start %NGINX_HOME%\nginx -p %NGINX_HOME% -c %NGINX_CONF%
 start pythonw twisted-app.py

@@ -1,12 +1,2 @@
-from flask import Blueprint, render_template, send_file, send_from_directory
-from werkzeug.utils import secure_filename
-
-app = Blueprint("/upload", __name__)
-
-@app.route("/upload", methods=["GET","POST"])
-def home_index():
-  print('hi')
-
-  return "<h5>hi</h5>"
-
-bp_upload = app
+from server.api.file.downloads import app as route_downloads
+from server.api.file.uploads import app as route_uploads

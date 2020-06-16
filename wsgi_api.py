@@ -6,6 +6,7 @@ import dotenv
 
 from server.api import create_app
 
+dotenv.load_dotenv(dotenv_path=".env")
 app = create_app()
 
 if __name__ == '__main__':
@@ -25,13 +26,7 @@ if __name__ == '__main__':
         kwargs["port"] = args
       elif opt in ( "-d", "--development" ):
         kwargs["mode"] = "development"
-      
-    # Load dotenv    
-    mode = kwargs.get("mode", "production")
-    dotenv_file = ".env"
-    if mode == "development":
-      dotenv_file = ".dev.env"
-    dotenv.load_dotenv(dotenv_path=os.path.join(FILE_PATH, dotenv_file))
+        os.environ.putenv("FLASK_MODE", "development")
     
     # Run Server
     host = kwargs.get("host", None)
@@ -39,5 +34,9 @@ if __name__ == '__main__':
     app.run(host=host, port=port)
     
   except getopt.GetoptError:
-    print(sys.argv[0], '-D,--development : Run server development mode.')
+    print(sys.argv[0], "\n".join([
+      "'-h, --host : Run server host.'",
+      "'-p, --port : Run server port.'",
+      "'-d, --development : Run server development mode.'"
+    ]))
     sys.exit()
