@@ -6,6 +6,7 @@ NGINX_CONF=conf/nginx.conf
 TWISTED_FILE=$BASEDIR/twisted-app.py
 
 echo "Nginx staring..."
+sudo nginx -p $NGINX_HOME -c $NGINX_CONF -t
 sudo nginx -p $NGINX_HOME -c $NGINX_CONF
 
 echo "Twisted staring..."
