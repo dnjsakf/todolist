@@ -10,17 +10,27 @@ from server.api.gql import schema
 
 
 def create_app(*args, **kwargs):
+  APP_PATH = os.path.dirname(os.path.abspath(__file__))  
+  ROOT_PATH = kwargs.get("ROOT_PATH", os.path.join(APP_PATH, "../../"))
+  STATIC_PATH = kwargs.get("STATIC_PATH", os.path.join(ROOT_PATH, 'static'))
+  TEMPLATE_PATH = os.path.join(APP_PATH, "templates")
 
   # Application
-  app = Flask(__name__)
+  app = Flask(
+    __name__,
+    static_url_path="/public/",
+    static_folder=STATIC_PATH,
+    template_folder=TEMPLATE_PATH
+  )
   
   with app.app_context():
     # Set Configuration
-    config_py = os.environ.get( "FLAKS_API_CONFIG_PY" )
+    config_py = os.environ.get( "FLAKS_API_CONFIG_PY", None )
     if config_py is not None and os.path.exists( config_py ):
       app.config.from_pyfile( config_py )
-      
-    app.config["FILE_UPLOAD_PATH"] = os.environ.get("FLASK_FILE_UPLOAD_PATH", app.config.get("FILE_UPLOAD_PATH", None))
+    
+    if "FILE_UPLOAD_PATH" not in app.config:
+      app.config["FILE_UPLOAD_PATH"] = os.environ.get("FLASK_FILE_UPLOAD_PATH", STATIC_PATH)
 
     # Set GraphQL Middleware - /graphql EndPoint 설정
     app.add_url_rule(
@@ -38,10 +48,7 @@ def create_app(*args, **kwargs):
     })
     
     # Set Routes
-    from server.api.file import (
-      route_downloads,
-      route_uploads
-    )
+    from server.api import routes
     
     MONGO_HOST=os.environ.get("FLASK_API_MONGO_URL", app.config.get("API_MONGO_URL", None))
     MONGO_DATABASE=os.environ.get("FLASK_API_MONGO_DATABASE", app.config.get("API_MONGO_DATABASE", None))

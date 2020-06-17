@@ -14,6 +14,9 @@ module.exports = merge(config, {
       root: config.output.path,
       verbose: true,
     }),
+    new webpack.DefinePlugin({
+      GRAPHQL_URL: JSON.stringify("/graphql"),
+    }),
     new BundleAnalyzerPlugin({
       analyzerMode: 'static',         // default: 'server', save file to {output.path}
       openAnalyzer: false,

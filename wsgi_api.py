@@ -6,12 +6,22 @@ import dotenv
 
 from server.api import create_app
 
+# Load Environment Variables
 dotenv.load_dotenv(dotenv_path=".env")
-app = create_app()
+
+# Set Constant Variables
+ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
+
+# Set Arguments
+kwargs = {
+  "ROOT_PATH": ROOT_PATH,
+  "STATIC_PATH": os.path.join(ROOT_PATH, "static")
+}
+
+# Create Flask APP
+app = create_app(**kwargs)
 
 if __name__ == '__main__':
-  FILE_PATH = os.path.dirname(os.path.abspath(__file__))
-    
   try:
     opts, etc_args = getopt.getopt(sys.argv[1:], "h:p:d", ["host", "port", "development"])
     

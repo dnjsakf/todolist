@@ -1,6 +1,12 @@
-from flask import current_app as app, send_from_directory
+from flask import (
+  Blueprint
+  , current_app as app
+  , send_from_directory
+)
 
-@app.route("/")
-@app.route("/<path:path>")
+bp = Blueprint(__name__, __name__, url_prefix="/home")
+
+@bp.route("/", methods=["GET"])
+@bp.route("/<path:path>", methods=["GET"])
 def home_index(path=None):
-  return send_from_directory(app.static_folder, 'index.html')
+  return "HOME"
