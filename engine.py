@@ -2,6 +2,7 @@ import os
 import sys
 import tailer
 import logging
+import platform
 import threading
 import traceback
 
@@ -15,6 +16,16 @@ from PyQt5.QtWidgets import (
   QStyleFactory
 )
 from PyQt5.QtGui import QIcon, QFont
+
+
+SYSTEM_NAME = platform.system()
+NGINX_COMMAND = 'sudo'
+WSGI_COMMAND = "python twisted-app.py"
+KILL_COMMAND = "sudo"
+
+if SYSTEM_NAME == "Windows":
+  NGINX_COMMAND = '.nginx/nginx.exe'
+  KILL_CAOMMAND = "taskkill /F /PID"
 
 
 # Ref https://www.learnpyqt.com/courses/concurrent-execution/multithreading-pyqt-applications-qthreadpool/
@@ -38,8 +49,6 @@ class Worker(QRunnable):
   def run(self):
     try:
       result = self.fn(*self.args, **self.kwargs)
-      
-      print(result)
     except:
       traceback.print_exc()
       exctype, value = sys.exc_info()[:2]
@@ -76,13 +85,9 @@ class MyEvents(object):
       for line in tailer.follow(f):
         if stop_event.is_set():
           logger.info("[tail.close]")
-          
-          f.close()
           break
           
-        QThread.sleep(1)        
         progress_callback.emit( line )
-        
       logger.info("[tail][break]")
           
       return True
@@ -98,51 +103,58 @@ class MyEvents(object):
     self.logger.info( '[nginx.start][start]' )
     self.logger.info( '[nginx.start.test][start]' )
     retval = QProcess.startDetached(
-      r".nginx/nginx.exe", [
+      NGINX_COMMAND, [
+        "nginx",
         "-p", ".nginx", 
-        "-c", "conf/win.nginx.conf",
+        "-c", "conf/nginx.conf",
         "-t"
       ]
     )
     self.logger.info( '[nginx.start.test][retval] {}'.format( retval ) )
     self.logger.info( '[nginx.start.test][finish]' )
     
-    retval, pid = QProcess.startDetached(
-      r".nginx/nginx.exe", [
+    retval = QProcess.startDetached(
+      NGINX_COMMAND, [
+        "nginx",
         "-p", ".nginx", 
-        "-c", "conf/win.nginx.conf"
-      ],
-      "."
+        "-c", "conf/nginx.conf"
+      ]
     )
     self.logger.info( '[nginx.start][retval] {}'.format( retval ) )
-    self.logger.info( '[nginx.start][pid] {}'.format( pid ) )
     self.logger.info( '[nginx.start][finish]' )
     
   def stop_nginx(self):
     self.logger.info( '[NGINX.stop][start]' )
-    retval = QProcess.startDetached(
-      r".nginx/nginx.exe", [
+    retval, pid = QProcess.startDetached(
+      NGINX_COMMAND, [
+        "nginx",
         "-p", ".nginx", 
-        "-c", "conf/win.nginx.conf",
+        "-c", "conf/nginx.conf",
         "-s", "stop"
-      ]
+      ],
+      "."
     )
     self.logger.info( '[nginx.stop][retval] {}'.format( retval ) )
+    self.logger.info( '[nginx.stop][pid] {}'.format( pid ) )
     self.logger.info( '[NGINX.stop][finish]' )
     
     
   def start_wsgi(self):
     self.logger.info( '[wsgi.start][start]' )
-    retval = QProcess.startDetached(
-      r"python twisted-app.py"
+    retval, pid = QProcess.startDetached(
+      "python", [ "twisted-app.py" ], "."
     )
     self.logger.info( '[wsgi.start][retval] {}'.format( retval ) )
+    self.logger.info( '[wsgi.start][pid] {}'.format( pid ) )
     self.logger.info( '[wsgi.start][finish]' )
+
+    return (retval, pid )
     
-  def stop_wsgi(self):
-    self.logger.info( '[wsgi.stop][start]' )
+  def stop_wsgi(self, pid):
+    self.logger.info( '[wsgi.stop][start][{}]'.format(pid) )
+    self.logger.info( " ".join([KILL_COMMAND, str(pid) ]))
     retval = QProcess.startDetached(
-      r"taskkill /F /IM python.exe"
+      KILL_COMMAND, ["kill", str(pid) ]
     )
     self.logger.info( '[wsgi.stop][retval] {}'.format( retval ) )
     self.logger.info( '[wsgi.stop][finish]' )
@@ -188,18 +200,17 @@ class MyWidget(QWidget, MyEvents):
   def setLogViewer2(self, row, col, rowSpan=1, colSpan=1):
     hbox = QHBoxLayout()
     
-    filename = r"C:\Users\14D00944\Desktop\python\todolist\.nginx\logs\app.access.log"
+    filename = ".nginx/logs/app.access.log"
     process = QProcess(self.parent)
     output = QTextEdit()
     btn = QPushButton("Start Nginx")
     
-    self.process = process
-    btn.clicked.connect(lambda: self.tail(filename))
+    btn.clicked.connect(lambda: self.logger.info("clicked") )
     
     def readStdout(process, output):
       cursor = output.textCursor()
-      cursor.movePosition(cursor.End)
       
+      cursor.movePosition(cursor.End)
       text = process.readAll()
       msg = str( text, encoding='cp949' )
       
@@ -250,24 +261,26 @@ class MyWidget(QWidget, MyEvents):
     hbox_wsgi = QHBoxLayout()
     
     btn_nginx_start = QPushButton("Start Nginx")
-    btn_nginx_start.clicked.connect(self.start_nginx)
-    
     btn_nginx_stop = QPushButton("Stop Nginx")
+
+    btn_wsgi_start = QPushButton("Start WSGI")
+    btn_wsgi_stop = QPushButton("Stop WSGI")
+
+    btn_nginx_start.clicked.connect(self.start_nginx)
     btn_nginx_stop.clicked.connect(self.stop_nginx)
+    
+    def setWsgiButton():
+      retval, pid = self.start_wsgi()
+      if retval:
+        btn_wsgi_stop.clicked.connect(lambda: self.stop_wsgi(pid))
+    btn_wsgi_start.clicked.connect(lambda: setWsgiButton())
     
     hbox_nginx.addWidget(btn_nginx_start)
     hbox_nginx.addWidget(btn_nginx_stop)
-    
-    
-    btn_wsgi_start = QPushButton("Start WSGI")
-    btn_wsgi_start.clicked.connect(self.start_wsgi)
-    
-    btn_wsgi_stop = QPushButton("Stop WSGI")
-    btn_wsgi_stop.clicked.connect(self.stop_wsgi)
-    
+
     hbox_wsgi.addWidget(btn_wsgi_start)
     hbox_wsgi.addWidget(btn_wsgi_stop)
-    
+
     vbox.addLayout( hbox_nginx )
     vbox.addLayout( hbox_wsgi )
 
