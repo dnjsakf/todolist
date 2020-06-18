@@ -1,3 +1,6 @@
+import os
+import traceback
+
 from twisted.web.wsgi import WSGIResource
 from twisted.internet import reactor
 from twisted.web import server
@@ -14,4 +17,11 @@ api_site = server.Site(api_resource)
 reactor.listenTCP(3002, app_site)
 reactor.listenTCP(3003, api_site)
 
-reactor.run()
+try:  
+  #with open("logs/tiwsted.pid", "w") as w:
+  #  w.write(str(os.getpid()))
+  #reactor.addSystemEventTrigger('before', 'shutdown', lambda : os.remove("logs/tiwsted.pid") )
+  reactor.run()
+  
+except Exception as e:
+  traceback.print_exc()
