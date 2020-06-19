@@ -1,18 +1,21 @@
-import tailer
+import os
 import logging
 import traceback
 
 from .commands import Command
 from .multithreading import Worker
+from .tailer import Tailer
 
 from PyQt5.QtCore import QProcess
+
 
 class MainEvent(object):
   def __init__(self, *args, **kwargs):
     self.args = args
     self.kwargs = kwargs
+    self.cmd = Command()
     
-    logger = logging.getLogger(self.__class__.__name__)    
+    logger = logging.getLogger(self.__class__.__name__)
     self.logger = kwargs.get("logger", logger)
     
   def start(self):
@@ -23,125 +26,137 @@ class MainEvent(object):
 
 
 class TailEvent(MainEvent):
-  def __init__(self, *args, **kwargs):
+  def __init__(self, parent, *args, **kwargs):
     super(TailEvent, self).__init__(*args, **kwargs)
+
+    self.parent = parent
+
+    self.tailer = None
+    self.stop_event = None
+    self.filename = None
+    self.tail_logger = None
+
+  def init(self, filename, logger):
+    self.filename = filename
+    self.tail_logger = logger
     
-  def start(self, filename, logger, trigger):
-    self.logger.info( '[tail][{}]'.format( filename ) )
-    
-    def handler(log_file, progress_callback):
-    
-      f = open(log_file)
-      for line in tailer.follow(f):
-        logger.info("[tail.close]")
-        break
-          
-        progress_callback.emit( line )
-      logger.info("[tail][break]")
-          
-      return True
-    
-    worker = Worker(handler, log_file=filename)
-    worker.signals.result.connect(lambda retval: self.logger.info('[tail][retval] {}'.format(retval)) )
-    worker.signals.finished.connect(lambda: self.logger.info('[tail][finish]') )
-    worker.signals.progress.connect(lambda msg: logger.info(msg) )
-    
-    self.parent.threadpool.start(worker)
+  def start(self):
+    if self.tailer is None:
+      self.logger.info( '[tail] follow {}'.format( self.filename ) )
+
+      self.tailer = Tailer(open( self.filename ), end=True)
+
+      self.worker = Worker(self.follow, filename=self.filename)
+      self.worker.signals.result.connect(self.result)
+      self.worker.signals.finished.connect(self.finished)
+      self.worker.signals.print.connect(self.print)
+      
+      self.parent.threadpool.start(self.worker)
+
+  def stop(self):
+    if self.tailer is not None:
+      self.tailer.stop()
+
+  def follow(self, filename, print_callback):
+    for line in self.tailer.follow():
+      print_callback.emit( line )
+
+    return True
+  
+  def print(self, msg):
+    self.tail_logger.info( msg )
+
+  def result(self, retval):
+    self.logger.info('[tail][retval] {}'.format( retval )) 
+
+  def finished(self):
+    self.logger.info('[tail][finish]')
+    self.tailer = None
+
     
 
 class NginxEvent(MainEvent):
   def __init__(self, *args, **kwargs):
     super(NginxEvent, self).__init__(*args, **kwargs)
-    
-    self.command = Command().nginx
+
+    self.pid = None
+    self.is_running = False
   
   def start(self):
-    self.logger.info( '[nginx.start][start]' )
-    self.logger.debug( '[nginx.start.test][start]' )
-    
-    cmd_test = self.command.copy()
-    cmd_test.extend([ "-t" ])
-    retval = QProcess.startDetached( cmd_test[0], cmd_test[1:] )
-    
-    self.logger.debug( '[nginx.start.test][cmd] {}'.format( " ".join(cmd_test) ) )
-    self.logger.debug( '[nginx.start.test][retval] {}'.format( retval ) )
-    self.logger.debug( '[nginx.start.test][finish]' )
-    
-    cmd = self.command.copy()
-    retval = QProcess.startDetached( cmd[0], cmd[1:] )
-    
-    self.logger.debug( '[nginx.start][cmd] {}'.format( " ".join(cmd) ) )
-    self.logger.debug( '[nginx.start][retval] {}'.format( retval ) )
-    self.logger.info( '[nginx.start][finish]' )
+    if not self.is_running:
+      cmd = self.cmd.nginx.copy()
+      cmd.extend([ "-t" ])
+      retval = QProcess.startDetached( cmd[0], cmd[1:] )
+      
+      if retval:
+        cmd = self.cmd.nginx.copy()
+        retval, pid = QProcess.startDetached( cmd[0], cmd[1:], "." )
+
+        self.is_running = retval
+        
+        if retval:
+          self.pid = pid
+          self.logger.info( '[nginx] started!!! pid={}'.format( self.pid ) )
+        else:
+          self.logger.info( '[nginx] failed start. cmd={}'.format( cmd ) )
+      else:
+        self.logger.info( '[nginx] failed start. invalid configuration.' )
+    else:
+      self.logger.info( '[nginx] Already started. pid={}'.format( self.pid ) )
     
   def stop(self):
-    self.logger.info( '[nginx.stop][start]' )
-    
-    cmd = self.command.copy()
-    cmd.extend([ "-s", "stop" ])
-    retval, pid = QProcess.startDetached( cmd[0], cmd[1:], "." )
-    
-    self.logger.debug( '[nginx.stop][cmd] {}'.format( " ".join(cmd) ) )
-    self.logger.debug( '[nginx.stop][retval] {}'.format( retval ) )
-    self.logger.debug( '[nginx.stop][pid] {}'.format( pid ) )
-    self.logger.info( '[NGINX.stop][finish]' )
+    if self.is_running:
+      cmd = self.cmd.nginx.copy()
+      cmd.extend([ "-s", "stop" ])
+      retval = QProcess.startDetached( cmd[0], cmd[1:] )
 
+      if retval:
+        self.logger.info( '[wsgi] stopped!!! pid={}'.format( self.pid ) )
+        self.pid = None
+        self.is_running = False
+      else:
+        self.logger.info( '[wsgi] failed kill, pid={}'.format( self.pid ) )
+      
+    else:
+      self.logger.info( '[nginx] Already stopped. pid={}'.format( self.pid ) )
+      
     
     
 class WSGIEvent(MainEvent):
   def __init__(self, *args, **kwargs):
     super(WSGIEvent, self).__init__(*args, **kwargs)
-    
-    self.command = Command().wsgi
-    self.kill_command = Command().kill
-  
-  def init_command(self):
-    if self.system == "Windows":
-      self.command = [
-        ".nginx/nginx",
-        "-p", ".nginx",
-        "-c", "conf/win.nginx.conf"
-      ]
-    elif self.system == "Darwin":
-      self.command = [
-        "sudo",
-        "nginx",
-        "-p", ".nginx",
-        "-c", "conf/nginx.conf"
-      ]
-    else:
-      self.command = []
+
+    self.pid = None
+    self.is_running = False
   
   def start(self):
-    self.logger.info( '[wsgi.start][start]' )
-    
-    cmd = self.command.copy()
-    retval, pid = QProcess.startDetached( cmd[0], cmd[1:], "." )
-    
-    self.logger.info( '[wsgi.start][cmd] {}'.format( " ".join(cmd) ) )
-    self.logger.info( '[wsgi.start][retval] {}'.format( retval ) )
-    self.logger.info( '[wsgi.start][pid] {}'.format( pid ) )
-    self.logger.info( '[wsgi.start][finish]' )
+    if not self.is_running:
+      cmd = self.cmd.wsgi.copy()
+      retval, pid = QProcess.startDetached( cmd[0], cmd[1:], "." )
 
-    return (retval, pid )
+      self.is_running = retval
+      if retval:
+        self.logger.info( '[wsgi] Started!!! pid={}'.format( pid ) )
+        self.pid = pid
+      else:
+        self.logger.info( '[wsgi] Failed start. cmd={}'.format( " ".join( cmd ) ) )
+    else:
+      self.logger.info( '[wsgi] Already running. pid={}'.format(self.pid) )
     
-  def stop(self, pid):
-    self.logger.info( '[wsgi.stop][start][{}]'.format(pid) )
-    
-    cmd = self.kill_command.copy()
-    cmd.extend([ "/PID", str(pid) ])
-    
-    retval = QProcess.startDetached( cmd[0], cmd[1:] )
-    
-    self.logger.info( '[wsgi.stop][cmd] {}'.format( " ".join(cmd) ) )
-    self.logger.info( '[wsgi.stop][retval] {}'.format( retval ) )
-    self.logger.info( '[wsgi.stop][finish]' )
-    
+  def stop(self):
+    if self.is_running and self.pid is not None:
+      
+      cmd = self.cmd.kill.copy()
+      cmd.extend([ str(self.pid) ])
+      
+      retval = QProcess.startDetached( cmd[0], cmd[1:] )
 
-
-class MainEvents(object):
-  def __init__(self, *args, **kwargs):
-    self.args = args
-    self.kwargs = kwargs
-    
-    self.logger = kwargs.get("logger", logging.getLogger("MainEvents"))
+      if retval:
+        self.logger.info( '[wsgi] Stopped!!! pid={}'.format( self.pid ) )
+        self.pid = None
+        self.is_running = False
+      else:
+        self.logger.info( '[wsgi] Failed kill, pid={}'.format( self.pid ) )
+    else:
+      self.logger.info( '[wsgi] Already stopped. pid={}'.format( self.pid ) )
+  

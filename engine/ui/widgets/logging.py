@@ -7,6 +7,8 @@ class QLogger(logging.Handler):
     self.widget = QPlainTextEdit(parent)
     self.widget.setReadOnly(True)
 
+    self.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+
   def emit(self, record):
     msg = self.format(record)
     self.widget.appendPlainText(msg)

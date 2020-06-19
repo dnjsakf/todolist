@@ -1,3 +1,4 @@
+import os
 import sys
 import traceback
 
@@ -13,7 +14,7 @@ class WorkerSignals(QObject):
   finished = pyqtSignal()
   error = pyqtSignal(tuple)
   result = pyqtSignal(object)
-  progress = pyqtSignal(str)
+  print = pyqtSignal(str)
     
 class Worker(QRunnable):
   def __init__(self, fn, *args, **kwargs):
@@ -23,7 +24,7 @@ class Worker(QRunnable):
     self.kwargs = kwargs
     
     self.signals = WorkerSignals()
-    self.kwargs['progress_callback'] = self.signals.progress
+    self.kwargs['print_callback'] = self.signals.print
       
   @pyqtSlot()
   def run(self):

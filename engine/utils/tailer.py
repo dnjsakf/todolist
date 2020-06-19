@@ -2,7 +2,7 @@ import time
 import threading
 
 class Tailer(object):
-  def __init__(self, file, end=False, *args, **kwargs):
+  def __init__(self, file=None, end=False, *args, **kwargs):
     self.args = args
     self.kwargs = kwargs
     
@@ -12,7 +12,10 @@ class Tailer(object):
     
     if end:
       self.seek_last()
-    
+  
+  def setFile(self, file):
+    self.file = file
+
   def seek(self, offset, whence=0):
     self.file.seek(offset, whence)
     
@@ -56,17 +59,3 @@ class Tailer(object):
 def follow(file, delay=1.0):
   tailer = Tailer(file, end=True)
   return ( tailer.follow( delay ), tailer.stop )
-
-'''
-file = open(r"C:\Users\14D00944\Desktop\python\todolist\.nginx\logs\app.access.log")
-gen, stop = follow(file, 1)
-
-count = 0
-for line in gen:
-  print( count, line )
-  
-  count += 1
-  
-  if count > 1:
-    stop()
-'''

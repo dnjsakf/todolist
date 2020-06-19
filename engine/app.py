@@ -8,7 +8,7 @@ def execute( args ):
   app = QApplication( sys.argv )
   app.setStyle(QStyleFactory.create('Fusion'))
   
-  win = MainWindow("메인 윈도우", posX=100, posY=400, width=300, height=500)
+  win = MainWindow("메인 윈도우", posX=100, posY=400, width=500, height=500)
   win.show()
   
   try:

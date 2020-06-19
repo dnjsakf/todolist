@@ -8,8 +8,6 @@ from PyQt5.QtWidgets import (
   QGridLayout, QVBoxLayout,QHBoxLayout,
   QTextEdit, QPushButton
 )
-from engine.utils.events import MainEvents
-
 from engine.utils.events import TailEvent, NginxEvent, WSGIEvent
 
 class MainWidget(QWidget):
@@ -21,7 +19,7 @@ class MainWidget(QWidget):
     self.parent = parent
     self.logger = logger
     
-    self.tail = TailEvent(logger=logger)
+    self.tail = TailEvent(parent, logger=logger)
     self.nginx = NginxEvent(logger=logger)
     self.wsgi = WSGIEvent(logger=logger)
     
@@ -34,12 +32,12 @@ class MainWidget(QWidget):
     self.setRunButtons(0, 0)
     
     # row-2
-    self.setLogViewer(1, 0)
-    self.setLogViewer3(2, 0)
+    self.setStdoutViewer(1, 0)
+    self.setTailViewer(2, 0)
     
     self.setLayout(self.main_layout)
     
-  def setLogViewer(self, row, col, rowSpan=1, colSpan=1):
+  def setStdoutViewer(self, row, col, rowSpan=1, colSpan=1):
     hbox = QHBoxLayout()
     
     logTextBox = QLogger(self.parent)
@@ -52,26 +50,25 @@ class MainWidget(QWidget):
         
     self.main_layout.addLayout(hbox, row, col, rowSpan, colSpan)
     
-  def setLogViewer3(self, row, col, rowSpan=1, colSpan=1):
+  def setTailViewer(self, row, col, rowSpan=1, colSpan=1):
     hbox = QHBoxLayout()
     vbox_buttons = QVBoxLayout()
     
     trigger = threading.Event()
     filename = ".nginx/logs/app.access.log"
     
+    logTextBox = QLogger( self.parent )
     logger = logging.getLogger(filename)
     logger.setLevel( logging.DEBUG )
-    
+    logger.addHandler( logTextBox )
+
+    self.tail.init( filename, logger )
+
     btn_start = QPushButton("tail start")
-    btn_start.clicked.connect(lambda: self.tail.start(filename, logger, trigger))
+    btn_start.clicked.connect(self.tail.start)
     
     btn_stop = QPushButton("tail stop")
-    btn_stop.clicked.connect(lambda: trigger.set())
-    
-    logTextBox = QLogger( self.parent )
-    logTextBox.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-    
-    logger.addHandler( logTextBox )
+    btn_stop.clicked.connect(self.tail.stop)
 
     vbox_buttons.addWidget(btn_start)
     vbox_buttons.addWidget(btn_stop)
@@ -95,11 +92,8 @@ class MainWidget(QWidget):
     btn_nginx_start.clicked.connect(self.nginx.start)
     btn_nginx_stop.clicked.connect(self.nginx.stop)
     
-    def setWsgiButton():
-      retval, pid = self.wsgi.start()
-      if retval:
-        btn_wsgi_stop.clicked.connect(lambda: self.wsgi.stop(pid))
-    btn_wsgi_start.clicked.connect(lambda: setWsgiButton())
+    btn_wsgi_start.clicked.connect(self.wsgi.start)
+    btn_wsgi_stop.clicked.connect(self.wsgi.stop)
     
     hbox_nginx.addWidget(btn_nginx_start)
     hbox_nginx.addWidget(btn_nginx_stop)

@@ -12,7 +12,7 @@ class UinuxCommand(object):
 
   
 class WindowsCommand(object):
-  kill = [ "taskkill", "/F" ]
+  kill = [ "taskkill", "/F", "/PID" ]
   nginx = [
     ".nginx/nginx",
     "-p", ".nginx",
@@ -25,7 +25,7 @@ class Command(object):
   system = platform.system()
   
   def __init__(self):
-    if self.system == "Drawin":
+    if self.system == "Darwin":
       self.__class__ = UinuxCommand
     elif self.system == "Windows":
       self.__class__ = WindowsCommand
